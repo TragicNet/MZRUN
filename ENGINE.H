@@ -42,8 +42,7 @@ Engine :: Engine() {
 			} else if(cmap[i][j] == '#') {
 				map[i][j].block();
 			}
-			temp = NULL;
-			delete temp;
+			temp = NULL;	delete temp;
 		}
 	}
 }
