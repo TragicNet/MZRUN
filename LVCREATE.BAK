@@ -1,0 +1,91 @@
+/*
+	Map maker
+	load map from txt file and put in lvl file with map data and objects
+
+*/
+
+#include "MZRUN/ENGINE.H"
+
+
+class Creator {
+private:
+	Engine *level;
+public:
+	int x, y;
+	bool end;
+	Creator();
+	void draw();
+	void input();
+	bool move(int PosX, int PosY);
+	void create_object();
+	void make_map();
+	void create_lvl();
+}
+
+Creator :: Creator() {
+	this->x = this->y = 1;	this->end = false;
+	this->level = new Engine();
+}
+
+void Creator :: draw() {
+	for(int i = 0; i<MaxY; i++) {
+		for(int j = 0; j<MaxX; j++) {
+			gotoxy(1+j, 1+i);
+			air.draw();
+		}
+	}
+	for(i = 0; i<80; i++) {	//MaxX
+		gotoxy(1+i, MaxY+1);	printf("�");
+	}
+	for(i = 0; i<25; i++) {	//MaxY
+		gotoxy(MaxX+1, 1+i);	printf("�");
+	}
+}
+
+void Creator :: create_object() {
+    
+}
+
+void Creator :: make_map()  {
+
+}
+
+void Creator :: input() {
+	gotoxy(1,25);	cout<<this->x<<", "<<this->y;
+	gotoxy(this->x, this->y);
+	switch(getch()) {
+		case 'w':   this->move(+0, -1);
+					break;
+		case 's':   this->move(+0, +1);
+					break;
+		case 'a':   this->move(-1, +0);
+					break;
+		case 'd':   this->move(+1, +0);
+					break;
+		case 13:	create_object();
+					break;
+		case 27:   this->end = true;
+					break;
+	}
+}
+
+bool Creator :: move(int PosX, int PosY) {
+	if(this->x+PosX<=0 || this->x+PosX>MaxX || this->y+PosY<=0 || this->y+PosY>MaxY)
+		return false;
+	this->x += PosX;	this->y += PosY;
+	return true;
+}
+
+void Creator :: create_lvl() {
+
+}
+
+int main() {
+    clrscr();
+	Creator creator;
+	creator.draw();
+	while(!creator.end) {
+		creator.input();
+	}
+	return 0;
+}
