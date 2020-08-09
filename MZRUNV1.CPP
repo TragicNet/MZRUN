@@ -1,7 +1,6 @@
 //#include "MZRUN/ENGINE.H"
 #include "MZRUN/GLOBALS.H"
 //Git Test
-//Hi I am Sam
 /*#include <windows.h>
 #include <iostream>
 using namespace std;
