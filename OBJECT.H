@@ -30,6 +30,7 @@ public:
 	inline coord* getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
 	inline char* getType() {	return this->type;	}
+	inline unsigned int getLast() {	return this->last;	}
 	inline int getColor() {	return this->color;	}
 	inline int getBgColor() {	return this->bgcolor;	}
 	inline eDirection getDirection() {	return this->dir;	}

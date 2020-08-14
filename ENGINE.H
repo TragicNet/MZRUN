@@ -136,6 +136,7 @@ void Engine :: inputEngine() {
 void Engine :: handleEngine() {
 	static unsigned int tick = 0;
 	int i;
+	gotoxy(1, 25);	cout<<tick;
 	/*if(posCheck(player->getPos(), "monster")) {
 		drawEngine();
 		player->death();

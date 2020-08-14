@@ -9,9 +9,9 @@ public:
 	void route(unsigned int last);
 	void operator=(Object src) {
         this->pos = src.getPos();
-		this->obj_symbol = src.getSymbol();
-		this->obj_color = src.getColor();
-		this->obj_bgcolor = src.getBgColor();
+		this->symbol = src.getSymbol();
+		this->color = src.getColor();
+		this->bgcolor = src.getBgColor();
 		this->dir = src.getDirection();
     } 
 };
