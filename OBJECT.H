@@ -14,13 +14,12 @@ protected:
 	int color;
 	int bgcolor;
 
-	//Temporary Variables
+	//Temporary Variables: Change Frequently
 	unsigned int last;
 
 public:
 	Object(){};
 	Object(int x, int y, eDirection dir, char symbol, char type[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
-		//this->x = x;	this->y = y;
 		this->pos = new coord(x, y);	this->dir = dir;
 		this->symbol = symbol;	strcpy(this->type, type);
 		this->range = range;	this->speed = speed;
