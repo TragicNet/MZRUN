@@ -1,6 +1,6 @@
 //#include "MZRUN/ENGINE.H"
 #include "MZRUN/GLOBALS.H"
-//using Main
+//using Sam
 /*#include <windows.h>
 #include <iostream>
 using namespace std;
