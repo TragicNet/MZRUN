@@ -42,6 +42,7 @@ Object *doors = (Object *) malloc(20 * sizeof(Object));
 Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
 //Object wallblock(0, 0, STOP, 'X', "wallblock", YELLOW, RED);
 Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
+//Object air(0, 0, STOP, '.', "air", BLACK, CYAN);
 Object blackair(0, 0, STOP, '.', "air", BLACK);
 
 int posCheck(int x, int y, char *search = "", bool same = true) {
@@ -60,58 +61,54 @@ bool Object :: moveObject(int posX, int posY) {
 		gotoxy(this->x+posX+1, this->y+posY+1);
 		//wallblock.draw();
 		return false;
-	} else if(posCheck(posX, posY) != -1) {
-		return false;
 	}
+	if(strcmp(this->type, "player"))
+		map[this->y][this->x].unblock();
 	this->x+=posX;	this->y+=posY;
+	if(strcmp(this->type, "player"))
+		map[this->y][this->x].block();
 	return true;
 }
 
 void Object :: route() {
-    int tx, ty;
-	int dist = 4;
-    eDirection r;
+    int tx = 0, ty = 0, r;
+	int ch = 0, dist = 4; // 4
+	bool tried = false;
     do {
-	    r = (eDirection) (1 + random(1000)/250);
+		ch++;
 		tx = entityObjects[0].getX() - this->x;
 		ty = entityObjects[0].getY() - this->y;
-        if(abs(tx) <= dist && abs(ty) <= dist) {
-			if(ty == 0 || tx > ty) {
-				if( tx >= -dist && tx < 0) {
-					r = LEFT;
-				} else if( tx <= dist && tx > 0) {
-					r = RIGHT;
-				}
-			} else if(tx == 0 || ty > tx) {
-				if( ty >= -dist && ty < 0) {
-					r = UP;
-				} else if( ty <= dist && ty > 0) {
-					r = DOWN;
-				}	
-			} else if(tx == ty  || tx < ty) {
-				eDirection xr = (eDirection) (1 + random(1000)/500);
-				switch(xr) {
-					case 1:	if( ty >= -dist && ty < 0) {
-								r = UP;
-							} else if( ty <= dist && ty > 0) {
-								r = DOWN;
-							}
-					case 2:	if( tx >= -dist && tx < 0) {
-								r = LEFT;
-							} else if( tx <= dist && tx > 0) {
-								r = RIGHT;
-							}
-				}
+		if(abs(ty)<=dist && abs(tx)<=dist) {
+			if(tried == true) {
+				//r = (r==4) ? 1 : (r + 1);
+				switch(r) {
+					case 1:
+					case 2:	//r = 3 + random(2);
+							r = (pow( pow(tx, 2) + pow(ty-1, 2), 0.5 ) > pow( pow(tx, 2) + pow(ty+1, 2), 0.5 )) ? 3 : 4;
+							break;
+					case 3:
+					case 4:	//r = 1 + random(2);
+							r = (pow( pow(tx-1, 2) + pow(ty, 2), 0.5 ) > pow( pow(tx+1, 2) + pow(ty, 2), 0.5 )) ? 1 : 2;
+							break;
+				};
+			} else if(abs(ty) > abs(tx)) {
+				r = ( ty > 0 ) ? DOWN : UP;
+			} else {
+				r = ( tx > 0 ) ? RIGHT : LEFT;
 			}
+		} else {
+			r = 1 + random(4);
 		}
-		this->dir = r;
+
+		this->dir = (eDirection) r;
 		switch(r) {
-            case 1:   tx = -1;  ty = +0; break;
-            case 2:   tx = +1;  ty = +0; break;
-            case 3:   tx = +0;  ty = -1; break;
-            case 4:   tx = +0;  ty = +1; break;
-        };
-	}while(!this->moveObject(tx, ty));
+			case 1:   tx = -1;  ty = +0; break;
+			case 2:   tx = +1;  ty = +0; break;
+			case 3:   tx = +0;  ty = -1; break;
+			case 4:   tx = +0;  ty = +1; break;
+		};
+		tried = true;
+	} while(!this->moveObject(tx, ty) && ch < dist);
 }
 
 void Object :: draw() {
