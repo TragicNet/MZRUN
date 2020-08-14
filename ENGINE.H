@@ -26,7 +26,7 @@ Engine :: Engine() {
 	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
 	Object *temp;
 	FILE *file;
-	file = fopen("./MZRUN/LEVELS/area1.lvl","r");
+	file = fopen("./MZRUN/LEVELS/area1.map","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
