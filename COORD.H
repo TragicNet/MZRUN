@@ -14,7 +14,7 @@ public:
     coord operator=(coord const &b) {
         return coord(b.x, b.y);
     }
-}screen(51, 17), fullmap(MaxX, MaxY);
+}screen(51, 17), fullmap(1, 1);
 
 coord operator-(coord const &a, coord const &b) {
     return coord(a.x - b.x, a.y - b.y);

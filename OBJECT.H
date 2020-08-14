@@ -9,6 +9,7 @@ protected:
 	eDirection dir;
 	char symbol;
 	char type[20];
+	int range;
 	int speed;
 	int color;
 	int bgcolor;
@@ -18,11 +19,11 @@ protected:
 
 public:
 	Object(){};
-	Object(int x, int y, eDirection dir, char symbol, char type[20], int speed, int color, int bgcolor = BLACK) {
+	Object(int x, int y, eDirection dir, char symbol, char type[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
 		//this->x = x;	this->y = y;
 		this->pos = new coord(x, y);	this->dir = dir;
 		this->symbol = symbol;	strcpy(this->type, type);
-		this->speed = speed;
+		this->range = range;	this->speed = speed;
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
 	}
@@ -30,12 +31,13 @@ public:
 	inline coord* getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
 	inline char* getType() {	return this->type;	}
+	inline int getSpeed() {	return this->speed;	}
 	inline unsigned int getLast() {	return this->last;	}
 	inline int getColor() {	return this->color;	}
 	inline int getBgColor() {	return this->bgcolor;	}
 	inline eDirection getDirection() {	return this->dir;	}
 	bool moveObject(int posX, int posY);
-	void route();
+	void route(unsigned int last);
 	void draw();
 	void death();
 	inline bool isThere(coord t) {	return (this->pos->x==t.x && this->pos->y == t.y) ? true : false;	}
@@ -45,10 +47,10 @@ unsigned int totalEntities = 1;
 Object *entityObjects = (Object *) malloc(50 * sizeof(Object));
 Object *keys = (Object *) malloc(20 * sizeof(Object));
 Object *doors = (Object *) malloc(20 * sizeof(Object));
-Object wall(0, 0, STOP, '#', "wall", 0, WHITE, LIGHTGRAY);
-//Object wallblock(0, 0, STOP, 'X', "wallblock", 0, YELLOW, RED);
-Object air(0, 0, STOP, '.', "air", 0, LIGHTGRAY);
-Object blackair(0, 0, STOP, '.', "air", 0, BLACK);
+Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
+//Object wallblock(0, 0, STOP, 'X', "wallblock", YELLOW, RED);
+Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
+Object blackair(0, 0, STOP, '.', "air", BLACK);
 
 int posCheck(coord pos, char *search = "", bool same = true) {
 	for(int i = totalEntities-1; i >= 0; i--)
@@ -60,13 +62,13 @@ int posCheck(coord pos, char *search = "", bool same = true) {
 }
 
 bool Object :: moveObject(int posX, int posY) {
-	if(this->pos->x+posX<0 || this->pos->x+posX>MaxX || this->pos->y+posY<0 || this->pos->y+posY>MaxY)
+	if(this->pos->x+posX<0 || this->pos->x+posX>fullmap.x || this->pos->y+posY<0 || this->pos->y+posY>fullmap.y)
 		return false;
-	/*else if(map[this->pos->y+posY][this->pos->x+posX].isBlocked()) {
+	else if(map[this->pos->y+posY][this->pos->x+posX].isBlocked()) {
 		gotoxy(this->pos->x+posX+1, this->pos->y+posY+1);
 		//wallblock.draw();
 		return false;
-	}*/
+	}
 	if(strcmp(this->type, "player"))
 		map[this->pos->y][this->pos->x].unblock();
 	this->pos->x+=posX;	this->pos->y+=posY;
@@ -76,15 +78,16 @@ bool Object :: moveObject(int posX, int posY) {
 }
 
 
-void Object :: route() {
-    int tx = 0, ty = 0, r;
-	int ch = 0, dist = 4; // 4
+void Object :: route(unsigned int last) {
+    if(this->speed == 0 || this->last - last < ((MaxSpeed + 1 - this->speed)*10))
+		return;
+	int tx = 0, ty = 0, ch = 0, r;
 	bool tried = false;
     do {
 		ch++;
 		tx = entityObjects[0].getPos()->x - this->pos->x;
 		ty = entityObjects[0].getPos()->y - this->pos->y;
-		if(abs(ty)<=dist && abs(tx)<=dist) {
+		if(abs(ty)<=this->range && abs(tx)<=this->range) {
 			if(tried == true) {
 				//r = (r==4) ? 1 : (r + 1);
 				switch(r) {
@@ -114,7 +117,8 @@ void Object :: route() {
 			case 4:   tx = +0;  ty = +1; break;
 		};
 		tried = true;
-	} while(!this->moveObject(tx, ty) && ch < dist);
+	} while(!this->moveObject(tx, ty) && ch < this->range);
+	this->last = last;
 }
 
 void Object :: draw() {

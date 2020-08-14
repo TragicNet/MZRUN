@@ -29,15 +29,16 @@ Engine :: Engine() {
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
+	fullmap = coord(60, 20);
 	fclose(file);
-	for(i = 0; i<MaxY; i++) {
-		for(j = 0; j<MaxX; j++) {
+	for(i = 0; i<fullmap.y; i++) {
+		for(j = 0; j<fullmap.x; j++) {
 			if(cmap[i][j]=='@') {
-				temp = new Object(j, i, RIGHT, '@', "player", 0, GREEN);
+				temp = new Object(j, i, RIGHT, '@', "player", GREEN, BLACK, 0);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
 				player = &entityObjects[0];
 			} else if(cmap[i][j] == '*') {
-				temp = new Object(j, i, STOP, '*', "monster", 1, RED); //RED
+				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5); //RED
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;
 			} else if(cmap[i][j] == '#') {
@@ -103,7 +104,7 @@ void Engine :: drawEngine() {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			/*if(player->distance(camera + coord(j, i)) > range) {
+			/*if(player->distance(camera + coord(j, i)) > torchRange) {
 				//if(map[i][j].isBlocked()) wall.draw();
 				//else	blackair.draw();
 				blackair.draw();
@@ -134,21 +135,18 @@ void Engine :: inputEngine() {
 }
 
 void Engine :: handleEngine() {
-	static unsigned int tick = 0;
 	int i;
-	gotoxy(1, 25);	cout<<tick;
+	gotoxy(1, 25);	cprintf("%5u",timer);	
 	/*if(posCheck(player->getPos(), "monster")) {
 		drawEngine();
 		player->death();
 		gameOver = true;	return;
 	}*/
-	if(tick != timer/TICKSPEED) {
-		for(i = 1; i<totalEntities; i++) {
-			entityObjects[i].route(tick);
-		}
+	for(i = 1; i<totalEntities; i++) {
+		entityObjects[i].route(timer);
 	}
-	tick = timer/TICKSPEED;
-	if( tick < 1 )
+
+	if( timer/TICKSPEED < 1 )
 		gameOver = true;
 	timer--;
 }
