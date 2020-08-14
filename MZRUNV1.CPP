@@ -1,6 +1,6 @@
 //#include "MZRUN/ENGINE.H"
 #include "MZRUN/GLOBALS.H"
-//Git Test
+
 /*#include <windows.h>
 #include <iostream>
 using namespace std;
@@ -15,6 +15,7 @@ int  main() {
 	clrscr();
 	_setcursortype(_NOCURSOR);
 	Engine game;
+	game.HUD();
 	while(!game.getState()) {
 		game.drawEngine();
 		game.inputEngine();
