@@ -24,20 +24,17 @@
 float range = 7.0f;
 char cmap[MaxY][MaxX];
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
-bool playerMoved = false;
 char border[] = { 196, 179, 218, 191, 192, 217 };
 
-void halt(int x = 1)
-{   
+void halt(int x = 1) {   
     delay(x);
 	while(1)
-	{	if(kbhit())
-		{	getch();	}
-		if(!kbhit())
-		break;
+	{	if(kbhit())	getch();
+		if(!kbhit())	break;
 	}
 }
 
+#include "MZRUN/COORD.H"
 #include "MZRUN/TILE.H"
 #include "MZRUN/EVENTS.H"
 #include "MZRUN/OBJECT.H"

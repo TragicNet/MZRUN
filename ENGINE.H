@@ -33,11 +33,11 @@ Engine :: Engine() {
 	for(i = 0; i<MaxY; i++) {
 		for(j = 0; j<MaxX; j++) {
 			if(cmap[i][j]=='@') {
-				temp = new Object(i, j, RIGHT, '@', "player", GREEN);
+				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
 				player = &entityObjects[0];
 			} else if(cmap[i][j] == '*') {
-				temp = new Object(i, j, STOP, '*', "monster", RED); //RED
+				temp = new Object(j, i, STOP, '*', "monster", RED); //RED
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;
 			} else if(cmap[i][j] == '#') {
@@ -49,6 +49,7 @@ Engine :: Engine() {
 }
 
 void temp() {
+	int i, j;
 	gotoxy(37,10);
 	for(i=1; i<=10;i++) {
 		if(i==1)	cprintf("%c", border[2]);
@@ -89,18 +90,17 @@ void Engine :: HUD() {
 
 void Engine :: drawEngine() {
 	int i, j;
-
 	for(i = 0; i<MaxY; i++) {
 		for(j = 0; j<MaxX; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			/*if(player->distance(i, j) > range )//&& ( j!=0 && i!=0 && j!=MaxX-1 && i!=MaxY-1 ) ) {
+			if(player->distance(coord(j, i)) > range) {
 				//if(map[i][j].isBlocked()) wall.draw();
 				//else	blackair.draw();
 				blackair.draw();
 				continue;
-			}*/
-			int obj = posCheck(j, i);
+			}
+			int obj = posCheck(coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
 			else if(map[i][j].isBlocked()) wall.draw();
 			else	air.draw();
@@ -115,16 +115,11 @@ void Engine :: drawEngine() {
 void Engine :: inputEngine() {
 	if(kbhit()) {
 		switch(getch()) {
-			case 'w':   player->moveObject(+0, -1);	playerMoved = true;
-						break;
-			case 's':   player->moveObject(+0, +1);	playerMoved = true;
-						break;
-			case 'a':   player->moveObject(-1, +0);	playerMoved = true;
-						break;
-			case 'd':   player->moveObject(+1, +0);	playerMoved = true;
-						break;
-			case 'x':   gameOver = true;
-						break;
+		case 'w':   player->moveObject(+0, -1);	break;
+		case 's':   player->moveObject(+0, +1);	break;
+		case 'a':   player->moveObject(-1, +0);	break;
+		case 'd':   player->moveObject(+1, +0);	break;
+		case 'x':   gameOver = true;			break;
 		}
 	}
 }
@@ -132,13 +127,12 @@ void Engine :: inputEngine() {
 void Engine :: handleEngine() {
 	static unsigned int tick = 0;
 	int i;
-	if(posCheck(player->getX(), player->getY(), "monster")) {
+	/*if(posCheck(player->getPos(), "monster")) {
 		drawEngine();
 		player->death();
 		gameOver = true;	return;
-	}
+	}*/
 	if(tick != timer/TICKSPEED) {
-		playerMoved = false;
 		for(i = 1; i<totalEntities; i++) {
 			entityObjects[i].route();
 		}

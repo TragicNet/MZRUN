@@ -8,11 +8,10 @@
 #define true 1
 #define false 0
 
-int view[] = { 1, 1, 10, 20 };
 int gameOver = false;
 char map[20][60] = {
     "############################################################",
-    "#@..#...............#.#....................................#",
+    "#...#...............#.#....................................#",
     "#...#...#.#........#..#...............*....................#",
     "###.#...#.#..##...#...#.....*..#...........................#",
     "#....####.####*###....#.......###..........................#",
@@ -49,38 +48,31 @@ public:
 pos operator-(pos const &a, pos const &b) {
     return pos(a.x - b.x, a.y - b.y);
 }
+pos operator+(pos const &a, pos const &b) {
+    return pos(a.x + b.x, a.y + b.y);
+}
 int operator==(pos const &a, pos const &b) {
     return (a.x == b.x && a.y == b.y) ? 1 : 0;
-}
-int operator<(pos const &a, pos const &b) {
-    //return (a.x < b.x || a.y < b.y) ? 1 : 0;
-    return (a.x < b.x && a.y < b.y) ? 1 : 0;
-}
-int operator>=(pos const &a, pos const &b) {
-    //return (a.x >= b.x || a.y >= b.y) ? 1 : 0;
-    return (a.x >= b.x && a.y >= b.y) ? 1 : 0;
 }
 
 pos scroll(pos p, pos s, pos m) {
     pos hs = pos(s.x/2, s.y/2);
-    if (p < hs)
-        return origin;
-    else if (p >= m - hs)
-        return m - s;
-    else
-        return p - hs;
+    pos c = p - hs;
+    if(c.x < 0)    c.x = 0;
+    else if(c.x + s.x > m.x)    c.x = m.x - s.x;
+    if(c.y < 0)    c.y = 0;
+    else if(c.y + s.y > m.y)    c.y = m.y - s.y;
+    return c;
 }
 void draw() {
     gotoxy(1, 1);
     pos camera = scroll(player, screen, fullmap);
-    int x = (camera.x < 0) ? 0 : camera.x;
-    int y = (camera.y < 0) ? 0 : camera.y;
     for(int i = 0; i<screen.y; i++) {
         for(int j = 0; j<screen.x; j++) {
-            if(player == pos(x + j, y + i))
+            if(player == camera + pos(j, i))
                 cout<<'@';
             else
-                cout<<map[y + i][x + j];
+                cout<<map[camera.y + i][camera.x + j];
         }
         cout<<endl;
     }
