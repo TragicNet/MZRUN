@@ -14,7 +14,7 @@ public:
     coord operator=(coord const &b) {
         return coord(b.x, b.y);
     }
-}screen(51, 17), fullmap(1, 1);
+}screen(51, 17), *fullmap;
 
 coord operator-(coord const &a, coord const &b) {
     return coord(a.x - b.x, a.y - b.y);
@@ -26,9 +26,9 @@ bool operator==(coord const &a, coord const &b) {
     return (a.x == b.x && a.y == b.y) ? true : false;
 }
 
-coord view(coord *p, coord s, coord m) {
+coord view(coord p, coord s, coord m) {
     coord hs = coord(s.x/2, s.y/2);
-    coord c = *p - hs;
+    coord c = p - hs;
     if(c.x < 0)    c.x = 0;
     else if(c.x + s.x > m.x)    c.x = m.x - s.x;
     if(c.y < 0)    c.y = 0;

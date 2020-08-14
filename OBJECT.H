@@ -28,7 +28,7 @@ public:
 		this->last = 0;
 	}
 	~Object() {}
-	inline coord* getPos()	{	return this->pos;	}
+	inline coord getPos()	{	return *this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
 	inline char* getType() {	return this->type;	}
 	inline int getSpeed() {	return this->speed;	}
@@ -62,7 +62,7 @@ int posCheck(coord pos, char *search = "", bool same = true) {
 }
 
 bool Object :: moveObject(int posX, int posY) {
-	if(this->pos->x+posX<0 || this->pos->x+posX>fullmap.x || this->pos->y+posY<0 || this->pos->y+posY>fullmap.y)
+	if(this->pos->x+posX<0 || this->pos->x+posX>fullmap->x || this->pos->y+posY<0 || this->pos->y+posY>fullmap->y)
 		return false;
 	else if(map[this->pos->y+posY][this->pos->x+posX].isBlocked()) {
 		gotoxy(this->pos->x+posX+1, this->pos->y+posY+1);
@@ -85,8 +85,8 @@ void Object :: route(unsigned int last) {
 	bool tried = false;
     do {
 		ch++;
-		tx = entityObjects[0].getPos()->x - this->pos->x;
-		ty = entityObjects[0].getPos()->y - this->pos->y;
+		tx = entityObjects[0].getPos().x - this->pos->x;
+		ty = entityObjects[0].getPos().y - this->pos->y;
 		if(abs(ty)<=this->range && abs(tx)<=this->range) {
 			if(tried == true) {
 				//r = (r==4) ? 1 : (r + 1);

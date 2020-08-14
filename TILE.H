@@ -15,7 +15,7 @@ public:
     inline void block() {   this->blocked = true;   }
     inline void unblock()   { this->blocked = false;    }
 };
-Tile map[20][60];
+Tile map[MaxY][MaxX];
 
 Tile :: Tile(bool blocked, bool block_sight) {
     if(block_sight == NULL) block_sight = blocked;

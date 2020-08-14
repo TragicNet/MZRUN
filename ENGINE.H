@@ -8,6 +8,7 @@ private:
 	bool gameOver;
 	unsigned int timer;
 	Object *player;
+	inline int tick() {	return timer/TICKSPEED;	}
 
 public:
 	//int totalEntities;
@@ -29,10 +30,11 @@ Engine :: Engine() {
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
-	fullmap = coord(60, 20);
 	fclose(file);
-	for(i = 0; i<fullmap.y; i++) {
-		for(j = 0; j<fullmap.x; j++) {
+	fullmap = new coord(60, 20);
+	cout<<fullmap->x<<fullmap->y;
+	for(i = 0; i<fullmap->y; i++) {
+		for(j = 0; j<fullmap->x; j++) {
 			if(cmap[i][j]=='@') {
 				temp = new Object(j, i, RIGHT, '@', "player", GREEN, BLACK, 0);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
@@ -77,14 +79,6 @@ void temp() {
 void Engine :: HUD() {
 	int i, j;
 	{	//Map Window
-		/*for(i=1; i<=25; i++) {
-			gotoxy(60+boardX,i);	printf("%c", 179);
-		}
-		for(i=1; i<=60+boardX;i++) {
-			gotoxy(i,20+boardY);	printf("%c", 196);
-		}
-		gotoxy(60+boardX,20+boardY);	printf("%c", 180);
-		*/
 		for(i=1; i<=25; i++) {
 			gotoxy(screen.x+boardX,i);	printf("%c", 179);
 		}
@@ -94,32 +88,30 @@ void Engine :: HUD() {
 		gotoxy(screen.x+boardX,screen.y+boardY);	printf("%c", 180);
 	}
 
-	gotoxy(3, 24);	printf("Timer: ");
+	gotoxy(2, 24);	printf("Timer: ");
 }
 
 void Engine :: drawEngine() {
 	int i, j;
-	coord camera = view(player->getPos(), screen, fullmap);
+	coord camera = view(player->getPos(), screen, *fullmap);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			/*if(player->distance(camera + coord(j, i)) > torchRange) {
-				//if(map[i][j].isBlocked()) wall.draw();
-				//else	blackair.draw();
+			if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
 				continue;
-			}*/
+			}
 			int obj = posCheck(camera + coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
 			else if(map[camera.y + i][camera.x + j].isBlocked()) wall.draw();
 			else	air.draw();
 		}
 	}
-	gotoxy(10, 24);	/*printf("Timer: ");*/
-	if(timer/TICKSPEED<10)	printf("00");
-	else if(timer/TICKSPEED<100)	printf("0");
-	printf("%d", timer/TICKSPEED);
+	gotoxy(8, 24);
+	/*if(this->tick()<10)	printf("00");
+	else if(this->tick()/TICKSPEED<100)	printf("0");*/
+	printf("%3d", timer/TICKSPEED);
 }
 
 void Engine :: inputEngine() {
@@ -136,17 +128,16 @@ void Engine :: inputEngine() {
 
 void Engine :: handleEngine() {
 	int i;
-	gotoxy(1, 25);	cprintf("%5u",timer);	
-	/*if(posCheck(player->getPos(), "monster")) {
+	//gotoxy(1, 25);	cprintf("%5u",timer);	
+	if(posCheck(player->getPos(), "monster")) {
 		drawEngine();
 		player->death();
 		gameOver = true;	return;
-	}*/
+	}
 	for(i = 1; i<totalEntities; i++) {
 		entityObjects[i].route(timer);
 	}
-
-	if( timer/TICKSPEED < 1 )
+	if( this->tick() < 1 )
 		gameOver = true;
 	timer--;
 }
