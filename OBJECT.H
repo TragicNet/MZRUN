@@ -5,29 +5,33 @@
 
 class Object {
 protected:
-	//int x, y;
 	coord *pos;
-	char obj_symbol;
-	int obj_color;
-	int obj_bgcolor;
 	eDirection dir;
+	char symbol;
 	char type[20];
+	int speed;
+	int color;
+	int bgcolor;
+
+	//Temporary Variables
+	unsigned int last;
 
 public:
 	Object(){};
-	Object(int x, int y, eDirection dir, char symbol, char type[20], int color, int bgcolor = BLACK) {
+	Object(int x, int y, eDirection dir, char symbol, char type[20], int speed, int color, int bgcolor = BLACK) {
 		//this->x = x;	this->y = y;
-		this->pos = new coord(x, y);
-		this->dir = dir;	this->obj_symbol = symbol;
-		this->obj_color = color;	this->obj_bgcolor = bgcolor;
-		strcpy(this->type, type);
+		this->pos = new coord(x, y);	this->dir = dir;
+		this->symbol = symbol;	strcpy(this->type, type);
+		this->speed = speed;
+		this->color = color;	this->bgcolor = bgcolor;	
+		this->last = 0;
 	}
 	~Object() {}
 	inline coord* getPos()	{	return this->pos;	}
-	inline char getSymbol() {	return this->obj_symbol;	}
+	inline char getSymbol() {	return this->symbol;	}
 	inline char* getType() {	return this->type;	}
-	inline int getColor() {	return this->obj_color;	}
-	inline int getBgColor() {	return this->obj_bgcolor;	}
+	inline int getColor() {	return this->color;	}
+	inline int getBgColor() {	return this->bgcolor;	}
 	inline eDirection getDirection() {	return this->dir;	}
 	bool moveObject(int posX, int posY);
 	void route();
@@ -40,10 +44,10 @@ unsigned int totalEntities = 1;
 Object *entityObjects = (Object *) malloc(50 * sizeof(Object));
 Object *keys = (Object *) malloc(20 * sizeof(Object));
 Object *doors = (Object *) malloc(20 * sizeof(Object));
-Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
-//Object wallblock(0, 0, STOP, 'X', "wallblock", YELLOW, RED);
-Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
-Object blackair(0, 0, STOP, '.', "air", BLACK);
+Object wall(0, 0, STOP, '#', "wall", 0, WHITE, LIGHTGRAY);
+//Object wallblock(0, 0, STOP, 'X', "wallblock", 0, YELLOW, RED);
+Object air(0, 0, STOP, '.', "air", 0, LIGHTGRAY);
+Object blackair(0, 0, STOP, '.', "air", 0, BLACK);
 
 int posCheck(coord pos, char *search = "", bool same = true) {
 	for(int i = totalEntities-1; i >= 0; i--)
@@ -113,9 +117,9 @@ void Object :: route() {
 }
 
 void Object :: draw() {
-	textcolor(obj_color);
-	textbackground(obj_bgcolor);
-	cprintf("%c", obj_symbol);
+	textcolor(color);
+	textbackground(bgcolor);
+	cprintf("%c", symbol);
 	textcolor(WHITE);
 	textbackground(BLACK);
 }

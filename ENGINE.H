@@ -33,11 +33,11 @@ Engine :: Engine() {
 	for(i = 0; i<MaxY; i++) {
 		for(j = 0; j<MaxX; j++) {
 			if(cmap[i][j]=='@') {
-				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
+				temp = new Object(j, i, RIGHT, '@', "player", 0, GREEN);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
 				player = &entityObjects[0];
 			} else if(cmap[i][j] == '*') {
-				temp = new Object(j, i, STOP, '*', "monster", RED); //RED
+				temp = new Object(j, i, STOP, '*', "monster", 1, RED); //RED
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;
 			} else if(cmap[i][j] == '#') {
@@ -143,7 +143,7 @@ void Engine :: handleEngine() {
 	}*/
 	if(tick != timer/TICKSPEED) {
 		for(i = 1; i<totalEntities; i++) {
-			entityObjects[i].route();
+			entityObjects[i].route(tick);
 		}
 	}
 	tick = timer/TICKSPEED;

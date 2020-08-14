@@ -6,7 +6,7 @@
 class Monster : public Object {
 public:
 	Monster(){};
-	void route();
+	void route(unsigned int last);
 	void operator=(Object src) {
         this->pos = src.getPos();
 		this->obj_symbol = src.getSymbol();
@@ -16,7 +16,7 @@ public:
     } 
 };
 
-void Monster :: route() {
+void Monster :: route(unsigned int last) {
     int tx, ty;
     eDirection r;
     do {
@@ -29,6 +29,7 @@ void Monster :: route() {
         case 4:   tx = +0;  ty = +1; break;
         }
 	}while(!this->moveObject(tx, ty));
+    this->last = last;
 }
 
 #endif
