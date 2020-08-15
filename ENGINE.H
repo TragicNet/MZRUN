@@ -14,8 +14,7 @@ private:
 public:
 	Engine();
 	~Engine() {
-		//free(player);	free(fullmap);
-		delete player;
+		free(player);	free(fullmap);
 	}
 	void drawEngine();
 	void inputEngine();
@@ -34,7 +33,7 @@ Engine :: Engine() {
 	cleared = false;	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
 	player = &entityObjects[0];
 
-	int gen = rand() % getPaths(paths);
+	int gen = rand() % getPaths(this->paths);
 	this->data.Import(strcat("./MZRUN/LEVELS/", paths[gen]));
 }
 

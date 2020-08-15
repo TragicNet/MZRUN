@@ -10,17 +10,16 @@ void gotoxy(int x, int y)
 	SetConsoleCursorPosition(  GetStdHandle(STD_OUTPUT_HANDLE) , c);
 }*/
 
-int  main() {
+void main() {
 	//system("cls");
 	clrscr();
 	_setcursortype(_NOCURSOR);
 	Engine game;
 	game.HUD();
-	while(!game.getState() && !game.isCleared()) {
+	while(!game.getState() /*&& !game.isCleared()*/) {
 		game.drawEngine();
 		game.inputEngine();
 		game.handleEngine();
 	}
 	_setcursortype(_NORMALCURSOR);
-	return 0;
 }
