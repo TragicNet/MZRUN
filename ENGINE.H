@@ -26,20 +26,12 @@ public:
 };
 
 Engine :: Engine() {
-	randomize();
+	srand((unsigned)time(0));
 	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
 	player = &entityObjects[0];
 
-	char target[50] = "./MZRUN/LEVELS/";
-	int size = getPaths(paths);
-	for(int i = 0; i<size; i++) {
-		printf("%s\n", paths[i]);
-	}
-	int gen = random(size*100)/100;
-	strcat(target, paths[gen]);
-	printf("Target: %s", target);
-	getch();	exit(0);
-	this->data.Import(target);
+	int gen = rand() % getPaths(paths);
+	this->data.Import(strcat("./MZRUN/LEVELS/", paths[gen]));
 }
 
 void temp() {

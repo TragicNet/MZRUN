@@ -127,7 +127,7 @@ void Creator :: create_lvl() {
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
 				map[i][j].unblock();
 			} else if(cmap[i][j] == '*') {
-				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5); //RED
+				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;
 			} else if(cmap[i][j] == '#') {
@@ -138,7 +138,7 @@ void Creator :: create_lvl() {
 			temp = NULL;	delete temp;
 		}
 	}
-	this->data.Export("./MZRUN/LEVELS/area2.lvl");
+	this->data.Export("./MZRUN/LEVELS/area1.lvl");
 	//cout<<"Done";	getch();
 }
 

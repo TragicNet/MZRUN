@@ -11,6 +11,7 @@
 #include <fstream.h>
 #include <string.h>
 #include <dirent.h>
+#include <time.h>
 
 #define bool int
 #define true 1
