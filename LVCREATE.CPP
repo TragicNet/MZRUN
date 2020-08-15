@@ -123,18 +123,17 @@ void Creator :: create_lvl() {
 		for(j = 0; j<fullmap->x; j++) {
 			map[i][j].block();
 			if(cmap[i][j]=='@') {
-				delete temp;	temp = new Object(j, i, RIGHT, '@', "player", GREEN);
-				cmap[i][j] = '.';	entityObjects[0] = *temp;
+				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
+				cmap[i][j] = '.';	entityObjects[0] = *temp;	delete temp;
 				map[i][j].unblock();
 			} else if(cmap[i][j] == '*') {
-				delete temp;	temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
+				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
 				cmap[i][j] = '.';
-				entityObjects[totalEntities++] = *temp;
+				entityObjects[totalEntities++] = *temp;	delete temp;
 			} else if(cmap[i][j] == '#') {
 				//map[i][j].block();
 			} else if(cmap[i][j] == 'g') {
-				//goal.moveObject(j, i);
-				delete goal;	goal = new Object(j, i, STOP, 'g', "goal", CYAN, CYAN);
+				goal.reloc(coord(j, i));
 				cmap[i][j] = '.';
 				map[i][j].unblock();
 			} else {
@@ -142,9 +141,8 @@ void Creator :: create_lvl() {
 			}
 		}
 	}
-	delete temp;
 	this->data.Export("./MZRUN/LEVELS/area1.lvl");
-	cout<<"Done";	getch();
+	//cout<<"Done";	getch();
 }
 
 int main() {

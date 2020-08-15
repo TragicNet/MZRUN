@@ -27,7 +27,7 @@
 float torchRange = 7.0f;
 char cmap[MaxY][MaxX];
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
-char border[] = { 196, 179, 218, 191, 192, 217 };
+const char border[] = { 196, 179, 218, 191, 192, 217 };
 
 void halt(int x = 1) {   
     delay(x);

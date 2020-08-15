@@ -18,8 +18,7 @@ void main() {
 	DIR *dr = opendir("./MZRUN/LEVELS");
 	if(dr == NULL) return;
 	int cnt=0, s;
-	char* name;
-	char* ext = ".LVL";
+	char ext[] = ".LVL";
 	while((de = readdir(dr)) != NULL)  {
 		s = strlen(de->d_name);	
 		for(int i=s-4; i>0; i--)
