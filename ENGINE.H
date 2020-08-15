@@ -85,6 +85,7 @@ void Engine :: drawEngine() {
 			}*/
 			int obj = posCheck(camera + coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
+			else if(goal->getPos() == coord(j, i))	goal->draw();
 			else if(map[camera.y + i][camera.x + j].isBlocked()) wall.draw();
 			else	air.draw();
 		}
@@ -109,7 +110,13 @@ void Engine :: handleEngine() {
 	int i;
 	//gotoxy(1, 25);	cprintf("%5u",timer);	
 	//Death
-	if(posCheck(player->getPos(), "monster")) {
+	/*if(posCheck(player->getPos(), "monster")) {
+		drawEngine();
+		player->death();
+		gameOver = true;	return;
+	}*/
+	//Win
+	if(player->getPos() == goal->getPos()) {
 		drawEngine();
 		player->death();
 		gameOver = true;	return;

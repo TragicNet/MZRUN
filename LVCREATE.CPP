@@ -10,9 +10,9 @@ class Creator {
 private:
 	Save data;
 	char cmap[MaxY][MaxX];
-	char *list;
+	char list[50];
 public:
-	coord *pos;
+	coord pos;
 	bool end;
 	Creator();
 	void draw();
@@ -24,11 +24,11 @@ public:
 }
 
 Creator :: Creator() {
-	this->pos->x = this->pos->y = 1;	this->end = false;
+	this->pos.x = this->pos.y = 1;	this->end = false;
 }
 
 void Creator :: draw() {
-	int i = 0, j;	FILE *file;
+	/*int i = 0, j;	FILE *file;
 	file = fopen("./MZRUN/LEVELS/area1.map","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
@@ -56,7 +56,7 @@ void Creator :: draw() {
 	gotoxy(47, 3);	printf("*: Monster");
 	gotoxy(47, 4);	printf(",: Door Close");	//_ Door Open
 	gotoxy(47, 5);	printf("direction: Stop 0, Up 1, Down 2, ");
-	gotoxy(47, 6);	printf("           Left 3, Right 4");
+	gotoxy(47, 6);	printf("           Left 3, Right 4");*/
 }
 
 void Creator :: create_object(char c) {
@@ -109,7 +109,7 @@ bool Creator :: move(int PosX, int PosY) {
 
 void Creator :: create_lvl() {
 	//Create Map file
-	fullmap = new coord(60, 20);
+	delete fullmap;	fullmap = new coord(60, 20);
 	int i = 0, j;
 	Object *temp;
 
@@ -123,23 +123,28 @@ void Creator :: create_lvl() {
 		for(j = 0; j<fullmap->x; j++) {
 			map[i][j].block();
 			if(cmap[i][j]=='@') {
-				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
+				delete temp;	temp = new Object(j, i, RIGHT, '@', "player", GREEN);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
 				map[i][j].unblock();
 			} else if(cmap[i][j] == '*') {
-				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
+				delete temp;	temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;
 			} else if(cmap[i][j] == '#') {
 				//map[i][j].block();
+			} else if(cmap[i][j] == 'g') {
+				//goal.moveObject(j, i);
+				delete goal;	goal = new Object(j, i, STOP, 'g', "goal", CYAN, CYAN);
+				cmap[i][j] = '.';
+				map[i][j].unblock();
 			} else {
 				map[i][j].unblock();
 			}
-			temp = NULL;	delete temp;
 		}
 	}
+	delete temp;
 	this->data.Export("./MZRUN/LEVELS/area1.lvl");
-	//cout<<"Done";	getch();
+	cout<<"Done";	getch();
 }
 
 int main() {

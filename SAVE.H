@@ -3,9 +3,10 @@
 
 class Save {
 private:
-    int save_totalEntities;
-    Object save_monsters[50];
     coord save_fullmap;
+    int save_totalEntities;
+    Object save_goal;
+    Object save_monsters[50];
     char save_cmap[MaxY][MaxX];
     Tile save_map[MaxY][MaxX];
 public:
@@ -15,8 +16,9 @@ public:
 
 void Save :: Export(char* path) {
     int i, j;
-    this->save_totalEntities = totalEntities;
     this->save_fullmap = *fullmap;
+    this->save_totalEntities = totalEntities;
+    this->save_goal = *goal;
     for(i=0; i<this->save_totalEntities; i++)
         this->save_monsters[i] = entityObjects[i];
     for(i=0; i<MaxY; i++) {
@@ -44,9 +46,9 @@ void Save :: Import(char* path) {
 	file.close();
 
     int i, j;
+    delete fullmap; fullmap = new coord(this->save_fullmap.x, this->save_fullmap.y);
     totalEntities = this->save_totalEntities;
-    delete fullmap;
-    fullmap = new coord(this->save_fullmap.x, this->save_fullmap.y);
+    delete goal;    goal = new Object(save_goal);
     for(i=0; i<totalEntities; i++)
         entityObjects[i] = this->save_monsters[i];
     for(i=0; i<MaxY; i++) {

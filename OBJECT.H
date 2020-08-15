@@ -24,6 +24,13 @@ public:
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
 	}
+	Object(Object &t) {
+		this->pos = t.pos;	this->dir = t.dir;
+		this->symbol = t.symbol;	strcpy(this->type, t.type);
+		this->range = t.range;	this->speed = t.speed;
+		this->color = t.color;	this->bgcolor = t.bgcolor;	
+		this->last = 0;
+	}
 	~Object() {}
 	inline coord getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
@@ -42,6 +49,7 @@ public:
 };
 unsigned int totalEntities = 1;
 Object entityObjects[50], keys[20], doors[20];
+Object *goal = new Object(0, 0, STOP, 'g', "goal", CYAN, CYAN);
 Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
 Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
 Object blackair(0, 0, STOP, '.', "air", BLACK);
@@ -58,10 +66,8 @@ int posCheck(coord pos, char *search = "", bool same = true) {
 bool Object :: moveObject(int posX, int posY) {
 	if(this->pos.x+posX<0 || this->pos.x+posX>fullmap->x || this->pos.y+posY<0 || this->pos.y+posY>fullmap->y)
 		return false;
-	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked()) {
-		gotoxy(this->pos.x+posX+1, this->pos.y+posY+1);
+	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked())
 		return false;
-	}
 	if(strcmp(this->type, "player"))
 		map[this->pos.y][this->pos.x].unblock();
 	this->pos.x+=posX;	this->pos.y+=posY;
