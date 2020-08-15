@@ -114,7 +114,7 @@ void Creator :: create_lvl() {
 	Object *temp;
 
 	FILE *file;
-	file = fopen("./MZRUN/area1.map","r");
+	file = fopen("./MZRUN/map.txt","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
