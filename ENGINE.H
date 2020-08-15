@@ -11,7 +11,6 @@ private:
 	inline int tick() {	return timer/TICKSPEED;	}
 
 public:
-	//int totalEntities;
 	Engine();
 	~Engine() {}
 	void drawEngine();
@@ -19,12 +18,15 @@ public:
 	void handleEngine();
 	void HUD();
 	inline bool getState() {	return gameOver;	};
+	inline unsigned int getTimer()	{	return timer;	}
+	inline Object* getPlayer()	{	return player;	}
 };
 
 Engine :: Engine() {
 	int i = 0, j;
 	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
 	Object *temp;
+
 	FILE *file;
 	file = fopen("./MZRUN/LEVELS/area1.map","r");
 	while(!feof(file)) {
@@ -32,11 +34,10 @@ Engine :: Engine() {
 	}
 	fclose(file);
 	fullmap = new coord(60, 20);
-	cout<<fullmap->x<<fullmap->y;
 	for(i = 0; i<fullmap->y; i++) {
 		for(j = 0; j<fullmap->x; j++) {
 			if(cmap[i][j]=='@') {
-				temp = new Object(j, i, RIGHT, '@', "player", GREEN, BLACK, 0);
+				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
 				player = &entityObjects[0];
 			} else if(cmap[i][j] == '*') {
@@ -129,6 +130,7 @@ void Engine :: inputEngine() {
 void Engine :: handleEngine() {
 	int i;
 	//gotoxy(1, 25);	cprintf("%5u",timer);	
+	//Death
 	if(posCheck(player->getPos(), "monster")) {
 		drawEngine();
 		player->death();

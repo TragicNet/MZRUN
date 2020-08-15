@@ -5,7 +5,7 @@
 
 class Object {
 protected:
-	coord *pos;
+	coord pos;
 	eDirection dir;
 	char symbol;
 	char type[20];
@@ -20,14 +20,15 @@ protected:
 public:
 	Object(){};
 	Object(int x, int y, eDirection dir, char symbol, char type[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
-		this->pos = new coord(x, y);	this->dir = dir;
+		this->pos = coord(x, y);	this->dir = dir;
 		this->symbol = symbol;	strcpy(this->type, type);
 		this->range = range;	this->speed = speed;
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
+		//gotoxy(1, 25);	cprintf("%2d, %2d", this->pos.x, this->pos.y);	getch();
 	}
 	~Object() {}
-	inline coord getPos()	{	return *this->pos;	}
+	inline coord getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
 	inline char* getType() {	return this->type;	}
 	inline int getSpeed() {	return this->speed;	}
@@ -39,8 +40,8 @@ public:
 	void route(unsigned int last);
 	void draw();
 	void death();
-	inline bool isThere(coord t) {	return (this->pos->x==t.x && this->pos->y == t.y) ? true : false;	}
-	inline float distance(coord t) {	return pow( pow(this->pos->x-t.x, 2)/*/2.5*/ + pow(this->pos->y*2-t.y*2, 2)/**1.5*/ , 0.5 );	}
+	inline bool isThere(coord t) {	return (this->pos.x==t.x && this->pos.y == t.y) ? true : false;	}
+	inline float distance(coord t) {	return pow( pow(this->pos.x-t.x, 2)/*/2.5*/ + pow(this->pos.y*2-t.y*2, 2)/**1.5*/ , 0.5 );	}
 };
 unsigned int totalEntities = 1;
 Object *entityObjects = (Object *) malloc(50 * sizeof(Object));
@@ -61,18 +62,18 @@ int posCheck(coord pos, char *search = "", bool same = true) {
 }
 
 bool Object :: moveObject(int posX, int posY) {
-	if(this->pos->x+posX<0 || this->pos->x+posX>fullmap->x || this->pos->y+posY<0 || this->pos->y+posY>fullmap->y)
+	if(this->pos.x+posX<0 || this->pos.x+posX>fullmap->x || this->pos.y+posY<0 || this->pos.y+posY>fullmap->y)
 		return false;
-	else if(map[this->pos->y+posY][this->pos->x+posX].isBlocked()) {
-		gotoxy(this->pos->x+posX+1, this->pos->y+posY+1);
+	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked()) {
+		gotoxy(this->pos.x+posX+1, this->pos.y+posY+1);
 		//wallblock.draw();
 		return false;
 	}
 	if(strcmp(this->type, "player"))
-		map[this->pos->y][this->pos->x].unblock();
-	this->pos->x+=posX;	this->pos->y+=posY;
+		map[this->pos.y][this->pos.x].unblock();
+	this->pos.x+=posX;	this->pos.y+=posY;
 	if(strcmp(this->type, "player"))
-		map[this->pos->y][this->pos->x].block();
+		map[this->pos.y][this->pos.x].block();
 	return true;
 }
 
@@ -84,8 +85,8 @@ void Object :: route(unsigned int last) {
 	bool tried = false;
     do {
 		ch++;
-		tx = entityObjects[0].getPos().x - this->pos->x;
-		ty = entityObjects[0].getPos().y - this->pos->y;
+		tx = entityObjects[0].getPos().x - this->pos.x;
+		ty = entityObjects[0].getPos().y - this->pos.y;
 		if(abs(ty)<=this->range && abs(tx)<=this->range) {
 			if(tried == true) {
 				//r = (r==4) ? 1 : (r + 1);

@@ -4,7 +4,7 @@
 
 */
 
-#include "MZRUN/ENGINE.H"
+#include "MZRUN/GLOBALS.H"
 
 class Creator {
 private:
@@ -12,7 +12,7 @@ private:
 	char cmap[MaxY][MaxX];
 	char *list;
 public:
-	int x, y;
+	coord *pos;
 	bool end;
 	Creator();
 	void draw();
@@ -24,13 +24,13 @@ public:
 }
 
 Creator :: Creator() {
-	this->x = this->y = 1;	this->end = false;
+	this->pos->x = this->pos->y = 1;	this->end = false;
 	this->level = new Engine();
 }
 
 void Creator :: draw() {
 	int i = 0, j;	FILE *file;
-	file = fopen("./MZRUN/LEVELS/area1.lvl","r");
+	file = fopen("./MZRUN/LEVELS/area1.map","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
@@ -63,15 +63,11 @@ void Creator :: draw() {
 void Creator :: create_object(char c) {
 	Object *temp;
 	if(c == '@') {
-		temp = new Object(this->y, this->x, STOP, '@', GREEN);
-	} else {
-		gotoxy("")
-		if(c == '*') {
-			temp = new Object(this->y, this->x, STOP, '*', RED);
-		} else
-			return;
+		temp = new Object(this->y, this->x, STOP, '@', "player", GREEN);
+	} else if(c == '*') {
+		temp = new Object(this->y, this->x, STOP, '*', "monster", RED, BLACK, 5);
 	}
-	if(c == '@') {
+	/*if(c == '@') {
 		entityObjects[0].erase('.', BLACK, WHITE);
 		entityObjects[0] = *temp;
 		entityObjects[0].draw();
@@ -89,7 +85,7 @@ void Creator :: create_object(char c) {
 		}
 	}
 	map[this->y-1][this->x-1].occupy();
-	map[this->y-1][this->x-1].unblock();
+	map[this->y-1][this->x-1].unblock();*/
 	temp = NULL;	delete temp;
 }
 
