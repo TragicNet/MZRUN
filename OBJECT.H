@@ -25,7 +25,6 @@ public:
 		this->range = range;	this->speed = speed;
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
-		//gotoxy(1, 25);	cprintf("%2d, %2d", this->pos.x, this->pos.y);	getch();
 	}
 	~Object() {}
 	inline coord getPos()	{	return this->pos;	}
@@ -44,12 +43,8 @@ public:
 	inline float distance(coord t) {	return pow( pow(this->pos.x-t.x, 2)/*/2.5*/ + pow(this->pos.y*2-t.y*2, 2)/**1.5*/ , 0.5 );	}
 };
 unsigned int totalEntities = 1;
-//Object *entityObjects = (Object *) malloc(50 * sizeof(Object));
-//Object *keys = (Object *) malloc(20 * sizeof(Object));
-//Object *doors = (Object *) malloc(20 * sizeof(Object));
 Object entityObjects[50], keys[20], doors[20];
 Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
-//Object wallblock(0, 0, STOP, 'X', "wallblock", YELLOW, RED);
 Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
 Object blackair(0, 0, STOP, '.', "air", BLACK);
 
@@ -67,7 +62,6 @@ bool Object :: moveObject(int posX, int posY) {
 		return false;
 	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked()) {
 		gotoxy(this->pos.x+posX+1, this->pos.y+posY+1);
-		//wallblock.draw();
 		return false;
 	}
 	if(strcmp(this->type, "player"))
@@ -90,15 +84,12 @@ void Object :: route(unsigned int last) {
 		ty = entityObjects[0].getPos().y - this->pos.y;
 		if(abs(ty)<=this->range && abs(tx)<=this->range) {
 			if(tried == true) {
-				//r = (r==4) ? 1 : (r + 1);
 				switch(r) {
 					case 1:
-					case 2:	//r = 3 + random(2);
-							r = (pow( pow(tx, 2) + pow(ty-1, 2), 0.5 ) > pow( pow(tx, 2) + pow(ty+1, 2), 0.5 )) ? 3 : 4;
+					case 2:	r = (pow( pow(tx, 2) + pow(ty-1, 2), 0.5 ) > pow( pow(tx, 2) + pow(ty+1, 2), 0.5 )) ? 3 : 4;
 							break;
 					case 3:
-					case 4:	//r = 1 + random(2);
-							r = (pow( pow(tx-1, 2) + pow(ty, 2), 0.5 ) > pow( pow(tx+1, 2) + pow(ty, 2), 0.5 )) ? 1 : 2;
+					case 4:	r = (pow( pow(tx-1, 2) + pow(ty, 2), 0.5 ) > pow( pow(tx+1, 2) + pow(ty, 2), 0.5 )) ? 1 : 2;
 							break;
 				};
 			} else if(abs(ty) > abs(tx)) {
@@ -112,10 +103,10 @@ void Object :: route(unsigned int last) {
 
 		this->dir = (eDirection) r;
 		switch(r) {
-			case 1:   tx = -1;  ty = +0; break;
-			case 2:   tx = +1;  ty = +0; break;
-			case 3:   tx = +0;  ty = -1; break;
-			case 4:   tx = +0;  ty = +1; break;
+		case 1:   tx = -1;  ty = +0; break;
+		case 2:   tx = +1;  ty = +0; break;
+		case 3:   tx = +0;  ty = -1; break;
+		case 4:   tx = +0;  ty = +1; break;
 		};
 		tried = true;
 	} while(!this->moveObject(tx, ty) && ch < this->range);
