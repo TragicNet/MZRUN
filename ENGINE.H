@@ -1,8 +1,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-//#include "MZRUN/MONSTER.H"
-
 class Engine {
 private:
 	Save data;

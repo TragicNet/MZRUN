@@ -1,8 +1,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-//#include "MZRUN/TILE.H"
-
 class Object {
 protected:
 	coord pos;
