@@ -44,9 +44,10 @@ public:
 	inline float distance(coord t) {	return pow( pow(this->pos.x-t.x, 2)/*/2.5*/ + pow(this->pos.y*2-t.y*2, 2)/**1.5*/ , 0.5 );	}
 };
 unsigned int totalEntities = 1;
-Object *entityObjects = (Object *) malloc(50 * sizeof(Object));
-Object *keys = (Object *) malloc(20 * sizeof(Object));
-Object *doors = (Object *) malloc(20 * sizeof(Object));
+//Object *entityObjects = (Object *) malloc(50 * sizeof(Object));
+//Object *keys = (Object *) malloc(20 * sizeof(Object));
+//Object *doors = (Object *) malloc(20 * sizeof(Object));
+Object entityObjects[50], keys[20], doors[20];
 Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
 //Object wallblock(0, 0, STOP, 'X', "wallblock", YELLOW, RED);
 Object air(0, 0, STOP, '.', "air", LIGHTGRAY);

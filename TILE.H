@@ -6,10 +6,9 @@
 class Tile {
 private:
     bool blocked;
-    bool block_sight;
-    
+
 public:
-    Tile(bool blocked = false, bool block_sight = false);
+    Tile(bool blocked = false);
     ~Tile() {};
     inline bool isBlocked() {   return this->blocked;   }
     inline void block() {   this->blocked = true;   }
@@ -17,10 +16,8 @@ public:
 };
 Tile map[MaxY][MaxX];
 
-Tile :: Tile(bool blocked, bool block_sight) {
-    if(block_sight == NULL) block_sight = blocked;
+Tile :: Tile(bool blocked) {
     this->blocked = blocked;
-    this->block_sight = block_sight;
 }
 
 #endif

@@ -15,8 +15,8 @@ int  main() {
 	clrscr();
 	_setcursortype(_NOCURSOR);
 	Engine game;
-	Export(game);
-	Import();
+	Export();
+	//Import();
 	game.HUD();
 	while(!game.getState()) {
 		game.drawEngine();

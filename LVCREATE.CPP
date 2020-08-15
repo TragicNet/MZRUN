@@ -20,7 +20,7 @@ public:
 	bool move(int PosX, int PosY);
 	void create_object(char c);
 	void make_map();
-	void create_lvl();
+	void create_map();
 }
 
 Creator :: Creator() {
@@ -67,30 +67,10 @@ void Creator :: create_object(char c) {
 	} else if(c == '*') {
 		temp = new Object(this->y, this->x, STOP, '*', "monster", RED, BLACK, 5);
 	}
-	/*if(c == '@') {
-		entityObjects[0].erase('.', BLACK, WHITE);
-		entityObjects[0] = *temp;
-		entityObjects[0].draw();
-	} else {
-		for(int i = 1; i < level->totalEntities; i++) {
-			if(entityObjects[i].isThere(this->x, this->y))
-				break;
-		}
-		if(i == level->totalEntities) {
-			entityObjects[level->totalEntities++] = *temp;
-			entityObjects[level->totalEntities-1].draw();
-		} else {
-			entityObjects[i] = *temp;
-			entityObjects[i].draw();
-		}
-	}
-	map[this->y-1][this->x-1].occupy();
-	map[this->y-1][this->x-1].unblock();*/
 	temp = NULL;	delete temp;
 }
 
 void Creator :: make_map()  {
-
 }
 
 void Creator :: input() {
@@ -139,10 +119,40 @@ bool Creator :: move(int PosX, int PosY) {
 	return true;
 }
 
-void Creator :: create_lvl() {
-	ofstream file("a1.lvl", ios::out | ios::binary );
+void Creator :: create_map() {
+	/*ofstream file("a1.map", ios::out | ios::binary );
 	file.write((char*) &this->level, sizeof(Engine));
-	file.close();
+	file.close();*/
+	//Create Map file
+	/*fullmap = new coord(60, 20);
+	int i = 0, j;
+	Object *temp;
+
+	FILE *file;
+	file = fopen("./MZRUN/LEVELS/area1.map","r");
+	while(!feof(file)) {
+		fscanf(file, "%s", &cmap[i++]);
+	}
+	fclose(file);
+	for(i = 0; i<fullmap->y; i++) {
+		for(j = 0; j<fullmap->x; j++) {
+			map[i][j].block();
+			if(cmap[i][j]=='@') {
+				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
+				cmap[i][j] = '.';	entityObjects[0] = *temp;
+				map[i][j].unblock();
+			} else if(cmap[i][j] == '*') {
+				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5); //RED
+				cmap[i][j] = '.';
+				entityObjects[totalEntities++] = *temp;
+			} else if(cmap[i][j] == '#') {
+				//map[i][j].block();
+			} else {
+				map[i][j].unblock();
+			}
+			temp = NULL;	delete temp;
+		}
+	}*/
 }
 
 int main() {

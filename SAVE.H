@@ -2,53 +2,73 @@
 #define SAVE_H
 
 class Save {
+private:
+    int save_totalEntities;
+    Object save_monsters[50];
+    coord save_fullmap;
+    char save_cmap[MaxY][MaxX];
+    Tile save_map[MaxY][MaxX];
 public:
-    int stotalEntities;
-    Object smonsters[50];
-    char scmap[MaxY][MaxX];
-    Tile smap[MaxY][MaxX];
-    Save() {}
-    Save(int k) {
-        int i, j;
-        this->stotalEntities = totalEntities;
-        for(i=0; i<stotalEntities; i++)
-            this->smonsters[i] = entityObjects[i];
-        for(i=0; i<MaxY; i++) {
-            for(i=0; i<MaxX; i++) {
-                this->scmap[i][j] = cmap[i][j];
-                this->smap[i][j] = map[i][j];
-            }
-        }
-    }
+    void Export(char* path);
+    void Import(char* path);
 };
 
-void Export(Engine &e) {
-	Save savefile(1);
-	FILE *file;
-	file = fopen("./MZRUN/LEVELS/area1.lvl","wb");
-	fwrite(&savefile, sizeof(Save), 1, file);
-	fclose(file);
-    cout<<"Done";	getch();	exit(0);
-}
-
-void Import() {
-    Save f;
-	FILE *file;
-	file = fopen("./MZRUN/LEVELS/area1.lvl","rb");
-	fwrite(&f, sizeof(Save), 1, file);
-	fclose(file);
+void Save :: Export(char* path) {
     int i, j;
-    totalEntities = f.stotalEntities;
-    for(i=0; i<totalEntities; i++)
-        entityObjects[i] = f.smonsters[i];
+    this->save_totalEntities = totalEntities;
+    this->save_fullmap = *fullmap;
+    for(i=0; i<this->save_totalEntities; i++)
+        this->save_monsters[i] = entityObjects[i];
     for(i=0; i<MaxY; i++) {
-        for(i=0; i<MaxX; i++) {
-            cmap[i][j] = f.scmap[i][j];
-            map[i][j] = f.smap[i][j];
+        for(j=0; j<MaxX; j++) {
+            this->save_cmap[i][j] = cmap[i][j];
+            this->save_map[i][j] = map[i][j];
         }
     }
-    cout<<totalEntities<<"HEllo"; getch();    exit(0);
+    getch();
+	ofstream file(path, ios::in | ios::binary );
+	file.write((char*) this, sizeof(Save));
+	file.close();
+    /*for(i=0; i<this->stotalEntities; i++) {
+        cout<<i<<": "<<this->smonsters[i].getSymbol();
+        coord p = this->smonsters[i].getPos();
+        cprintf("\nx: %2d, y: %2d", p.x, p.y);
+        getch();    gotoxy(1, 1);
+    }
+    cout<<this->stotalEntities<<"Done";	getch();	exit(0);*/
 }
 
+void Save :: Import(char* path) {
+	ifstream file(path, ios::in | ios::binary );
+	file.read((char*) this, sizeof(Save));
+	file.close();
+
+    int i, j;
+    totalEntities = this->save_totalEntities;
+    delete fullmap;
+    fullmap = new coord(this->save_fullmap.x, this->save_fullmap.y);
+    for(i=0; i<totalEntities; i++)
+        entityObjects[i] = this->save_monsters[i];
+    for(i=0; i<MaxY; i++) {
+        for(j=0; j<MaxX; j++) {
+            cmap[i][j] = this->save_cmap[i][j];
+            map[i][j] = this->save_map[i][j];
+        }
+    }
+    /*for(i=0; i<totalEntities; i++) {
+        cout<<i<<": "<<entityObjects[i].getSymbol();
+        coord p = entityObjects[i].getPos();
+        cprintf("\nx: %2d, y: %2d", p.x, p.y);
+        getch();    gotoxy(1, 1);
+    }*/
+    /*gotoxy(1, 1);
+    for(i=0;i<MaxY;i++) {
+        for(j=0;j<MaxX;j++) {
+            cout<<(map[i][j].isBlocked()) ? "1" : "0";
+        }
+        cout<<endl;
+    }
+    cout<<totalEntities<<"Hello"; getch();    exit(0);*/
+}
 
 #endif

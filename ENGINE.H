@@ -5,6 +5,7 @@
 
 class Engine {
 private:
+	Save data;
 	bool gameOver;
 	unsigned int timer;
 	Object *player;
@@ -23,8 +24,13 @@ public:
 };
 
 Engine :: Engine() {
-	int i = 0, j;
 	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
+	player = &entityObjects[0];
+	char* path = "./MZRUN/LEVELS/AREA1.lvl";
+	this->data.Import(path);
+	//Create Map file
+	/*fullmap = new coord(60, 20);
+	int i = 0, j;
 	Object *temp;
 
 	FILE *file;
@@ -33,23 +39,25 @@ Engine :: Engine() {
 		fscanf(file, "%s", &cmap[i++]);
 	}
 	fclose(file);
-	fullmap = new coord(60, 20);
 	for(i = 0; i<fullmap->y; i++) {
 		for(j = 0; j<fullmap->x; j++) {
+			map[i][j].block();
 			if(cmap[i][j]=='@') {
 				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;
-				player = &entityObjects[0];
+				map[i][j].unblock();
 			} else if(cmap[i][j] == '*') {
 				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5); //RED
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;
 			} else if(cmap[i][j] == '#') {
-				map[i][j].block();
+				//map[i][j].block();
+			} else {
+				map[i][j].unblock();
 			}
 			temp = NULL;	delete temp;
 		}
-	}
+	}*/
 }
 
 void temp() {
@@ -99,10 +107,10 @@ void Engine :: drawEngine() {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			if(player->distance(camera + coord(j, i)) > torchRange) {
+			/*if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
 				continue;
-			}
+			}*/
 			int obj = posCheck(camera + coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
 			else if(map[camera.y + i][camera.x + j].isBlocked()) wall.draw();
@@ -110,8 +118,6 @@ void Engine :: drawEngine() {
 		}
 	}
 	gotoxy(8, 24);
-	/*if(this->tick()<10)	printf("00");
-	else if(this->tick()/TICKSPEED<100)	printf("0");*/
 	printf("%3d", timer/TICKSPEED);
 }
 

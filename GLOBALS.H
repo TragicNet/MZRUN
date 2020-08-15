@@ -39,7 +39,7 @@ void halt(int x = 1) {
 #include "MZRUN/TILE.H"
 #include "MZRUN/EVENTS.H"
 #include "MZRUN/OBJECT.H"
-#include "MZRUN/ENGINE.H"
 #include "MZRUN/SAVE.H"
+#include "MZRUN/ENGINE.H"
 
 #endif
