@@ -6,48 +6,68 @@ private:
 	Save data;
 	char paths[50][50];
 	bool gameOver;
-	bool cleared;
 	unsigned int timer;
 	Object *player;
 	inline int tick() {	return timer/TICKSPEED;	}
 
 public:
 	Engine();
-	~Engine() {
-		//free(player);	free(fullmap);
-		delete player;
-	}
+	~Engine() {}
 	void drawEngine();
 	void inputEngine();
 	void handleEngine();
 	void HUD();
-	void death();
-	int getPaths(char paths[50][50]);
-	inline bool getState() {	return this->gameOver;	};
-	inline bool isCleared() {	return this->cleared;	}
-	inline unsigned int getTimer()	{	return this->timer;	}
-	inline Object* getPlayer()	{	return this->player;	}
+	int getPaths(char paths[][50]);
+	inline bool getState() {	return gameOver;	};
+	inline unsigned int getTimer()	{	return timer;	}
+	inline Object* getPlayer()	{	return player;	}
 };
 
 Engine :: Engine() {
 	srand((unsigned)time(0));
-	cleared = false;	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
+	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
 	player = &entityObjects[0];
 
 	int gen = rand() % getPaths(paths);
 	this->data.Import(strcat("./MZRUN/LEVELS/", paths[gen]));
 }
 
+void temp() {
+	int i, j;
+	gotoxy(37,10);
+	for(i=1; i<=10;i++) {
+		if(i==1)	cprintf("%c", border[2]);
+		else if(i==10)	cprintf("%c", border[3]);
+		else	cprintf("%c", border[0]);
+	}
+	for(j=1; j<4; j++) {
+		gotoxy(37,10+j);
+		for(i=1; i<=10;i++) {
+			if(i==1 || i==10)	cprintf("%c", border[1]);
+			else	cprintf("%c", ' ');
+		}
+	}
+	gotoxy(37,14);
+	for(i=1; i<=10;i++) {
+		if(i==1)	cprintf("%c", border[4]);
+		else if(i==10)	cprintf("%c", border[5]);
+		else	cprintf("%c", border[0]);
+	}
+	getch();
+	exit(0);
+}
+
 void Engine :: HUD() {
 	int i, j;
-	//Map Window
-	for(i=1; i<=25; i++) {
-		gotoxy(screen.x+boardX,i);	cprintf("%c", border[1]);
+	{	//Map Window
+		for(i=1; i<=25; i++) {
+			gotoxy(screen.x+boardX,i);	printf("%c", 179);
+		}
+		for(i=1; i<=screen.x+boardX;i++) {
+			gotoxy(i,screen.y+boardY);	printf("%c", 196);
+		}
+		gotoxy(screen.x+boardX,screen.y+boardY);	printf("%c", 180);
 	}
-	for(i=1; i<=screen.x+boardX;i++) {
-		gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
-	}
-	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", (char)180);
 
 	gotoxy(2, 24);	printf("Timer: ");
 }
@@ -59,13 +79,13 @@ void Engine :: drawEngine() {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			if(player->distance(camera + coord(j, i)) > torchRange) {
+			/*if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
 				continue;
-			}
+			}*/
 			int obj = posCheck(camera + coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
-			else if(goal.getPos() == camera + coord(j, i))	goal.draw();
+			else if(goal.getPos() == coord(j, i))	goal.draw();
 			else if(map[camera.y + i][camera.x + j].isBlocked()) wall.draw();
 			else	air.draw();
 		}
@@ -89,31 +109,32 @@ void Engine :: inputEngine() {
 void Engine :: handleEngine() {
 	int i;
 	//gotoxy(1, 25);	cprintf("%5u",timer);	
-	if(posCheck(player->getPos(), "monster")) {		//Die
+	//Death
+	/*if(posCheck(player->getPos(), "monster")) {
 		drawEngine();
-		this->death();
+		player->death();
 		gameOver = true;	return;
-	} else if(player->getPos() == goal.getPos()) {	//Win
-		player->setColor(WHITE, goal.getBgColor());
+	}*/
+	//Win
+	if(player->getPos() == goal->getPos()) {
 		drawEngine();
-		this->death();
-		cleared = true;	return;
+		player->death();
+		gameOver = true;	return;
 	}
 	for(i = 1; i<totalEntities; i++) {
-		if(entityObjects[i].getSpeed() != 0)
-			entityObjects[i].route(timer);
+		entityObjects[i].route(timer);
 	}
 	if( this->tick() < 1 )
 		gameOver = true;
 	timer--;
 }
 
-int Engine :: getPaths(char paths[50][50]) {
+int Engine :: getPaths(char paths[][50]) {
 	struct dirent *de;
 	DIR *dr = opendir("./MZRUN/LEVELS");
 	if(dr == NULL) return 0;
 	int cnt=0, s;
-	char ext[] = ".LVL";
+	char* name;	char* ext = ".LVL";
 	while((de = readdir(dr)) != NULL)  {
 		s = strlen(de->d_name);
 		for(int i=s-4; i>0; i--)
@@ -124,21 +145,6 @@ int Engine :: getPaths(char paths[50][50]) {
 	}
 	closedir(dr);
 	return cnt;
-}
-
-void Engine :: death() {
-	int i, j, cx = 40, cy = 13;
-	int height = 3, width = 12;
-	cx-=width/2;	cy-=height/2;
-	
-	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
-	gotoxy(cx, cy++);	cprintf("%c You Died %c", border[1], border[1]);
-	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
-
-	sound(120);	halt(100);	nosound();
-	halt(50);
-	sound(120);	halt(100);	nosound();
-	getch();
 }
 
 #endif

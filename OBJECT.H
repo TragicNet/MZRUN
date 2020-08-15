@@ -24,40 +24,37 @@ public:
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
 	}
-	Object(Object &t) {
-		this->pos = t.pos;	this->dir = t.dir;
-		this->symbol = t.symbol;	strcpy(this->type, t.type);
-		this->range = t.range;	this->speed = t.speed;
-		this->color = t.color;	this->bgcolor = t.bgcolor;	
-		this->last = 0;
-	}
 	~Object() {}
 	inline coord getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
 	inline char* getType() {	return this->type;	}
+	inline void setColor(int color = NULL,  int bgcolor = NULL)	{
+		this->color = (color == NULL) ? this->color : color;
+		this->bgcolor = (bgcolor == NULL) ? this->bgcolor : bgcolor;
+	}
 	inline int getSpeed() {	return this->speed;	}
 	inline unsigned int getLast() {	return this->last;	}
 	inline int getColor() {	return this->color;	}
 	inline int getBgColor() {	return this->bgcolor;	}
 	inline eDirection getDirection() {	return this->dir;	}
 	bool moveObject(int posX, int posY);
+	inline void reloc(coord pos) {	this->pos = pos;	}
 	void route(unsigned int last);
 	void draw();
-	void death();
 	inline bool isThere(coord t) {	return (this->pos.x==t.x && this->pos.y == t.y) ? true : false;	}
 	inline float distance(coord t) {	return pow( pow(this->pos.x-t.x, 2)/*/2.5*/ + pow(this->pos.y*2-t.y*2, 2)/**1.5*/ , 0.5 );	}
 };
 unsigned int totalEntities = 1;
 Object entityObjects[50], keys[20], doors[20];
-Object *goal = new Object(0, 0, STOP, 'g', "goal", CYAN, CYAN);
+Object goal(0, 0, STOP, 'g', "goal", CYAN, CYAN);
 Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
 Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
 Object blackair(0, 0, STOP, '.', "air", BLACK);
 
-int posCheck(coord pos, char *search = "", bool same = true) {
+int posCheck(coord pos, char search[] = NULL, bool same = true) {
 	for(int i = totalEntities-1; i >= 0; i--)
 		if(entityObjects[i].isThere(pos)) {
-			if( strcmp(search, "") || ( strcmp(search, entityObjects[i].getType()) && same == true ) )
+			if( search == NULL || ( strcmp(search, entityObjects[i].getType()) && same == true ) )
 				return i;
 		}
 	return -1;
@@ -123,12 +120,6 @@ void Object :: draw() {
 	cprintf("%c", symbol);
 	textcolor(WHITE);
 	textbackground(BLACK);
-}
-
-void Object::death() {
-	sound(120);	halt(100);	nosound();
-	halt(50);
-	sound(120);	halt(100);	nosound();
 }
 
 #endif
