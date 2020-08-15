@@ -29,6 +29,7 @@ void Save :: Export(char* path) {
 	ofstream file(path, ios::in | ios::binary );
 	file.write((char*) this, sizeof(Save));
 	file.close();
+    
     /*for(i=0; i<this->stotalEntities; i++) {
         cout<<i<<": "<<this->smonsters[i].getSymbol();
         coord p = this->smonsters[i].getPos();
