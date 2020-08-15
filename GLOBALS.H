@@ -10,6 +10,7 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <string.h>
+#include <dirent.h>
 
 #define bool int
 #define true 1

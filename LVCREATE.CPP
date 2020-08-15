@@ -8,7 +8,7 @@
 
 class Creator {
 private:
-	Engine *level;
+	Save data;
 	char cmap[MaxY][MaxX];
 	char *list;
 public:
@@ -20,12 +20,11 @@ public:
 	bool move(int PosX, int PosY);
 	void create_object(char c);
 	void make_map();
-	void create_map();
+	void create_lvl();
 }
 
 Creator :: Creator() {
 	this->pos->x = this->pos->y = 1;	this->end = false;
-	this->level = new Engine();
 }
 
 void Creator :: draw() {
@@ -61,20 +60,13 @@ void Creator :: draw() {
 }
 
 void Creator :: create_object(char c) {
-	Object *temp;
-	if(c == '@') {
-		temp = new Object(this->y, this->x, STOP, '@', "player", GREEN);
-	} else if(c == '*') {
-		temp = new Object(this->y, this->x, STOP, '*', "monster", RED, BLACK, 5);
-	}
-	temp = NULL;	delete temp;
 }
 
 void Creator :: make_map()  {
 }
 
 void Creator :: input() {
-	gotoxy(1,25);	cout<<this->x<<", "<<this->y;
+	/*gotoxy(1,25);	cout<<this->x<<", "<<this->y;
 	gotoxy(this->x, this->y);
 	switch(getch()) {
 		case 'w':   this->move(+0, -1);
@@ -105,31 +97,24 @@ void Creator :: input() {
 					break;
 		case '*':	create_object('*');
 					break;
-		/*case 13:	create_object();
-					break;*/
+		//case 13:	create_object();
+		//			break;
 		case 27:   this->end = true;
 					break;
-	}
+	}*/
 }
 
 bool Creator :: move(int PosX, int PosY) {
-	if(this->x+PosX<=0 || this->x+PosX>MaxX || this->y+PosY<=0 || this->y+PosY>MaxY)
-		return false;
-	this->x += PosX;	this->y += PosY;
-	return true;
 }
 
-void Creator :: create_map() {
-	/*ofstream file("a1.map", ios::out | ios::binary );
-	file.write((char*) &this->level, sizeof(Engine));
-	file.close();*/
+void Creator :: create_lvl() {
 	//Create Map file
-	/*fullmap = new coord(60, 20);
+	fullmap = new coord(60, 20);
 	int i = 0, j;
 	Object *temp;
 
 	FILE *file;
-	file = fopen("./MZRUN/LEVELS/area1.map","r");
+	file = fopen("./MZRUN/area1.map","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
@@ -152,15 +137,18 @@ void Creator :: create_map() {
 			}
 			temp = NULL;	delete temp;
 		}
-	}*/
+	}
+	this->data.Export("./MZRUN/LEVELS/area2.lvl");
+	//cout<<"Done";	getch();
 }
 
 int main() {
     clrscr();
 	Creator creator;
-	creator.draw();
+	creator.create_lvl();
+	/*creator.draw();
 	while(!creator.end) {
 		creator.input();
-	}
+	}*/
 	return 0;
 }

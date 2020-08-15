@@ -25,11 +25,10 @@ void Save :: Export(char* path) {
             this->save_map[i][j] = map[i][j];
         }
     }
-    getch();
 	ofstream file(path, ios::in | ios::binary );
 	file.write((char*) this, sizeof(Save));
 	file.close();
-    
+
     /*for(i=0; i<this->stotalEntities; i++) {
         cout<<i<<": "<<this->smonsters[i].getSymbol();
         coord p = this->smonsters[i].getPos();
@@ -56,6 +55,7 @@ void Save :: Import(char* path) {
             map[i][j] = this->save_map[i][j];
         }
     }
+
     /*for(i=0; i<totalEntities; i++) {
         cout<<i<<": "<<entityObjects[i].getSymbol();
         coord p = entityObjects[i].getPos();

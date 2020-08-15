@@ -6,6 +6,7 @@
 class Engine {
 private:
 	Save data;
+	char paths[50][50];
 	bool gameOver;
 	unsigned int timer;
 	Object *player;
@@ -18,46 +19,27 @@ public:
 	void inputEngine();
 	void handleEngine();
 	void HUD();
+	int getPaths(char paths[][50]);
 	inline bool getState() {	return gameOver;	};
 	inline unsigned int getTimer()	{	return timer;	}
 	inline Object* getPlayer()	{	return player;	}
 };
 
 Engine :: Engine() {
+	randomize();
 	gameOver = false;	timer = TICKSPEED * TIMELIMIT;
 	player = &entityObjects[0];
-	char* path = "./MZRUN/LEVELS/AREA1.lvl";
-	this->data.Import(path);
-	//Create Map file
-	/*fullmap = new coord(60, 20);
-	int i = 0, j;
-	Object *temp;
 
-	FILE *file;
-	file = fopen("./MZRUN/LEVELS/area1.map","r");
-	while(!feof(file)) {
-		fscanf(file, "%s", &cmap[i++]);
+	char target[50] = "./MZRUN/LEVELS/";
+	int size = getPaths(paths);
+	for(int i = 0; i<size; i++) {
+		printf("%s\n", paths[i]);
 	}
-	fclose(file);
-	for(i = 0; i<fullmap->y; i++) {
-		for(j = 0; j<fullmap->x; j++) {
-			map[i][j].block();
-			if(cmap[i][j]=='@') {
-				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
-				cmap[i][j] = '.';	entityObjects[0] = *temp;
-				map[i][j].unblock();
-			} else if(cmap[i][j] == '*') {
-				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5); //RED
-				cmap[i][j] = '.';
-				entityObjects[totalEntities++] = *temp;
-			} else if(cmap[i][j] == '#') {
-				//map[i][j].block();
-			} else {
-				map[i][j].unblock();
-			}
-			temp = NULL;	delete temp;
-		}
-	}*/
+	int gen = random(size*100)/100;
+	strcat(target, paths[gen]);
+	printf("Target: %s", target);
+	getch();	exit(0);
+	this->data.Import(target);
 }
 
 void temp() {
@@ -148,6 +130,24 @@ void Engine :: handleEngine() {
 	if( this->tick() < 1 )
 		gameOver = true;
 	timer--;
+}
+
+int Engine :: getPaths(char paths[][50]) {
+	struct dirent *de;
+	DIR *dr = opendir("./MZRUN/LEVELS");
+	if(dr == NULL) return 0;
+	int cnt=0, s;
+	char* name;	char* ext = ".LVL";
+	while((de = readdir(dr)) != NULL)  {
+		s = strlen(de->d_name);
+		for(int i=s-4; i>0; i--)
+			if(de->d_name[i] != ext[s-4-i])	continue;
+			else {
+				strcpy(paths[cnt++], de->d_name);
+			}
+	}
+	closedir(dr);
+	return cnt;
 }
 
 #endif
