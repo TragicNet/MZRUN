@@ -14,12 +14,12 @@ private:
 public:
 	Engine();
 	~Engine() {
-		free(player);	free(fullmap);
+		free(player);	//free(fullmap);
 	}
 	void drawEngine();
 	void inputEngine();
 	void handleEngine();
-	void HUD();
+	//void HUD();
 	void death();
 	int getPaths(char paths[50][50]);
 	inline bool getState() {	return this->gameOver;	};
@@ -37,23 +37,23 @@ Engine :: Engine() {
 	this->data.Import(strcat("./MZRUN/LEVELS/", paths[gen]));
 }
 
-void Engine :: HUD() {
+void HUD() {
 	int i, j;
 	//Map Window
 	for(i=1; i<=25; i++) {
-		gotoxy(screen.x+boardX,i);	cprintf("%c", border[1]);
+		gotoxy(screen.x+boardX,i);	printf("%c", border[1]);
 	}
 	for(i=1; i<=screen.x+boardX;i++) {
-		gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
+		gotoxy(i,screen.y+boardY);	printf("%c", border[0]);
 	}
-	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", 180);
+	gotoxy(screen.x+boardX,screen.y+boardY);	printf("%c", 180);
 
 	gotoxy(2, 24);	printf("Timer: ");
 }
 
 void Engine :: drawEngine() {
 	int i, j;
-	coord camera = view(player->getPos(), screen, *fullmap);
+	coord camera = view(player->getPos(), screen, fullmap);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);

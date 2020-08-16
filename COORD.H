@@ -11,7 +11,7 @@ public:
     coord(coord &t) {
         this->x = t.x;    this->y = t.y;
     }
-}screen(51, 17), *fullmap;
+}screen(51, 17), fullmap;
 
 coord operator-(coord const &a, coord const &b) {
     return coord(a.x - b.x, a.y - b.y);

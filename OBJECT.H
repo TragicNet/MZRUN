@@ -61,7 +61,7 @@ int posCheck(coord pos, char search[] = "", bool same = true) {
 }
 
 bool Object :: moveObject(int posX, int posY) {
-	if(this->pos.x+posX<0 || this->pos.x+posX>fullmap->x || this->pos.y+posY<0 || this->pos.y+posY>fullmap->y)
+	if(this->pos.x+posX<0 || this->pos.x+posX>fullmap.x || this->pos.y+posY<0 || this->pos.y+posY>fullmap.y)
 		return false;
 	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked())
 		return false;

@@ -16,7 +16,7 @@ public:
 
 void Save :: Export(char path[]) {
     int i, j;
-    this->save_fullmap = *fullmap;
+    this->save_fullmap = fullmap;
     this->save_totalEntities = totalEntities;
     this->save_goal = goal;
     for(i=0; i<this->save_totalEntities; i++)
@@ -38,7 +38,8 @@ void Save :: Import(char path[]) {
 	file.close();
 
     int i, j;
-    delete fullmap; fullmap = new coord(this->save_fullmap.x, this->save_fullmap.y);
+    //delete fullmap; fullmap = new coord(this->save_fullmap.x, this->save_fullmap.y);
+    fullmap = save_fullmap;
     totalEntities = this->save_totalEntities;
     goal.reloc(save_goal.getPos());
     for(i=0; i<totalEntities; i++)

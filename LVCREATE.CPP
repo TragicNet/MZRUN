@@ -109,7 +109,8 @@ bool Creator :: move(int PosX, int PosY) {
 
 void Creator :: create_lvl() {
 	//Create Map file
-	delete fullmap;	fullmap = new coord(60, 20);
+	//delete fullmap;	fullmap = new coord(60, 20);
+	fullmap = coord(60, 20);
 	int i = 0, j;
 	Object *temp;
 
@@ -119,8 +120,8 @@ void Creator :: create_lvl() {
 		fscanf(file, "%s", &cmap[i++]);
 	}
 	fclose(file);
-	for(i = 0; i<fullmap->y; i++) {
-		for(j = 0; j<fullmap->x; j++) {
+	for(i = 0; i<fullmap.y; i++) {
+		for(j = 0; j<fullmap.x; j++) {
 			map[i][j].block();
 			if(cmap[i][j]=='@') {
 				temp = new Object(j, i, RIGHT, '@', "player", GREEN);
@@ -141,8 +142,10 @@ void Creator :: create_lvl() {
 			}
 		}
 	}
+	fflush(stdout);
+	cout<<"Hello";
+	getch();	exit(0);
 	this->data.Export("./MZRUN/LEVELS/area1.lvl");
-	//cout<<"Done";	getch();
 }
 
 int main() {
