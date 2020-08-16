@@ -4,7 +4,7 @@
 class Engine {
 private:
 	Save data;
-	char paths[50][50];
+	char (*paths)[50];
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
@@ -21,7 +21,7 @@ public:
 	void handleEngine();
 	//void HUD();
 	void death();
-	int getPaths(char paths[50][50]);
+	int getPaths(char paths[][50]);
 	inline bool getState() {	return this->gameOver;	};
 	inline bool isCleared() {	return this->cleared;	}
 	inline unsigned int getTimer()	{	return this->timer;	}
@@ -34,7 +34,8 @@ Engine :: Engine() {
 	player = &entityObjects[0];
 
 	int gen = rand() % getPaths(this->paths);
-	this->data.Import(strcat("./MZRUN/LEVELS/", paths[gen]));
+	char *path;	sprintf(path, "./MZRUN/LEVELS/%s", this->paths[gen]);
+	this->data.Import(path);
 }
 
 void HUD() {
@@ -104,7 +105,7 @@ void Engine :: handleEngine() {
 	timer--;
 }
 
-int Engine :: getPaths(char paths[50][50]) {
+int Engine :: getPaths(char paths[][50]) {
 	struct dirent *de;
 	DIR *dr = opendir("./MZRUN/LEVELS");
 	if(dr == NULL) return 0;
