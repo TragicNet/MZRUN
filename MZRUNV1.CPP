@@ -16,10 +16,10 @@ void main() {
 	_setcursortype(_NOCURSOR);
 	Engine game;
 	game.HUD();
-	while(!game.getState() /*&& !game.isCleared()*/) {
+	game.death();
+	while(!game.getState()) {
 		game.drawEngine();
 		game.inputEngine();
 		game.handleEngine();
 	}
-	_setcursortype(_NORMALCURSOR);
 }

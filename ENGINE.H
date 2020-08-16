@@ -89,9 +89,7 @@ void Engine :: handleEngine() {
 	int i;
 	//gotoxy(1, 25);	cprintf("%5u",timer);	
 	if(posCheck(player->getPos(), "monster")) {		//Die
-		drawEngine();
-		this->death();
-		gameOver = true;	return;
+		drawEngine();	this->death();	return;
 	} else if(player->getPos() == goal.getPos()) {	//Win
 		player->setColor(WHITE, goal.getBgColor());
 		drawEngine();
@@ -129,7 +127,7 @@ void Engine :: death() {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 12;
 	cx-=width/2;	cy-=height/2;
-	
+	this->gameOver = true;
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c You Died %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
