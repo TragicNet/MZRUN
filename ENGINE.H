@@ -34,7 +34,7 @@ Engine :: Engine() {
 	player = &entityObjects[0];
 
 	int gen = rand() % getPaths(this->paths);
-	char *path;	sprintf(path, "./MZRUN/LEVELS/%s", this->paths[gen]);
+	char path[50];	sprintf(path, "./MZRUN/LEVELS/%s", this->paths[gen]);
 	this->data.Import(path);
 }
 
