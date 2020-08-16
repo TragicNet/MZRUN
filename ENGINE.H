@@ -4,7 +4,7 @@
 class Engine {
 private:
 	Save data;
-	char (*paths)[50];
+	char paths[50][50];
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
@@ -34,7 +34,8 @@ Engine :: Engine() {
 	player = &entityObjects[0];
 
 	int gen = rand() % getPaths(this->paths);
-	char path[50];	sprintf(path, "./MZRUN/LEVELS/%s", this->paths[gen]);
+	char path[50] = "./MZRUN/LEVELS/";
+	strcat(path, this->paths[gen]);
 	this->data.Import(path);
 }
 
