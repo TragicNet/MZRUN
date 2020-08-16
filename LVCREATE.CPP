@@ -142,9 +142,6 @@ void Creator :: create_lvl() {
 			}
 		}
 	}
-	fflush(stdout);
-	cout<<"Hello";
-	getch();	exit(0);
 	this->data.Export("./MZRUN/LEVELS/area1.lvl");
 }
 
