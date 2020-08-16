@@ -24,7 +24,7 @@
 #define TICKSPEED 100//30
 #define TIMELIMIT 100//200
 
-float torchRange = 7.0f;
+float torchRange = 7.0f;	//7.0f
 char cmap[MaxY][MaxX];
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 const char border[] = { 196, 179, 218, 191, 192, 217 };

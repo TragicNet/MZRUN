@@ -46,7 +46,7 @@ void Engine :: HUD() {
 	for(i=1; i<=screen.x+boardX;i++) {
 		gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
 	}
-	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", (char)180);
+	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", 180);
 
 	gotoxy(2, 24);	printf("Timer: ");
 }
@@ -87,13 +87,12 @@ void Engine :: inputEngine() {
 
 void Engine :: handleEngine() {
 	int i;
-	//gotoxy(1, 25);	cprintf("%5u",timer);	
+	//gotoxy(1, 25);	cprintf("%5u",timer);
 	if(posCheck(player->getPos(), "monster")) {		//Die
 		drawEngine();	this->death();	return;
 	} else if(player->getPos() == goal.getPos()) {	//Win
 		player->setColor(WHITE, goal.getBgColor());
-		drawEngine();
-		this->death();
+		drawEngine();	this->death();
 		cleared = true;	return;
 	}
 	for(i = 1; i<totalEntities; i++) {

@@ -51,10 +51,10 @@ Object wall(0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY);
 Object air(0, 0, STOP, '.', "air", LIGHTGRAY);
 Object blackair(0, 0, STOP, '.', "air", BLACK);
 
-int posCheck(coord pos, char search[] = NULL, bool same = true) {
+int posCheck(coord pos, char search[] = "", bool same = true) {
 	for(int i = totalEntities-1; i >= 0; i--)
 		if(entityObjects[i].isThere(pos)) {
-			if( search == NULL || ( strcmp(search, entityObjects[i].getType()) && same == true ) )
+			if( strcmp(search, "") || ( strcmp(search, entityObjects[i].getType()) && same == true ) )
 				return i;
 		}
 	return -1;

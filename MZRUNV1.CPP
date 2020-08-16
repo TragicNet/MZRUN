@@ -16,7 +16,6 @@ void main() {
 	_setcursortype(_NOCURSOR);
 	Engine game;
 	game.HUD();
-	game.death();
 	while(!game.getState()) {
 		game.drawEngine();
 		game.inputEngine();
