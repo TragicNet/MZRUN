@@ -15,7 +15,7 @@ void main() {
 	clrscr();
 	_setcursortype(_NOCURSOR);
 	Engine game;
-	HUD();
+	game.HUD();
 	while(!game.getState()) {
 		game.drawEngine();
 		game.inputEngine();

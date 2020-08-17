@@ -19,7 +19,7 @@ public:
 	void drawEngine();
 	void inputEngine();
 	void handleEngine();
-	//void HUD();
+	void HUD();
 	void death();
 	int getPaths(char paths[][50]);
 	inline bool getState() {	return this->gameOver;	};
@@ -39,7 +39,7 @@ Engine :: Engine() {
 	this->data.Import(path);
 }
 
-void HUD() {
+void Engine :: HUD() {
 	int i, j;
 	//Map Window
 	for(i=1; i<=25; i++) {
