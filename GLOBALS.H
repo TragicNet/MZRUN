@@ -35,7 +35,8 @@ void halt(int x = 1) {
     delay(x);
 	while(1)
 	{	if(kbhit())	getch();
-		if(!kbhit())	break;
+		//if(!kbhit())	break;
+		else	break;
 	}
 }
 
