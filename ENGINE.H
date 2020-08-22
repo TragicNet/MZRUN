@@ -14,7 +14,7 @@ private:
 public:
 	Engine();
 	~Engine() {
-		free(player);	//free(fullmap);
+		free(player);
 	}
 	void drawEngine();
 	void inputEngine();
