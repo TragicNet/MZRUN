@@ -13,9 +13,7 @@ private:
 
 public:
 	Engine();
-	~Engine() {
-		free(player);
-	}
+	~Engine() {}
 	void drawEngine();
 	void inputEngine();
 	void handleEngine();

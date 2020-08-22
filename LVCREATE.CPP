@@ -129,8 +129,7 @@ void Creator :: create_lvl() {
 				map[i][j].unblock();
 			} else if(cmap[i][j] == '*') {
 				temp = new Object(j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
-				cmap[i][j] = '.';
-				entityObjects[totalEntities++] = *temp;	delete temp;
+				cmap[i][j] = '.';	entityObjects[totalEntities++] = *temp;	delete temp;
 			} else if(cmap[i][j] == '#') {
 				map[i][j].blockSight();
 			} else if(cmap[i][j] == 'g') {

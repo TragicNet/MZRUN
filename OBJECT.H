@@ -6,7 +6,7 @@ protected:
 	coord pos;
 	eDirection dir;
 	char symbol;
-	char ydiffpe[20];
+	char type[20];
 	int range;
 	int speed;
 	int color;
@@ -17,9 +17,9 @@ protected:
 
 public:
 	Object(){};
-	Object(int x, int y, eDirection dir, char symbol, char ydiffpe[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
+	Object(int x, int y, eDirection dir, char symbol, char type[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
 		this->pos = coord(x, y);	this->dir = dir;
-		this->symbol = symbol;	strcpy(this->ydiffpe, ydiffpe);
+		this->symbol = symbol;	strcpy(this->type, type);
 		this->range = range;	this->speed = speed;
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
@@ -27,10 +27,10 @@ public:
 	~Object() {}
 	inline coord getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
-	inline char* getydiffpe() {	return this->ydiffpe;	}
-	inline void setColor(int color = NULL,  int bgcolor = NULL)	{
-		this->color = (color == NULL) ? this->color : color;
-		this->bgcolor = (bgcolor == NULL) ? this->bgcolor : bgcolor;
+	inline char* getType() {	return this->type;	}
+	inline void setColor(int color = -1,  int bgcolor = -1)	{
+		this->color = (color == -1) ? this->color : color;
+		this->bgcolor = (bgcolor == -1) ? this->bgcolor : bgcolor;
 	}
 	inline int getSpeed() {	return this->speed;	}
 	inline unsigned int getLast() {	return this->last;	}
@@ -54,7 +54,7 @@ Object blackair(0, 0, STOP, '.', "air", BLACK);
 int posCheck(coord pos, char search[] = "", bool same = true) {
 	for(int i = totalEntities-1; i >= 0; i--)
 		if(entityObjects[i].isThere(pos)) {
-			if( strcmp(search, "") || ( strcmp(search, entityObjects[i].getydiffpe()) && same == true ) )
+			if( strcmp(search, "") || ( strcmp(search, entityObjects[i].getType()) && same == true ) )
 				return i;
 		}
 	return -1;
@@ -65,10 +65,10 @@ bool Object :: moveObject(int posX, int posY) {
 		return false;
 	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked())
 		return false;
-	if(strcmp(this->ydiffpe, "player"))
+	if(strcmp(this->type, "player"))
 		map[this->pos.y][this->pos.x].unblock();
 	this->pos.x+=posX;	this->pos.y+=posY;
-	if(strcmp(this->ydiffpe, "player"))
+	if(strcmp(this->type, "player"))
 		map[this->pos.y][this->pos.x].block();
 	return true;
 }
