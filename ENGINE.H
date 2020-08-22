@@ -58,10 +58,10 @@ void Engine :: drawEngine() {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			/*if(player->distance(camera + coord(j, i)) > torchRange) {
+			if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
 				continue;
-			}*/
+			}
 			int obj = posCheck(camera + coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
 			else if(goal.getPos() == camera + coord(j, i))	goal.draw();
