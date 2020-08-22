@@ -21,13 +21,15 @@
 #define MaxSpeed 9
 #define boardX 1
 #define boardY 1
-#define TICKSPEED 100//30
-#define TIMELIMIT 100//200
+#define oTICKSPEED 100//30
+#define oTIMELIMIT 100//200
 
 float torchRange = 7.0f;	//7.0f
 char cmap[MaxY][MaxX];
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 char border[] = { 196, 179, 218, 191, 192, 217 };
+unsigned int TICKSPEED = oTICKSPEED;
+unsigned int TIMELIMIT = oTIMELIMIT;
 
 void halt(int x = 1) {   
     delay(x);

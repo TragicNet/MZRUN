@@ -132,7 +132,7 @@ void Creator :: create_lvl() {
 				cmap[i][j] = '.';
 				entityObjects[totalEntities++] = *temp;	delete temp;
 			} else if(cmap[i][j] == '#') {
-				//map[i][j].block();
+				map[i][j].blockSight();
 			} else if(cmap[i][j] == 'g') {
 				goal.reloc(coord(j, i));
 				cmap[i][j] = '.';

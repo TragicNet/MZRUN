@@ -43,14 +43,14 @@ void Engine :: HUD() {
 	int i, j;
 	//Map Window
 	for(i=1; i<=25; i++) {
-		gotoxy(screen.x+boardX,i);	printf("%c", border[1]);
+		gotoxy(screen.x+boardX,i);	cprintf("%c", border[1]);
 	}
 	for(i=1; i<=screen.x+boardX;i++) {
-		gotoxy(i,screen.y+boardY);	printf("%c", border[0]);
+		gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
 	}
-	gotoxy(screen.x+boardX,screen.y+boardY);	printf("%c", 180);
+	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", 180);
 
-	gotoxy(2, 24);	printf("Timer: ");
+	gotoxy(2, 24);	cprintf("Timer: ");
 }
 
 void Engine :: drawEngine() {
@@ -60,10 +60,10 @@ void Engine :: drawEngine() {
 		for(j = 0; j<screen.x; j++) {
 			gotoxy(boardX+j, boardY+i);
 			//Vision
-			if(player->distance(camera + coord(j, i)) > torchRange) {
+			/*if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
 				continue;
-			}
+			}*/
 			int obj = posCheck(camera + coord(j, i));
 			if(obj!=-1)	entityObjects[obj].draw();
 			else if(goal.getPos() == camera + coord(j, i))	goal.draw();
@@ -72,7 +72,7 @@ void Engine :: drawEngine() {
 		}
 	}
 	gotoxy(8, 24);
-	printf("%3d", timer/TICKSPEED);
+	cprintf("%3d", timer/TICKSPEED);
 }
 
 void Engine :: inputEngine() {

@@ -6,7 +6,7 @@ protected:
 	coord pos;
 	eDirection dir;
 	char symbol;
-	char type[20];
+	char ydiffpe[20];
 	int range;
 	int speed;
 	int color;
@@ -17,9 +17,9 @@ protected:
 
 public:
 	Object(){};
-	Object(int x, int y, eDirection dir, char symbol, char type[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
+	Object(int x, int y, eDirection dir, char symbol, char ydiffpe[20], int color,  int bgcolor = BLACK, int speed = 0, int range = 0) {
 		this->pos = coord(x, y);	this->dir = dir;
-		this->symbol = symbol;	strcpy(this->type, type);
+		this->symbol = symbol;	strcpy(this->ydiffpe, ydiffpe);
 		this->range = range;	this->speed = speed;
 		this->color = color;	this->bgcolor = bgcolor;	
 		this->last = 0;
@@ -27,7 +27,7 @@ public:
 	~Object() {}
 	inline coord getPos()	{	return this->pos;	}
 	inline char getSymbol() {	return this->symbol;	}
-	inline char* getType() {	return this->type;	}
+	inline char* getydiffpe() {	return this->ydiffpe;	}
 	inline void setColor(int color = NULL,  int bgcolor = NULL)	{
 		this->color = (color == NULL) ? this->color : color;
 		this->bgcolor = (bgcolor == NULL) ? this->bgcolor : bgcolor;
@@ -54,7 +54,7 @@ Object blackair(0, 0, STOP, '.', "air", BLACK);
 int posCheck(coord pos, char search[] = "", bool same = true) {
 	for(int i = totalEntities-1; i >= 0; i--)
 		if(entityObjects[i].isThere(pos)) {
-			if( strcmp(search, "") || ( strcmp(search, entityObjects[i].getType()) && same == true ) )
+			if( strcmp(search, "") || ( strcmp(search, entityObjects[i].getydiffpe()) && same == true ) )
 				return i;
 		}
 	return -1;
@@ -65,38 +65,56 @@ bool Object :: moveObject(int posX, int posY) {
 		return false;
 	else if(map[this->pos.y+posY][this->pos.x+posX].isBlocked())
 		return false;
-	if(strcmp(this->type, "player"))
+	if(strcmp(this->ydiffpe, "player"))
 		map[this->pos.y][this->pos.x].unblock();
 	this->pos.x+=posX;	this->pos.y+=posY;
-	if(strcmp(this->type, "player"))
+	if(strcmp(this->ydiffpe, "player"))
 		map[this->pos.y][this->pos.x].block();
 	return true;
 }
 
 
 void Object :: route(unsigned int last) {
-    if(this->speed == 0 || this->last - last < ((MaxSpeed + 1 - this->speed)*10))
+    if(this->speed == 0 || this->last - last < ((MaxSpeed + 1 - this->speed)*20))
 		return;
-	int tx = 0, ty = 0, ch = 0, r;
-	bool tried = false;
+	int i, j, xdiff = 0, ydiff = 0, ch = 0, r;
+	bool tried = false, viewBlocked = false;
     do {
 		ch++;
-		tx = entityObjects[0].getPos().x - this->pos.x;
-		ty = entityObjects[0].getPos().y - this->pos.y;
-		if(abs(ty)<=this->range && abs(tx)<=this->range) {
-			if(tried == true) {
+		xdiff = entityObjects[0].getPos().x - this->pos.x;
+		ydiff = entityObjects[0].getPos().y - this->pos.y;
+		if(abs(ydiff)<=this->range && abs(xdiff)<=this->range) {
+			//Don't Follow if Vision Blocked
+			i = this->pos.y;
+			if(range!=MaxX) {
+				do {
+					if(ydiff > 0) i++;	else if(ydiff < 0)	i--;
+					j = this->pos.x;
+					do {
+						if(xdiff > 0) j++;	else if(xdiff < 0)	j--;
+						if(map[i][j].isOpaque()) {
+							viewBlocked = true;	break;
+						}
+					} while(j != entityObjects[0].getPos().x);
+					if(viewBlocked == true)	break;
+				} while(i != entityObjects[0].getPos().y);
+			}
+			
+			if(viewBlocked == true) {
+				r = 1 + random(4);
+			} else if(tried == true) {
 				switch(r) {
 					case 1:
-					case 2:	r = (pow( pow(tx, 2) + pow(ty-1, 2), 0.5 ) > pow( pow(tx, 2) + pow(ty+1, 2), 0.5 )) ? 3 : 4;
+					case 2:	r = (pow( pow(xdiff, 2) + pow(ydiff-1, 2), 0.5 ) > pow( pow(xdiff, 2) + pow(ydiff+1, 2), 0.5 )) ? 3 : 4;
 							break;
 					case 3:
-					case 4:	r = (pow( pow(tx-1, 2) + pow(ty, 2), 0.5 ) > pow( pow(tx+1, 2) + pow(ty, 2), 0.5 )) ? 1 : 2;
+					case 4:	r = (pow( pow(xdiff-1, 2) + pow(ydiff, 2), 0.5 ) > pow( pow(xdiff+1, 2) + pow(ydiff, 2), 0.5 )) ? 1 : 2;
 							break;
 				};
-			} else if(abs(ty) > abs(tx)) {
-				r = ( ty > 0 ) ? DOWN : UP;
+			} else if(abs(ydiff) > abs(xdiff)) {
+				r = ( ydiff > 0 ) ? DOWN : UP;
 			} else {
-				r = ( tx > 0 ) ? RIGHT : LEFT;
+				r = ( xdiff > 0 ) ? RIGHT : LEFT;
 			}
 		} else {
 			r = 1 + random(4);
@@ -104,13 +122,13 @@ void Object :: route(unsigned int last) {
 
 		this->dir = (eDirection) r;
 		switch(r) {
-		case 1:   tx = -1;  ty = +0; break;
-		case 2:   tx = +1;  ty = +0; break;
-		case 3:   tx = +0;  ty = -1; break;
-		case 4:   tx = +0;  ty = +1; break;
+		case 1:   xdiff = -1;  ydiff = +0; break;
+		case 2:   xdiff = +1;  ydiff = +0; break;
+		case 3:   xdiff = +0;  ydiff = -1; break;
+		case 4:   xdiff = +0;  ydiff = +1; break;
 		};
 		tried = true;
-	} while(!this->moveObject(tx, ty) && ch < this->range);
+	} while(!this->moveObject(xdiff, ydiff) && ch < this->range);
 	this->last = last;
 }
 
