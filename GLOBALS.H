@@ -12,6 +12,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <time.h>
+#include <graphics.h>
 
 #define bool int
 #define true 1
@@ -30,6 +31,7 @@ enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
+int px = 0, py = 0;
 
 void halt(int x = 1) {   
     delay(x);

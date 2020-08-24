@@ -135,7 +135,9 @@ void Object :: route(unsigned int last) {
 void Object :: draw() {
 	textcolor(color);
 	textbackground(bgcolor);
-	cprintf("%c", symbol);
+	//cprintf("%c", symbol);
+	char msg[124];	sprintf(msg, "%c", symbol);
+	outtextxy(px, py, msg);
 	textcolor(WHITE);
 	textbackground(BLACK);
 }

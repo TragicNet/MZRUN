@@ -1,6 +1,9 @@
 #include "MZRUN/GLOBALS.H"
 
 void main() {
+	int gd = DETECT, gm;
+	initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+
 	clrscr();
 	_setcursortype(_NOCURSOR);
 	Engine game;
@@ -10,4 +13,5 @@ void main() {
 		game.inputEngine();
 		game.handleEngine();
 	}
+	closegraph();
 }

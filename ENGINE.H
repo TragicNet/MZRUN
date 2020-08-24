@@ -39,16 +39,24 @@ Engine :: Engine() {
 
 void Engine :: HUD() {
 	int i, j;
+	/*char msg[124];
 	//Map Window
 	for(i=1; i<=25; i++) {
-		gotoxy(screen.x+boardX,i);	cprintf("%c", border[1]);
+		//gotoxy(screen.x+boardX,i);	cprintf("%c", border[1]);
+		sprintf(msg, "%c", border[1]);
+		outtextxy(screen.x + boardX, i, msg);
 	}
 	for(i=1; i<=screen.x+boardX;i++) {
-		gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
+		//gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
+		sprintf(msg, "%c", border[0]);
+		outtextxy(i, screen.y + boardY, msg);
 	}
-	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", 180);
+	//gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", 180);
+	sprintf(msg, "%c", 180);
+	outtextxy(screen.x+boardX,screen.y+boardY, msg);*/
 
-	gotoxy(2, 24);	cprintf("Timer: ");
+	//gotoxy(2, 24);	cprintf("Timer: ");
+	outtextxy(16 , 461, "Timer: ");
 }
 
 void Engine :: drawEngine() {
@@ -56,7 +64,8 @@ void Engine :: drawEngine() {
 	coord camera = view(player->getPos(), screen, fullmap);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
-			gotoxy(boardX+j, boardY+i);
+			//gotoxy(boardX+j, boardY+i);
+			px = boardX + j;	py = boardY + i;
 			//Vision
 			if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
@@ -69,8 +78,9 @@ void Engine :: drawEngine() {
 			else	air.draw();
 		}
 	}
-	gotoxy(8, 24);
-	cprintf("%3d", timer/TICKSPEED);
+	//gotoxy(8, 24);	cprintf("%3d", timer/TICKSPEED);
+	char msg[124];	sprintf(msg, "%3d", timer/TICKSPEED);
+	outtextxy(64, 461, msg);
 }
 
 void Engine :: inputEngine() {
