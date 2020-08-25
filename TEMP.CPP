@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <graphics.h>
+#include <conio.h>
+
+void main() {
+   int gd = DETECT, gm;
+   int x = 200, y = 200;
+
+   initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
+
+   outtextxy(x, y, "Hello World");
+   line(630,0,630,479); //ROAD
+   getch();
+   closegraph();
+}
