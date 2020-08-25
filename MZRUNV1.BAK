@@ -8,12 +8,12 @@ void main() {
 	_setcursortype(_NOCURSOR);
 	Engine game;
 	game.HUD();
-	while(!game.getState()) {
+	/*while(!game.getState()) {
 		game.drawEngine();
 		game.inputEngine();
 		game.handleEngine();
-	}
-	/*game.drawEngine();
-	getch();*/
+	}*/
+	game.drawEngine();
+	getch();
 	closegraph();
 }

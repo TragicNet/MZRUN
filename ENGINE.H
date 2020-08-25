@@ -58,14 +58,19 @@ void Engine :: HUD() {
 	//gotoxy(2, 24);	cprintf("Timer: ");
 	outtextxy(16 , 461, "Timer: ");
 }
-
+int page = 0;
 void Engine :: drawEngine() {
 	int i, j;
+	setactivepage(page);
+	//setvisualpage(1 - page);
+
+	cleardevice();
+
 	coord camera = view(player->getPos(), screen, fullmap);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			//gotoxy(boardX+j, boardY+i);
-			px = boardX + j;	py = boardY + i;
+			px = 1 + j * gr.x;	py = 1 + i * gr.y;
 			//Vision
 			if(player->distance(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
@@ -81,6 +86,8 @@ void Engine :: drawEngine() {
 	//gotoxy(8, 24);	cprintf("%3d", timer/TICKSPEED);
 	char msg[124];	sprintf(msg, "%3d", timer/TICKSPEED);
 	outtextxy(64, 461, msg);
+	
+	page = 1 - page;
 }
 
 void Engine :: inputEngine() {

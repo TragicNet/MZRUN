@@ -11,13 +11,19 @@ public:
     coord(coord &t) {
         this->x = t.x;    this->y = t.y;
     }
-}screen(208, 326), fullmap;
+}screen(51, 17), fullmap, gr(8, 8);
 
 coord operator-(coord const &a, coord const &b) {
     return coord(a.x - b.x, a.y - b.y);
 }
 coord operator+(coord const &a, coord const &b) {
     return coord(a.x + b.x, a.y + b.y);
+}
+coord operator*(coord const &a, coord const &b) {
+    return coord(a.x * b.x, a.y * b.y);
+}
+coord operator/(coord const &a, coord const &b) {
+    return coord(a.x / b.x, a.y / b.y);
 }
 bool operator==(coord const &a, coord const &b) {
     return (a.x == b.x && a.y == b.y) ? true : false;
