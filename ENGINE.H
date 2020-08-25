@@ -40,15 +40,32 @@ Engine :: Engine() {
 void Engine :: HUD() {
 	int i, j;
 	//Map Window
-	for(i=1; i<=25; i++) {
-		gotoxy(screen.x+boardX,i);	cprintf("%c", border[1]);
+	textcolor(GREEN);
+	for(i=1; i<=24; i++) {
+		gotoxy(1, i);	cprintf("%c", border[1]);	gotoxy(80, i);	cprintf("%c", border[1]);
 	}
-	for(i=1; i<=screen.x+boardX;i++) {
-		gotoxy(i,screen.y+boardY);	cprintf("%c", border[0]);
+	gotoxy(1, 24);	cprintf("%c", border[4]);	gotoxy(80, 24);	cprintf("%c", border[5]);
+	gotoxy(80, 1);	insline();
+	gotoxy(1, 1);	cprintf("%c", border[2]);	gotoxy(80, 1);	cprintf("%c", border[3]);
+	for(i=2; i<80; i++) {
+		gotoxy(i, 1);	cprintf("%c", border[0]);	gotoxy(i, 25);	cprintf("%c", border[0]);
 	}
-	gotoxy(screen.x+boardX,screen.y+boardY);	cprintf("%c", 180);
 
-	gotoxy(2, 24);	cprintf("Timer: ");
+
+	for(i = board.x; i < board.x + screen.x; i++) {
+		gotoxy(i, board.y-1);	cprintf("%c", border[0]);	gotoxy(i, board.y+screen.y);	cprintf("%c", border[0]);
+	}
+	gotoxy(board.x-1, board.y-1);	cprintf("%c", border[2]);	gotoxy(board.x+screen.x, board.y-1);	cprintf("%c", border[3]);
+	
+	for(i = board.y; i < board.y + screen.y; i++) {
+		gotoxy(board.x-1, i);	cprintf("%c", border[1]);	gotoxy(board.x+screen.x, i);	cprintf("%c", border[1]);
+	}
+	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
+	for(i=2; i<80; i++) {
+		gotoxy(i, 23);	cprintf("%c", border[0]);
+	}
+	gotoxy(1, 23);	cprintf("%c", 195);
+	gotoxy(80, 23);	cprintf("%c", 180);
 }
 
 void Engine :: drawEngine() {
@@ -56,9 +73,9 @@ void Engine :: drawEngine() {
 	coord camera = view(player->getPos(), screen, fullmap);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
-			gotoxy(boardX+j, boardY+i);
+			gotoxy(board.x+j, board.y+i);
 			//Vision
-			if(player->distance(camera + coord(j, i)) > torchRange) {
+			if(player->torchRadius(camera + coord(j, i)) > torchRange) {
 				blackair.draw();
 				continue;
 			}
@@ -69,7 +86,8 @@ void Engine :: drawEngine() {
 			else	air.draw();
 		}
 	}
-	gotoxy(8, 24);
+	gotoxy(3, 24);
+	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);
 	cprintf("%3d", timer/TICKSPEED);
 }
 
@@ -127,6 +145,7 @@ void Engine :: death() {
 	int height = 3, width = 12;
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
+
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c You Died %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);

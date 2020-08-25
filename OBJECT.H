@@ -42,7 +42,7 @@ public:
 	void route(unsigned int last);
 	void draw();
 	inline bool isThere(coord t) {	return (this->pos.x==t.x && this->pos.y == t.y) ? true : false;	}
-	inline float distance(coord t) {	return pow( pow(this->pos.x-t.x, 2)/*/2.5*/ + pow(this->pos.y*2-t.y*2, 2)/**1.5*/ , 0.5 );	}
+	inline float torchRadius(coord t) {	return pow( pow(this->pos.x-t.x, 2) + pow((this->pos.y-t.y)*2, 2) , 0.5 );	}
 };
 unsigned int totalEntities = 1;
 Object entityObjects[50], keys[20], doors[20];

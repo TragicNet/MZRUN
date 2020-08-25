@@ -19,8 +19,6 @@
 #define MaxX 60
 #define MaxY 20
 #define MaxSpeed 9
-#define boardX 1
-#define boardY 1
 #define oTICKSPEED 100//30
 #define oTIMELIMIT 100//200
 
