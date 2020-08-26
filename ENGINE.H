@@ -147,7 +147,7 @@ void Engine :: death() {
 	int height = 3, width = 12;
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
-
+	textcolor(GREEN);	highvideo();
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c You Died %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
@@ -155,6 +155,7 @@ void Engine :: death() {
 	sound(120);	halt(100);	nosound();
 	halt(50);
 	sound(120);	halt(100);	nosound();
+	normvideo();
 	getch();
 }
 

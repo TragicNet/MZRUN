@@ -15,6 +15,10 @@ void Start() {
 	int i, x = 35, y = 12, key;
 	bool pressed = false;
 	clrscr();
+    /*int t = CYAN;
+    textcolor(t); lowvideo();   cprintf("Hello");
+    textcolor(t); highvideo();  cprintf("Hello");
+    textcolor(t); normvideo();  cprintf("Hello");*/
 	gotoxy(35,9);
 	textcolor(YELLOW);	cprintf("MAZE RUNNER");
 	textcolor(WHITE);
