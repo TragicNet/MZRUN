@@ -59,25 +59,15 @@ void Engine :: HUD() {
 	outtextxy(16 , 461, "Timer: ");
 }
 int page = 0;
-char far *vid_mem= (char far *) 0xB8000000L ;
-void drawbox (int sr,int sc,int er,int ec,char attr) {
-	int r,c;
-	char far *v;
-	for(r=sr;r<=er;r++) {
-		for(c=sc;c<=ec;c++) {
-			v=vid_mem+(r*160)+(c*2);	*v=250 ;	v++;	*v=attr;
-		}
-	}
-}
 void Engine :: drawEngine() {
 	int i, j;
 	setactivepage(page);
 	setvisualpage(1 - page);
 	cleardevice();
+	page = 1 - page;
 	//outtextxy(16 , 461, "Timer: ");
 	//setviewport(boardX, boardY, screen.x * 8, screen.y * 8, 1);
 	//clearviewport();
-	//drawbox (0,0,16,79,12);
 
 	coord camera = view(player->getPos(), screen, fullmap);
 	for(i = 0; i<screen.y; i++) {
@@ -99,8 +89,6 @@ void Engine :: drawEngine() {
 	//gotoxy(8, 24);	cprintf("%3d", timer/TICKSPEED);
 	char msg[124];	sprintf(msg, "%3d", timer/TICKSPEED);
 	outtextxy(64, 461, msg);
-	
-	page = 1 - page;
 	delay(5);
 }
 
