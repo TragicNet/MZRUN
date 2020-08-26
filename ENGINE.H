@@ -17,6 +17,7 @@ public:
 	void drawEngine();
 	void inputEngine();
 	void handleEngine();
+	void MainMenu();
 	void HUD();
 	void death();
 	int getPaths(char paths[][50]);
@@ -37,30 +38,55 @@ Engine :: Engine() {
 	this->data.Import(path);
 }
 
+void Engine :: MainMenu() {
+	int i, x = 35, y = 13;
+	clrscr();
+	gotoxy(35,10);
+	textcolor(YELLOW);	cprintf("MAZE RUNNER");
+	textcolor(WHITE);
+	gotoxy(37,12);	cout<<" Start ";
+	gotoxy(37,13);	cout<<"Options";
+	gotoxy(37,14);	cout<<" Exit  ";
+	textcolor(GREEN);
+	for(i = 11; i <= 15; i++) {	//Vertical
+		gotoxy(33, i);	cprintf("%c", border[1]);	gotoxy(47, i);	cprintf("%c", border[1]);
+	}
+	for(i = 33; i <= 47; i++) {	//Horizontal
+		gotoxy(i, 11);	cprintf("%c", border[0]);	gotoxy(i, 15);	cprintf("%c", border[0]);
+	}
+	gotoxy(33, 11);	cprintf("%c", border[2]);	gotoxy(47, 11);	cprintf("%c", border[3]);
+	gotoxy(33, 15);	cprintf("%c", border[4]);	gotoxy(47, 15);	cprintf("%c", border[5]);
+	gotoxy(x,y);	cprintf("<");
+	gotoxy(x+10,y);	cprintf(">");
+	getch();
+	//clrscr();
+}
+
 void Engine :: HUD() {
 	int i, j;
-	//Map Window
 	textcolor(GREEN);
-	for(i=1; i<=24; i++) {
+	//Outer Window
+	for(i=1; i<=24; i++) {	//Vertical
 		gotoxy(1, i);	cprintf("%c", border[1]);	gotoxy(80, i);	cprintf("%c", border[1]);
 	}
 	gotoxy(1, 24);	cprintf("%c", border[4]);	gotoxy(80, 24);	cprintf("%c", border[5]);
 	gotoxy(80, 1);	insline();
 	gotoxy(1, 1);	cprintf("%c", border[2]);	gotoxy(80, 1);	cprintf("%c", border[3]);
-	for(i=2; i<80; i++) {
+	for(i=2; i<80; i++) {	//Horizontal
 		gotoxy(i, 1);	cprintf("%c", border[0]);	gotoxy(i, 25);	cprintf("%c", border[0]);
 	}
 
-
-	for(i = board.x; i < board.x + screen.x; i++) {
+	//Map Window
+	for(i = board.y; i < board.y + screen.y; i++) {	//Vertical
+		gotoxy(board.x-1, i);	cprintf("%c", border[1]);	gotoxy(board.x+screen.x, i);	cprintf("%c", border[1]);
+	}
+	for(i = board.x; i < board.x + screen.x; i++) {	//Horizontal
 		gotoxy(i, board.y-1);	cprintf("%c", border[0]);	gotoxy(i, board.y+screen.y);	cprintf("%c", border[0]);
 	}
 	gotoxy(board.x-1, board.y-1);	cprintf("%c", border[2]);	gotoxy(board.x+screen.x, board.y-1);	cprintf("%c", border[3]);
-	
-	for(i = board.y; i < board.y + screen.y; i++) {
-		gotoxy(board.x-1, i);	cprintf("%c", border[1]);	gotoxy(board.x+screen.x, i);	cprintf("%c", border[1]);
-	}
 	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
+	
+	//Bottom
 	for(i=2; i<80; i++) {
 		gotoxy(i, 23);	cprintf("%c", border[0]);
 	}
