@@ -1,7 +1,7 @@
 #include "MZRUN/GLOBALS.H"
 
 void main() {
-	int gd = DETECT, gm;
+	int gd = EGA, gm = EGAHI;
 	clrscr();
 	initgraph(&gd, &gm, "C:\\TURBOC3\\BGI");
 
