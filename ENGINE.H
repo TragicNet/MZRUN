@@ -17,7 +17,6 @@ public:
 	void drawEngine();
 	void inputEngine();
 	void handleEngine();
-	void MainMenu();
 	void HUD();
 	void death();
 	int getPaths(char paths[][50]);
@@ -38,31 +37,8 @@ Engine :: Engine() {
 	this->data.Import(path);
 }
 
-void Engine :: MainMenu() {
-	int i, x = 35, y = 13;
-	clrscr();
-	gotoxy(35,10);
-	textcolor(YELLOW);	cprintf("MAZE RUNNER");
-	textcolor(WHITE);
-	gotoxy(37,12);	cout<<" Start ";
-	gotoxy(37,13);	cout<<"Options";
-	gotoxy(37,14);	cout<<" Exit  ";
-	textcolor(GREEN);
-	for(i = 11; i <= 15; i++) {	//Vertical
-		gotoxy(33, i);	cprintf("%c", border[1]);	gotoxy(47, i);	cprintf("%c", border[1]);
-	}
-	for(i = 33; i <= 47; i++) {	//Horizontal
-		gotoxy(i, 11);	cprintf("%c", border[0]);	gotoxy(i, 15);	cprintf("%c", border[0]);
-	}
-	gotoxy(33, 11);	cprintf("%c", border[2]);	gotoxy(47, 11);	cprintf("%c", border[3]);
-	gotoxy(33, 15);	cprintf("%c", border[4]);	gotoxy(47, 15);	cprintf("%c", border[5]);
-	gotoxy(x,y);	cprintf("<");
-	gotoxy(x+10,y);	cprintf(">");
-	getch();
-	//clrscr();
-}
-
 void Engine :: HUD() {
+	clrscr();
 	int i, j;
 	textcolor(GREEN);
 	//Outer Window

@@ -44,5 +44,6 @@ void halt(int x = 1) {
 #include "MZRUN/OBJECT.H"
 #include "MZRUN/SAVE.H"
 #include "MZRUN/ENGINE.H"
+#include "MZRUN/GAME.H"
 
 #endif
