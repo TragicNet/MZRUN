@@ -15,9 +15,10 @@ bool Engine_getState(struct Engine *this)	{	return this->gameOver;			}
 bool Engine_isCleared(struct Engine *this)	{	return this->cleared;			}
 
 void Engine_init(struct Engine *this) {
-	int gen = rand() % Engine_getPaths(this->paths);
+	int gen;
 	char path[50] = "./MZRUN/LEVELS/";
 	srand((unsigned)time(0));
+	gen = rand() % Engine_getPaths(this->paths);
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
 
@@ -139,11 +140,10 @@ int Engine_getPaths(char paths[][50]) {
 	if(dr == NULL) return 0;
 	while((de = readdir(dr)) != NULL)  {
 		s = strlen(de->d_name);
-		for(i=s-4; i>0; i--)
+		for(i=s-4; i>0; i--) {
 			if(de->d_name[i] != ext[s-4-i])	continue;
-			else {
-				strcpy(paths[cnt++], de->d_name);
-			}
+			else strcpy(paths[cnt++], de->d_name);
+		}
 	}
 	closedir(dr);
 	return cnt;
