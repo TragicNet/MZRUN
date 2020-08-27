@@ -1,26 +1,19 @@
 #ifndef TILE_H
 #define TILE_H
 
-//#include "MZRUN/GLOBALS.H"
-
-class Tile {
-private:
+struct Tile {
     bool blocked;
     bool block_sight;
+} map[MaxY][MaxX];;
 
-public:
-    Tile(bool blocked = false, bool block_sight = false);
-    ~Tile() {};
-    inline bool isBlocked()     {   return this->blocked;       }
-    inline void block()         {   this->blocked = true;       }
-    inline void unblock()       {   this->blocked = false;      }
-    inline bool isOpaque()      {   return this->block_sight;   }
-    inline void blockSight()    {   this->block_sight = true;   }
-    inline void unblockSight()  {   this->block_sight = false;  }
-};
-Tile map[MaxY][MaxX];
+bool Tile_isBlocked(struct Tile *this)     {   return this->blocked;       }
+void Tile_block(struct Tile *this)         {   this->blocked = true;       }
+void Tile_unblock(struct Tile *this)       {   this->blocked = false;      }
+bool Tile_isOpaque(struct Tile *this)      {   return this->block_sight;   }
+void Tile_blockSight(struct Tile *this)    {   this->block_sight = true;   }
+void Tile_unblockSight(struct Tile *this)  {   this->block_sight = false;  }
 
-Tile :: Tile(bool blocked, bool block_sight) {
+void Tile_init(struct Tile *this, bool blocked, bool block_sight) {
     this->blocked = blocked;
     this->block_sight = block_sight;
 }

@@ -7,8 +7,6 @@
 #include <conio.h>
 #include <dos.h>
 #include <bios.h>
-#include <iostream.h>
-#include <fstream.h>
 #include <string.h>
 #include <dirent.h>
 #include <time.h>
@@ -29,7 +27,7 @@ char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
 
-void halt(int x = 1) {   
+void halt(int x) {   
     delay(x);
 	while(1)
 	{	if(kbhit())	getch();

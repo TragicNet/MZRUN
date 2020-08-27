@@ -41,7 +41,7 @@ void Save_Import(struct Save *this, char path[]) {
     //delete fullmap; fullmap = new coord(this->save_fullmap.x, this->save_fullmap.y);
     fullmap = this->save_fullmap;
     totalEntities = this->save_totalEntities;
-	Object_reloc(&goal, this->save_goal.pos);
+	Object_reloc(&goal, save_goal.pos);
 	for(i=0; i<totalEntities; i++)
 		entityObjects[i] = this->save_monsters[i];
 	for(i=0; i<MaxY; i++) {

@@ -15,7 +15,7 @@ bool Engine_getState(struct Engine *this)	{	return this->gameOver;			}
 bool Engine_isCleared(struct Engine *this)	{	return this->cleared;			}
 
 void Engine_init(struct Engine *this) {
-	int gen = rand() % Engine_getPaths(this->paths);
+	int gen = rand() % this->getPaths(this->paths);
 	char path[50] = "./MZRUN/LEVELS/";
 	srand((unsigned)time(0));
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
@@ -83,13 +83,13 @@ void Engine_draw(struct Engine *this) {
 			coord_init(&tmp, j, i);
 			gotoxy(board.x+j, board.y+i);
 			//Vision
-			/*if(Object_torchRadius(this->player, coord_add(camera, tmp)) > torchRange) {
+			if(Object_torchRadius(this->player, coord_add(camera, tmp)) > torchRange) {
 				Object_draw(&blackair);
 				continue;
-			}*/
+			}
 			obj = posCheck(coord_add(camera, tmp), "", true);
 			if(obj!=-1)	Object_draw(&entityObjects[obj]);
-			else if(coord_cmp(goal.pos, coord_add(camera, tmp)))	Object_draw(&goal);
+			else if(coord_smp(goal.pos, coord_sum(camera, tmp)))	Object_draw(&goal);
 			else if(Tile_isBlocked(&map[camera.y + i][camera.x + j])) Object_draw(&wall);
 			else	Object_draw(&air);
 		}
@@ -123,7 +123,7 @@ void Engine_handle(struct Engine *this) {
 	}
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
-			Object_route(&entityObjects[i], this->timer);
+			route(&entityObjects[i], this->timer);
 	}
 	if( Engine_tick(this) < 1 )
 		this->gameOver = true;

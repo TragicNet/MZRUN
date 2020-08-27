@@ -1,31 +1,29 @@
 #ifndef COORD_H
 #define COORD_H
 
-class coord {
-public:
-    int x, y;
-    coord() {   x = 0;  y = 0;  }
-    coord(int x, int y) {
-        this->x = x;    this->y = y;
-    }
-    coord(coord &t) {
-        this->x = t.x;    this->y = t.y;
-    }
-} board(5, 5), screen(39, 13), fullmap;
+struct coord {
+	int x, y;
+} board, screen, fullmap, tmp;;
 
-coord operator-(coord const &a, coord const &b) {
-    return coord(a.x - b.x, a.y - b.y);
+void coord_init(struct coord *trg, int x, int y) {   trg->x = x;  trg->y = y;  }
+void coord_cpy(struct coord *trg, struct coord src) {   trg->x = src.x;  trg->y = src.y;  }
+
+struct coord coord_sub(struct coord a, struct coord b) {
+    coord_init(&tmp, a.x - b.x, a.y - b.y);
+    return tmp;
 }
-coord operator+(coord const &a, coord const &b) {
-    return coord(a.x + b.x, a.y + b.y);
+struct coord coord_add(struct coord a, struct coord b) {
+    coord_init(&tmp, a.x + b.x, a.y + b.y);
+    return tmp;
 }
-bool operator==(coord const &a, coord const &b) {
+bool coord_cmp(struct coord a, struct coord b) {
     return (a.x == b.x && a.y == b.y) ? true : false;
 }
 
-coord view(coord p, coord s, coord m) {
-    coord hs = coord(s.x/2, s.y/2);
-    coord c = p - hs;
+struct coord view(struct coord p, struct coord s, struct coord m) {
+    struct coord hs, c;
+    coord_init(&hs, s.x/2, s.y/2);
+    c = coord_sub(p, hs);
     if(c.x < 0)    c.x = 0;
     else if(c.x + s.x > m.x)    c.x = m.x - s.x;
     if(c.y < 0)    c.y = 0;
