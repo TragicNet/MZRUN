@@ -13,10 +13,6 @@ struct Object {
 
 	//Temporary Variables: Change Frequently
 	unsigned int last;
-
-/*public:
-	bool moveObject(int posX, int posY);
-	void draw();*/
 }entityObjects[50], keys[20], doors[20], goal, wall, air, blackair;
 unsigned int totalEntities = 1;
 
