@@ -96,10 +96,10 @@ void Object_route(struct Object *this, unsigned int last) {
 			} else if(tried == true) {
 				switch(r) {
 					case 1:
-					case 2:	r = (pow( (double)pow((double)xdiff, 2) + (double)pow(ydiff-1, 2), 0.5 ) > pow( (double)pow(xdiff, 2) + (double)pow((double)ydiff+1, 2), 0.5 )) ? 3 : 4;
+					case 2:	r = (pow( pow(abs(xdiff), 2) + pow(abs(ydiff-1), 2), 0.5 ) > pow( pow(abs(xdiff), 2) + pow(abs(ydiff+1), 2), 0.5 )) ? 3 : 4;
 							break;
 					case 3:
-					case 4:	r = (pow( (double)pow((double)xdiff, 2) + (double)pow(ydiff-1, 2), 0.5 ) > pow( (double)pow(xdiff, 2) + (double)pow((double)ydiff+1, 2), 0.5 )) ? 1 : 2;
+					case 4:	r = (pow( pow(abs(xdiff), 2) + pow(abs(ydiff-1), 2), 0.5 ) > pow( pow(abs(xdiff), 2) + pow(abs(ydiff+1), 2), 0.5 )) ? 1 : 2;
 							break;
 				};
 			} else if(abs(ydiff) > abs(xdiff)) {

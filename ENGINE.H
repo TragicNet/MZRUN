@@ -50,7 +50,7 @@ void Engine_HUD() {
 	}
 	gotoxy(board.x-1, board.y-1);	cprintf("%c", border[2]);	gotoxy(board.x+screen.x, board.y-1);	cprintf("%c", border[3]);
 	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
-	
+	gotoxy(board.x+screen.x-3, board.y-1);	cprintf("Map");
 	//Bottom
 	for(i=2; i<80; i++) {
 		gotoxy(i, 23);	cprintf("%c", border[0]);
@@ -63,6 +63,7 @@ void Engine_draw(struct Engine *this) {
 	int i, j, obj;
 	struct coord tmp;
 	struct coord camera = view(this->player->pos, screen, fullmap);
+	fflush(stdout);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
@@ -93,13 +94,13 @@ void script_death(struct Engine *this) {
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
-	textcolor(GREEN);	highvideo();
+	textcolor(RED);	highvideo();
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 
 	sound(120);	halt(100);	nosound();
-	halt(50);
+	halt(15);
 	sound(120);	halt(100);	nosound();
 	normvideo();
 	getch();
@@ -107,18 +108,22 @@ void script_death(struct Engine *this) {
 
 void script_cleared(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
-	int height = 3, width = 12;
+	int height = 3, width = 11;
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
 	textcolor(GREEN);	highvideo();
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
-	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
+	gotoxy(cx, cy++);	cprintf("%c CLEARED %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 
-	sound(120);	halt(100);	nosound();
-	halt(50);
-	sound(120);	halt(100);	nosound();
+	sound(100);	halt(100);	nosound();
+	halt(5);
+	sound(250);	halt(100);	nosound();
+	halt(5);
+	sound(150);	halt(100);	nosound();
+	halt(5);
+	sound(300);	halt(100);	nosound();
 	normvideo();
 	getch();
 }
@@ -137,9 +142,9 @@ void Engine_input(struct Engine *this) {
 
 void Object_script(struct Engine *engine, struct Object *this) {
 	overlapping = true;
-	if(strcmp(this->type, "monster")) {
+	if(strcmp(this->type, "monster") == 0) {
 		script_death(engine);
-	} else if(strcmp(this->type, "goal")) {
+	} else if(strcmp(this->type, "goal") == 0) {
 		script_cleared(engine);
 	}
 	overlapping = false;
@@ -148,8 +153,6 @@ void Object_script(struct Engine *engine, struct Object *this) {
 void Engine_handle(struct Engine *this) {
 	int i;
 	//gotoxy(1, 25);	cprintf("%5u",timer);
-	/*i = posCheck(this->player->pos, "goal", false);
-	gotoxy(1, 1);	printf("%d: %d, %d : %s", i, entityObjects[i].pos.x, entityObjects[i].pos.y, entityObjects[i].type);*/
 	i = posCheck(this->player->pos, "", true);
 	if(i > 0) {
 		Object_script(this, &entityObjects[i]);
