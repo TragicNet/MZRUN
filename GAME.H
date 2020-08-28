@@ -7,13 +7,12 @@ void init() {
 	coord_init(&screen, 39, 13);
 	for(i = 0; i < MaxY; i++) {
 		for(j = 0; j < MaxX; j++) {
-			Tile_init(&map[i][j], false, false);
+			Tile_init(&map[i][j], false, false, false);
 		}
 	}
-	Object_init(&goal, 0, 0, STOP, 'g', "goal", CYAN, CYAN, 0, 0);
-	Object_init(&wall, 0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY, 0, 0);
-	Object_init(&air, 0, 0, STOP, '.', "air", LIGHTGRAY, BLACK, 0, 0);
-	Object_init(&blackair, 0, 0, STOP, '.', "air", BLACK, BLACK, 0, 0);
+	Object_init(&wall, 0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY, 0, 0, 1);
+	Object_init(&air, 0, 0, STOP, '.', "air", LIGHTGRAY, BLACK, 0, 0, 0);
+	Object_init(&blackair, 0, 0, STOP, '.', "air", BLACK, BLACK, 0, 0, 0);
 }
 
 void GameLoop() {

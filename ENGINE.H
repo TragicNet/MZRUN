@@ -26,23 +26,6 @@ void Engine_init(struct Engine *this) {
 	Save_Import(&this->data, path);
 }
 
-void Engine_death(struct Engine *this) {
-	int i, j, cx = 40, cy = 13;
-	int height = 3, width = 12;
-	cx-=width/2;	cy-=height/2;
-	this->gameOver = true;
-	textcolor(GREEN);	highvideo();
-	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
-	gotoxy(cx, cy++);	cprintf("%c You Died %c", border[1], border[1]);
-	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
-
-	sound(120);	halt(100);	nosound();
-	halt(50);
-	sound(120);	halt(100);	nosound();
-	normvideo();
-	getch();
-}
-
 void Engine_HUD() {
 	int i, j;
 	clrscr();
@@ -90,15 +73,54 @@ void Engine_draw(struct Engine *this) {
 				continue;
 			}
 			obj = posCheck(coord_add(camera, tmp), "", true);
-			if(obj!=-1)	Object_draw(&entityObjects[obj]);
-			else if(coord_cmp(goal.pos, coord_add(camera, tmp)))	Object_draw(&goal);
-			else if(Tile_isBlocked(&map[camera.y + i][camera.x + j])) Object_draw(&wall);
+			if(obj>=0)	{
+				if( coord_cmp(entityObjects[obj].pos, this->player->pos) && entityObjects[obj].weight < this->player->weight) {
+					Object_setColor(this->player, WHITE, entityObjects[obj].bgcolor);	obj = 0;
+				}
+				Object_draw(&entityObjects[obj]);
+			} else if(Tile_isBlocked(&map[camera.y + i][camera.x + j])) Object_draw(&wall);
 			else	Object_draw(&air);
 		}
 	}
 	gotoxy(3, 24);
 	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);
 	cprintf("%3d", this->timer/TICKSPEED);
+}
+
+void script_death(struct Engine *this) {
+	int i, j, cx = 40, cy = 13;
+	int height = 3, width = 12;
+	Engine_draw(this);
+	cx-=width/2;	cy-=height/2;
+	this->gameOver = true;
+	textcolor(GREEN);	highvideo();
+	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
+	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
+	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
+
+	sound(120);	halt(100);	nosound();
+	halt(50);
+	sound(120);	halt(100);	nosound();
+	normvideo();
+	getch();
+}
+
+void script_cleared(struct Engine *this) {
+	int i, j, cx = 40, cy = 13;
+	int height = 3, width = 12;
+	Engine_draw(this);
+	cx-=width/2;	cy-=height/2;
+	this->gameOver = true;
+	textcolor(GREEN);	highvideo();
+	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
+	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
+	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
+
+	sound(120);	halt(100);	nosound();
+	halt(50);
+	sound(120);	halt(100);	nosound();
+	normvideo();
+	getch();
 }
 
 void Engine_input(struct Engine *this) {
@@ -113,15 +135,25 @@ void Engine_input(struct Engine *this) {
 	}
 }
 
+void Object_script(struct Engine *engine, struct Object *this) {
+	overlapping = true;
+	if(strcmp(this->type, "monster")) {
+		script_death(engine);
+	} else if(strcmp(this->type, "goal")) {
+		script_cleared(engine);
+	}
+	overlapping = false;
+}
+
 void Engine_handle(struct Engine *this) {
 	int i;
 	//gotoxy(1, 25);	cprintf("%5u",timer);
-	if(posCheck(this->player->pos, "monster", true)) {		//Die
-		Engine_draw(this);	Engine_death(this);	return;
-	} else if(coord_cmp(this->player->pos, goal.pos)) {	//Win
-		Object_setColor(this->player, WHITE, goal.bgcolor);
-		Engine_draw(this);	Engine_death(this);
-		this->cleared = true;	return;
+	/*i = posCheck(this->player->pos, "goal", false);
+	gotoxy(1, 1);	printf("%d: %d, %d : %s", i, entityObjects[i].pos.x, entityObjects[i].pos.y, entityObjects[i].type);*/
+	i = posCheck(this->player->pos, "", true);
+	if(i > 0) {
+		Object_script(this, &entityObjects[i]);
+		if(this->gameOver == true)	return;
 	}
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)

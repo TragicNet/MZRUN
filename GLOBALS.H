@@ -26,6 +26,7 @@ enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
+bool overlapping = false;
 
 void halt(int x) {   
     delay(x);

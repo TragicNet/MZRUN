@@ -92,22 +92,25 @@ void Creator_create_lvl(struct Creator *this) {
 	for(i = 0; i<fullmap.y; i++) {
 		for(j = 0; j<fullmap.x; j++) {
 			Tile_block(&map[i][j]);
-			coord_init(&tmp, j, i);
+			//coord_init(&tmp, j, i);
 			if(cmap[i][j]=='@') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
-				Object_init(temp, j, i, RIGHT, '@', "player", GREEN, BLACK, 0, 0);
+				Object_init(temp, j, i, RIGHT, '@', "player", GREEN, BLACK, 0, 0, 1);
 				cmap[i][j] = '.';	entityObjects[0] = *temp;	free(temp);
 				Tile_unblock(&map[i][j]);
 			} else if(cmap[i][j] == '*') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
-				Object_init(temp, j, i, STOP, '*', "monster", RED, BLACK, 5, 4); //RED
+				Object_init(temp, j, i, STOP, '*', "monster", RED, BLACK, 5, 4, 1); //RED
 				cmap[i][j] = '.';	entityObjects[totalEntities++] = *temp;	free(temp);
 			} else if(cmap[i][j] == '#') {
 				Tile_blockSight(&map[i][j]);
 			} else if(cmap[i][j] == 'g') {
-				Object_reloc(&goal, tmp);
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 'g', "goal", CYAN, CYAN, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';
 				Tile_unblock(&map[i][j]);
+				map[i][j].player_only = true;
 			} else {
 				Tile_unblock(&map[i][j]);
 			}
