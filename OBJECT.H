@@ -113,10 +113,10 @@ void Object_route(struct Object *this, unsigned int last) {
 
 		this->dir = (enum eDirection) r;
 		switch(r) {
-		case 1:   xdiff = -1;  ydiff = +0; break;
-		case 2:   xdiff = +1;  ydiff = +0; break;
-		case 3:   xdiff = +0;  ydiff = -1; break;
-		case 4:   xdiff = +0;  ydiff = +1; break;
+		case 1:		xdiff = -1;	ydiff = +0;	break;
+		case 2:		xdiff = +1;	ydiff = +0; break;
+		case 3:		xdiff = +0;	ydiff = -1; break;
+		case 4:		xdiff = +0;	ydiff = +1; break;
 		};
 		tried = true;
 	} while(!Object_move(this, xdiff, ydiff) && ch < this->range);
