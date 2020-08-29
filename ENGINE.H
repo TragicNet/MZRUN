@@ -140,13 +140,11 @@ void Engine_input(struct Engine *this) {
 }
 
 void Object_script(struct Engine *engine, struct Object *this) {
-	overlapping = true;
 	if(strcmp(this->type, "monster") == 0) {
 		script_death(engine);
 	} else if(strcmp(this->type, "goal") == 0) {
 		script_cleared(engine);
 	}
-	overlapping = false;
 }
 
 void Engine_handle(struct Engine *this) {
