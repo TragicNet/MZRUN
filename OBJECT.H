@@ -96,10 +96,10 @@ void Object_route(struct Object *this, unsigned int last) {
 			} else if(tried == true) {
 				switch(r) {
 					case 1:
-					case 2:	r = (pow( pow(abs(xdiff), 2) + pow(abs(ydiff-1), 2), 0.5 ) > pow( pow(abs(xdiff), 2) + pow(abs(ydiff+1), 2), 0.5 )) ? 3 : 4;
+					case 2:	r = (pow( pow(abs(xdiff), 2) + pow(abs(1-ydiff), 2), 0.5 ) > pow( pow(abs(xdiff), 2) + pow(abs(ydiff+1), 2), 0.5 )) ? 3 : 4;
 							break;
 					case 3:
-					case 4:	r = (pow( pow(abs(xdiff-1), 2) + pow(abs(ydiff), 2), 0.5 ) > pow( pow(abs(xdiff+1), 2) + pow(abs(ydiff), 2), 0.5 )) ? 1 : 2;
+					case 4:	r = (pow( pow(abs(1-xdiff), 2) + pow(abs(ydiff), 2), 0.5 ) > pow( pow(abs(xdiff+1), 2) + pow(abs(ydiff), 2), 0.5 )) ? 1 : 2;
 							break;
 				};
 			} else if(abs(ydiff) > abs(xdiff)) {
@@ -138,7 +138,7 @@ int Object_torchRadius(struct coord this, struct coord t) {
 	d = xp + yp;
 	if(xp == 0 && yp == 0)
 		return 0;
-	if(xp  < 0 || yp < 0) {
+	else if(xp < 0 || yp < 0) {
 		gotoxy(1, 1);	printf("%f, %f", xp, yp);
 		gotoxy(1, 2);	printf("%d, %d", this.x, this.y);
 		gotoxy(1, 3);	printf("%d, %d", t.x, t.y);
@@ -146,6 +146,9 @@ int Object_torchRadius(struct coord this, struct coord t) {
 	}
 	return pow( d, 0.5);
 	//return torchRange;
+}
+float distance(int x1, int y1, int x2, int y2) {
+	return sqrt((x2-x1)*(x2-x1))+((y2-y1)*(y2-y1));
 }
 
 #endif
