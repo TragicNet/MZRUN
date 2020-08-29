@@ -61,19 +61,19 @@ void Engine_HUD() {
 
 void Engine_draw(struct Engine *this) {
 	int i, j, obj;
-	struct coord tmp, sumtmp;
+	struct coord tmp;
 	struct coord camera = view(this->player->pos, screen, fullmap);
 	fflush(stdout);
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
-			sumtmp = coord_add(camera, tmp);
 			gotoxy(board.x+j, board.y+i);
 			obj = posCheck(coord_add(camera, tmp), "", true);
 			//Vision
-			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange) {
+			if(Object_torchRadius(this->player->pos, coord_add(camera, tmp)) > torchRange) {
 				Object_draw(&blackair);
-			} else if(obj>=0)	{
+			} else 
+			if(obj>=0)	{
 				if( coord_cmp(entityObjects[obj].pos, this->player->pos) && entityObjects[obj].weight < this->player->weight) {
 					Object_setColor(this->player, WHITE, entityObjects[obj].bgcolor);	obj = 0;
 				}

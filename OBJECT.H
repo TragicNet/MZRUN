@@ -99,7 +99,7 @@ void Object_route(struct Object *this, unsigned int last) {
 					case 2:	r = (pow( pow(abs(xdiff), 2) + pow(abs(ydiff-1), 2), 0.5 ) > pow( pow(abs(xdiff), 2) + pow(abs(ydiff+1), 2), 0.5 )) ? 3 : 4;
 							break;
 					case 3:
-					case 4:	r = (pow( pow(abs(xdiff), 2) + pow(abs(ydiff-1), 2), 0.5 ) > pow( pow(abs(xdiff), 2) + pow(abs(ydiff+1), 2), 0.5 )) ? 1 : 2;
+					case 4:	r = (pow( pow(abs(xdiff-1), 2) + pow(abs(ydiff), 2), 0.5 ) > pow( pow(abs(xdiff+1), 2) + pow(abs(ydiff), 2), 0.5 )) ? 1 : 2;
 							break;
 				};
 			} else if(abs(ydiff) > abs(xdiff)) {
@@ -131,6 +131,21 @@ void Object_draw(struct Object *this) {
 	textbackground(BLACK);
 }
 
-float Object_torchRadius(struct Object *this, struct coord t) {	return pow( (double)pow((double)(this->pos.x-t.x), 2) + (double)pow((double)(this->pos.y-t.y)*2, 2) , 0.5 );	}
+int Object_torchRadius(struct coord this, struct coord t) {	
+	float xp, yp, d;
+	xp = (this.x-t.x == 0) ? 0 : pow(abs(this.x-t.x), 2);
+	yp = (this.y-t.y == 0) ? 0 : pow(abs(this.y*2-t.y*2), 2);
+	d = xp + yp;
+	if(xp == 0 && yp == 0)
+		return 0;
+	if(xp  < 0 || yp < 0) {
+		gotoxy(1, 1);	printf("%f, %f", xp, yp);
+		gotoxy(1, 2);	printf("%d, %d", this.x, this.y);
+		gotoxy(1, 3);	printf("%d, %d", t.x, t.y);
+		getch();	exit(0);
+	}
+	return pow( d, 0.5);
+	//return torchRange;
+}
 
 #endif
