@@ -66,15 +66,26 @@ bool Object_move(struct Object *this, int posX, int posY) {
 
 
 void Object_route(struct Object *this, unsigned int last) {
-    int i, j, xdiff = 0, ydiff = 0, ch = 0, r;
+    int spdform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
 	bool tried = false, viewBlocked = false;
-	if(this->speed == 0 || this->last - last < ((MaxSpeed + 1 - this->speed)*20))
+	if(strcmp(currentMode, "Hard+") == 0) {
+		spdmod = 3;	rngmod = 3;
+	} else if(strcmp(currentMode, "Hard") == 0) {
+		spdmod = 2;	rngmod = 2;
+	} else if(strcmp(currentMode, "Normal+") == 0) {
+		spdmod = 1;	rngmod = 1;
+	} else {
+		spdmod = 0;	rngmod = 0;
+	}
+	spdform = MaxSpeed + 1 - this->speed - spdmod;
+	if(spdform >MaxSpeed)	spdform = MaxSpeed;
+	if(this->speed == 0 || this->last - last < (spdform*20))
 		return;
     do {
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
 		ydiff = entityObjects[0].pos.y - this->pos.y;
-		if(abs(ydiff)<=this->range && abs(xdiff)<=this->range) {
+		if(abs(ydiff)<=this->range + rngmod && abs(xdiff)<=this->range + rngmod) {
 			//Don't Follow if Vision Blocked
 			i = this->pos.y;
 			if(this->range!=MaxX) {
@@ -119,7 +130,7 @@ void Object_route(struct Object *this, unsigned int last) {
 		case 4:		xdiff = +0;	ydiff = +1; break;
 		};
 		tried = true;
-	} while(!Object_move(this, xdiff, ydiff) && ch < this->range);
+	} while(!Object_move(this, xdiff, ydiff) && ch < this->range + rngmod);
 	this->last = last;
 }
 

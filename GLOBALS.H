@@ -21,11 +21,20 @@
 #define oTIMELIMIT 100//200
 
 int torchRange = 7;	//7.0f
+int totLevels;
+int levelCnt;
+int unlockedModes;
+bool returnTitle = false;
 char cmap[MaxY][MaxX];
+char paths[50][50];
+bool pathsCleared[50];
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
+
+char currentMode[20];
+char Modes[][20] = { "Normal", "Normal+", "Hard", "Hard+" };
 
 void halt(int x) {   
     delay(x);

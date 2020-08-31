@@ -3,7 +3,6 @@
 
 struct Engine {
 	struct Save data;
-	char paths[50][50];
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
@@ -14,16 +13,11 @@ int Engine_tick(struct Engine *this)		{	return this->timer/TICKSPEED;	}
 bool Engine_getState(struct Engine *this)	{	return this->gameOver;			}
 bool Engine_isCleared(struct Engine *this)	{	return this->cleared;			}
 
-void Engine_init(struct Engine *this) {
-	int gen;
-	char path[50] = "./MZRUN/LEVELS/";
-	srand((unsigned)time(0));
-	gen = rand() % Engine_getPaths(this->paths);
+void Engine_init(struct Engine *this, int gen) {
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
-
-	strcat(path, this->paths[gen]);
-	Save_Import(&this->data, path);
+	
+	Save_Import(&this->data, paths[gen]);
 }
 
 void Engine_HUD() {
@@ -51,11 +45,18 @@ void Engine_HUD() {
 	gotoxy(board.x-1, board.y-1);	cprintf("%c", border[2]);	gotoxy(board.x+screen.x, board.y-1);	cprintf("%c", border[3]);
 	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
 	gotoxy(board.x+screen.x-3, board.y-1);	cprintf("Map");
+	gotoxy(board.x-1, board.y-1);	cprintf("%c", 195);	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", 195);
+	//Top
+	/*gotoxy(1, 3);	cprintf("%c", 195);
+	for(i=2; i<80; i++) {
+		gotoxy(i, 3);	cprintf("%c", border[0]);
+	}
+	gotoxy(80, 3);	cprintf("%c", 180);*/
 	//Bottom
+	gotoxy(1, 23);	cprintf("%c", 195);
 	for(i=2; i<80; i++) {
 		gotoxy(i, 23);	cprintf("%c", border[0]);
 	}
-	gotoxy(1, 23);	cprintf("%c", 195);
 	gotoxy(80, 23);	cprintf("%c", 180);
 }
 
@@ -82,9 +83,9 @@ void Engine_draw(struct Engine *this) {
 			else	Object_draw(&air);
 		}
 	}
-	gotoxy(3, 24);
-	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);
-	cprintf("%3d", this->timer/TICKSPEED);
+	gotoxy(3, 2);	textcolor(YELLOW);	cprintf("Level:");	textcolor(WHITE);	cprintf("%2d", levelCnt);
+	gotoxy(13, 2);	textcolor(YELLOW);	cprintf("Mode:");	textcolor(WHITE);	cprintf("%s", currentMode);
+	gotoxy(3, 24);	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d", this->timer/TICKSPEED);
 }
 
 void script_death(struct Engine *this) {
@@ -111,6 +112,7 @@ void script_cleared(struct Engine *this) {
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
+	this->cleared = true;
 	textcolor(GREEN);	highvideo();
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c CLEARED %c", border[1], border[1]);
@@ -135,6 +137,7 @@ void Engine_input(struct Engine *this) {
 		case 'a':   Object_move(this->player, -1, +0);	break;
 		case 'd':   Object_move(this->player, +1, +0);	break;
 		case 'x':   this->gameOver = true;			break;
+		case 27:	exit(0);
 		}
 	}
 }
@@ -164,7 +167,7 @@ void Engine_handle(struct Engine *this) {
 	this->timer--;
 }
 
-int Engine_getPaths(char paths[][50]) {
+int getPaths(char paths[][50]) {
 	struct dirent *de;
 	int i, cnt=0, s;
 	char ext[] = ".LVL";
@@ -174,7 +177,11 @@ int Engine_getPaths(char paths[][50]) {
 		s = strlen(de->d_name);
 		for(i=s-4; i>0; i--) {
 			if(de->d_name[i] != ext[s-4-i])	continue;
-			else strcpy(paths[cnt++], de->d_name);
+			else {
+				pathsCleared[cnt] = false;
+				strcpy(paths[cnt], "./MZRUN/LEVELS/");
+				strcat(paths[cnt++], de->d_name);
+			}
 		}
 	}
 	closedir(dr);

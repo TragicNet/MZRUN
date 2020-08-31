@@ -3,5 +3,7 @@
 void main() {
 	clrscr();
 	_setcursortype(_NOCURSOR);
-	Start();
+	init();
+	while(Start() == true) {
+	}
 }
