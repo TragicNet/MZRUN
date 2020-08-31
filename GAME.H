@@ -185,8 +185,7 @@ bool Start() {
 			gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 			gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[unlockedModes], border[1]);
 			gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
-			getch();
-			normvideo();
+			getch();	normvideo();
 		}
 		saveData();
 		return true;
