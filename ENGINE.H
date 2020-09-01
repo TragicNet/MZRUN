@@ -19,9 +19,12 @@ void Engine_init(struct Engine *this, int gen) {
 	
 	Save_Import(&this->data, paths[gen]);
 	
-	State_add(states, "fullvision",  Engine_tick(this));
+	State_add(states, "fullvision1",  Engine_tick(this));
 	State_add(states, "immunity1",  Engine_tick(this));
 	State_add(states, "invisible1",  Engine_tick(this));
+	State_add(states, "hinder1",  Engine_tick(this));
+	State_add(states, "paralyze1",  Engine_tick(this));
+	State_add(states, "stop1",  Engine_tick(this));
 }
 
 void Engine_HUD() {
@@ -144,12 +147,22 @@ void script_cleared(struct Engine *this) {
 }
 
 void Engine_input(struct Engine *this) {
+	int i;
+	bool paralyzed = false, hindered = false;
+	for(i = 0; i<totStates; i++) {
+		if(strcmp(states[i].name, "PAR") == 0)	paralyzed = true;
+		else if(strcmp(states[i].name, "HND") == 0) if(random(10)%2 == 0)	hindered = true;
+	}
 	if(kbhit()) {
 		switch(getch()) {
-		case 'w':   Object_move(this->player, +0, -1);	break;
-		case 's':   Object_move(this->player, +0, +1);	break;
-		case 'a':   Object_move(this->player, -1, +0);	break;
-		case 'd':   Object_move(this->player, +1, +0);	break;
+		case 'w':   if(!paralyzed && !hindered)	Object_move(this->player, +0, -1);
+			break;
+		case 's':   if(!paralyzed && !hindered)	Object_move(this->player, +0, +1);
+			break;
+		case 'a':   if(!paralyzed && !hindered)	Object_move(this->player, -1, +0);
+			break;
+		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0);
+			break;
 		case 'h':	//help()
 		case 'p':	wait = true;	return;
 		case 'x':   this->gameOver = true;			break;

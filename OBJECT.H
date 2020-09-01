@@ -30,13 +30,6 @@ void Object_init(struct Object *this, int x, int y, enum eDirection dir, char sy
 	this->last = 0;	this->weight = weight;
 }
 
-void Object_cpy(struct Object *this, struct Object trg) {
-	coord_init(&this->pos, trg.pos.x, trg.pos.y);	this->dir = trg.dir;	this->symbol = trg.symbol;
-	strcpy(this->name, trg.name);	strcpy(this->type, trg.type);	this->range = trg.range;
-	this->speed = trg.speed;	this->color = trg.color;	this->bgcolor = trg.bgcolor;	
-	this->last = trg.last;	this->weight = trg.weight;
-}
-
 void Object_remove(struct Object objects[], int loc) {
     int i;
 	Tile_unblock(&map[objects[loc].pos.y][objects[loc].pos.x]);
@@ -99,6 +92,7 @@ void Object_route(struct Object *this, unsigned int last) {
 		else if(strcmp(states[i].name, "ATR") == 0)	rngmod-=states[i].val;
 		else if(strcmp(states[i].name, "RPL") == 0)	rngmod+=states[i].val;
 		else if(strcmp(states[i].name, "INV") == 0)	invisible = true;
+		else if(strcmp(states[i].name, "STP") == 0)	return;
 	}
 	rngform = this->range + rngmod;
 	spdform = MaxSpeed + 1 - this->speed - spdmod;
