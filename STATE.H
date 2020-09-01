@@ -25,21 +25,29 @@ void State_sort(struct State states[]) {
             }
 }
 bool State_add(struct State states[], char name[], int time) {
-    int i, loc;
+    int i, loc, stateVal, stateDuration;
     bool found = false;
+    char stateName[20];
+    if(strcmp(name, "immunity1") == 0) {
+        strcpy(stateName, "IMM");   stateVal = 0;   stateDuration = 5;
+    } else if(strcmp(name, "breaker1") == 0) {
+        strcpy(stateName, "BRK");   stateVal = 0;   stateDuration = 10;
+    } else if(strcmp(name, "fullvision1") == 0) {
+        strcpy(stateName, "VIS");   stateVal = 0;   stateDuration = 10;
+    } else if(strcmp(name, "slow1") == 0) {
+        strcpy(stateName, "SLW");   stateVal = 1;   stateDuration = 5;
+    } else if(strcmp(name, "fast1") == 0) {
+        strcpy(stateName, "FST");   stateVal = 1;   stateDuration = 5;
+    } else if(strcmp(name, "repel1") == 0) {
+        strcpy(stateName, "RPL");   stateVal = 1;   stateDuration = 5;
+    } else if(strcmp(name, "attract1") == 0) {
+        strcpy(stateName, "ATR");   stateVal = 1;   stateDuration = 5;
+    } else if(strcmp(name, "invisible1") == 0) {
+        strcpy(stateName, "INV");   stateVal = 0;   stateDuration = 5;
+    } else return false;
     for(i = 0; i < totStates; i++) {
-        if(strcmp(name, "immunity1") == 0) {
-            if(strcmp(states[i].name, "IMM") == 0)   break;
-        } else if(strcmp(name, "fullvision1") == 0) {
-            if(strcmp(states[i].name, "VIS") == 0)   break;
-        } else if(strcmp(name, "slow1") == 0) {
-            if(strcmp(states[i].name, "SLW") == 0)   break;
-        } else if(strcmp(name, "fast1") == 0) {
-            if(strcmp(states[i].name, "FST") == 0)   break;
-        } else if(strcmp(name, "repel1") == 0) {
-            if(strcmp(states[i].name, "RPL") == 0)   break;
-        } else if(strcmp(name, "attract1") == 0) {
-            if(strcmp(states[i].name, "ATR") == 0)   break;
+        if(strcmp(name, stateName) == 0) {
+            if(strcmp(states[i].name, stateName) == 0)   break;
         } 
     }
     if(i != totStates)  found = true;
@@ -47,19 +55,7 @@ bool State_add(struct State states[], char name[], int time) {
         if(found == false) {
             totStates++;    loc = totStates-1;
         } else  loc = i;
-        if(strcmp(name, "immunity1") == 0) {
-            State_init(&states[loc], "IMM", 0, 5, time);
-        } else if(strcmp(name, "fullvision1") == 0) {
-            State_init(&states[loc], "VIS", 0, 10, time);
-        } else if(strcmp(name, "slow1") == 0) {
-            State_init(&states[loc], "SLW", 1, 5, time);
-        } else if(strcmp(name, "fast1") == 0) {
-            State_init(&states[loc], "FST", 1, 5, time);
-        } else if(strcmp(name, "repel1") == 0) {
-            State_init(&states[loc], "RPL", 1, 5, time);
-        } else if(strcmp(name, "attract1") == 0) {
-            State_init(&states[loc], "ATR", 1, 5, time);
-        } else return false;
+        State_init(&states[loc], stateName, stateVal, stateDuration, time);
     }
     State_sort(states);
     return true;

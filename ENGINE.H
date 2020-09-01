@@ -18,9 +18,10 @@ void Engine_init(struct Engine *this, int gen) {
 	this->player = &entityObjects[0];
 	
 	Save_Import(&this->data, paths[gen]);
-	/*State_add(states, "slow1",  Engine_tick(this));
-	State_add(states, "fullvision",  Engine_tick(this));*/
+	
+	State_add(states, "fullvision",  Engine_tick(this));
 	State_add(states, "immunity1",  Engine_tick(this));
+	State_add(states, "invisible1",  Engine_tick(this));
 }
 
 void Engine_HUD() {
@@ -97,9 +98,8 @@ void Engine_draw(struct Engine *this) {
 	gotoxy(3, 24);	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d", Engine_tick(this));
 	textcolor(YELLOW);
 	for(i = 0; i<totStates; i++) {
-		//gotoxy(3 + 5*i, 22);	cprintf(" %s ", states[i].name);
-		gotoxy(2, 4 + i);	cprintf(" %s ", states[i].name);
-		//cprintf("%2d", states[i].duration);
+		gotoxy(2, 4 + i);	cprintf("%s ", states[i].name);
+		cprintf("%2d", states[i].duration);
 	}
 	textcolor(WHITE);
 }
@@ -150,6 +150,8 @@ void Engine_input(struct Engine *this) {
 		case 's':   Object_move(this->player, +0, +1);	break;
 		case 'a':   Object_move(this->player, -1, +0);	break;
 		case 'd':   Object_move(this->player, +1, +0);	break;
+		case 'h':	//help()
+		case 'p':	wait = true;	return;
 		case 'x':   this->gameOver = true;			break;
 		case 27:	exit(0);
 		}
@@ -161,18 +163,17 @@ void Object_script(struct Engine *engine, int loc) {
 	int i;
 	if(strcmp(entityObjects[loc].type, "monster") == 0) {
 		for(i = 0; i<totStates; i++) {
-			if(strcmp(states[i].name, "IMM") == 0)	break;
+			if(strcmp(states[i].name, "IMM") == 0) {
+				Object_remove(entityObjects, loc);	return;
+			} else if(strcmp(states[i].name, "BRK") == 0) {
+				Object_remove(entityObjects, loc);	State_remove(states, i);
+				gotoxy(2, 4 + totStates);	cprintf("      ");	return;
+			}
 		}
-		if(i==totStates)	script_death(engine);
-		else {
-			Object_remove(entityObjects, loc);
-			State_remove(states, i);
-			//gotoxy(3 + 5*totStates, 22);	cprintf("     ");
-			gotoxy(2, 4 + totStates);	cprintf("      ");
-		}
+		script_death(engine);
 	} else if(strcmp(entityObjects[loc].type, "goal") == 0) {
 		script_cleared(engine);
-	} else if(State_add(states, entityObjects[loc].type, Engine_tick(engine))) {
+	} else if(State_add(states, entityObjects[loc].name, Engine_tick(engine))) {
 		Object_remove(entityObjects, loc);
 	}
 }
@@ -196,7 +197,6 @@ void Engine_handle(struct Engine *this) {
 	for(i = 0; i<totStates; i++) {
 		if(states[i].duration <= 0) {
 			State_remove(states, i);
-			//gotoxy(3 + 5*totStates, 22);	cprintf("     ");
 			gotoxy(2, 4 + totStates);	cprintf("      ");
 		}
 		else if(states[i].last!=Engine_tick(this)) {

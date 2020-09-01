@@ -32,9 +32,9 @@ void saveData() {
 void init() {
 	temp();
 	srand((unsigned)time(0));
-	Object_init(&wall, 0, 0, STOP, '#', "wall", "wall", WHITE, LIGHTGRAY, 0, 0, 1);
-	Object_init(&air, 0, 0, STOP, '.', "air", "air", LIGHTGRAY, BLACK, 0, 0, 0);
-	Object_init(&blackair, 0, 0, STOP, '.', "air", "air", BLACK, BLACK, 0, 0, 0);
+	Object_init(&wall, 0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY, 0, 0, 1);
+	Object_init(&air, 0, 0, STOP, '.', "air", LIGHTGRAY, BLACK, 0, 0, 0);
+	Object_init(&blackair, 0, 0, STOP, '.', "air", BLACK, BLACK, 0, 0, 0);
 	coord_init(&board, 9, 4);
 	coord_init(&screen, 39, 13);
 	levelCnt = 0;
