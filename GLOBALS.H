@@ -25,6 +25,7 @@ int totLevels;
 int levelCnt;
 int unlockedModes;
 bool returnTitle = false;
+bool wait = false;
 char cmap[MaxY][MaxX];
 char paths[50][50];
 bool pathsCleared[50];
@@ -47,8 +48,9 @@ void halt(int x) {
 
 #include "MZRUN/COORD.H"
 #include "MZRUN/TILE.H"
-#include "MZRUN/EVENTS.H"
+#include "MZRUN/STATE.H"
 #include "MZRUN/OBJECT.H"
+#include "MZRUN/EVENTS.H"
 #include "MZRUN/SAVE.H"
 #include "MZRUN/ENGINE.H"
 #include "MZRUN/GAME.H"

@@ -111,6 +111,42 @@ void Creator_create_lvl(struct Creator *this) {
 				cmap[i][j] = '.';
 				Tile_unblock(&map[i][j]);
 				map[i][j].player_only = true;
+			} else if(cmap[i][j] == 's') {
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 4, "slow1", LIGHTBLUE, BLACK, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
+				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
+				//map[i][j].player_only = true;
+			} else if(cmap[i][j] == 'f') {
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 4, "fast1", LIGHTBLUE, BLACK, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
+				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
+				//map[i][j].player_only = true;
+			} else if(cmap[i][j] == 'x') {
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 4, "immunity1", LIGHTBLUE, BLACK, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
+				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
+				//map[i][j].player_only = true;
+			} else if(cmap[i][j] == 'r') {
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 4, "repel1", LIGHTBLUE, BLACK, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
+				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
+				//map[i][j].player_only = true;
+			} else if(cmap[i][j] == 'a') {
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 4, "attract1", LIGHTBLUE, BLACK, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
+				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
+				//map[i][j].player_only = true;
+			} else if(cmap[i][j] == 'v') {
+				temp = (struct Object*) malloc(sizeof(struct Object));
+				Object_init(temp, j, i, STOP, 4, "fullvision1", LIGHTBLUE, BLACK, 0, 0, 0);
+				entityObjects[totalEntities++] = *temp;	free(temp);
+				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
+				//map[i][j].player_only = true;
 			} else {
 				Tile_unblock(&map[i][j]);
 			}

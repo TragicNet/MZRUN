@@ -18,6 +18,9 @@ void Engine_init(struct Engine *this, int gen) {
 	this->player = &entityObjects[0];
 	
 	Save_Import(&this->data, paths[gen]);
+	/*State_add(states, "slow1",  Engine_tick(this));
+	State_add(states, "fullvision",  Engine_tick(this));*/
+	State_add(states, "immunity1",  Engine_tick(this));
 }
 
 void Engine_HUD() {
@@ -45,7 +48,7 @@ void Engine_HUD() {
 	gotoxy(board.x-1, board.y-1);	cprintf("%c", border[2]);	gotoxy(board.x+screen.x, board.y-1);	cprintf("%c", border[3]);
 	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
 	gotoxy(board.x+screen.x-3, board.y-1);	cprintf("Map");
-	gotoxy(board.x-1, board.y-1);	cprintf("%c", 195);	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", 195);
+	//gotoxy(board.x-1, board.y-1);	cprintf("%c", 195);	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", 195);
 	//Top
 	/*gotoxy(1, 3);	cprintf("%c", 195);
 	for(i=2; i<80; i++) {
@@ -61,10 +64,16 @@ void Engine_HUD() {
 }
 
 void Engine_draw(struct Engine *this) {
-	int i, j, obj;
+	int i, j, k, obj;
+	bool fullvision = false;
 	struct coord tmp, sumtmp;
 	struct coord camera = view(this->player->pos, screen, fullmap);
 	fflush(stdout);
+	for(i = 0; i<totStates; i++) {
+		if(strcmp(states[i].name, "VIS") == 0) {
+			fullvision = true;	break;
+		}
+	}
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
@@ -72,7 +81,7 @@ void Engine_draw(struct Engine *this) {
 			gotoxy(board.x+j, board.y+i);
 			obj = posCheck(coord_add(camera, tmp), "", true);
 			//Vision
-			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange) {
+			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange && fullvision == false) {
 				Object_draw(&blackair);
 			} else if(obj>=0)	{
 				if( coord_cmp(entityObjects[obj].pos, this->player->pos) && entityObjects[obj].weight < this->player->weight) {
@@ -85,7 +94,14 @@ void Engine_draw(struct Engine *this) {
 	}
 	gotoxy(3, 2);	textcolor(YELLOW);	cprintf("Level:");	textcolor(WHITE);	cprintf("%2d", levelCnt);
 	gotoxy(13, 2);	textcolor(YELLOW);	cprintf("Mode:");	textcolor(WHITE);	cprintf("%s", currentMode);
-	gotoxy(3, 24);	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d", this->timer/TICKSPEED);
+	gotoxy(3, 24);	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d", Engine_tick(this));
+	textcolor(YELLOW);
+	for(i = 0; i<totStates; i++) {
+		//gotoxy(3 + 5*i, 22);	cprintf(" %s ", states[i].name);
+		gotoxy(2, 4 + i);	cprintf(" %s ", states[i].name);
+		//cprintf("%2d", states[i].duration);
+	}
+	textcolor(WHITE);
 }
 
 void script_death(struct Engine *this) {
@@ -94,7 +110,7 @@ void script_death(struct Engine *this) {
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
-	textcolor(RED);	highvideo();
+	textcolor(LIGHTRED);
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
@@ -102,7 +118,6 @@ void script_death(struct Engine *this) {
 	sound(120);	halt(100);	nosound();
 	halt(15);
 	sound(120);	halt(100);	nosound();
-	normvideo();
 	getch();
 }
 
@@ -113,7 +128,7 @@ void script_cleared(struct Engine *this) {
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
 	this->cleared = true;
-	textcolor(GREEN);	highvideo();
+	textcolor(LIGHTGREEN);
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c CLEARED %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
@@ -125,7 +140,6 @@ void script_cleared(struct Engine *this) {
 	sound(150);	halt(100);	nosound();
 	halt(5);
 	sound(300);	halt(100);	nosound();
-	normvideo();
 	getch();
 }
 
@@ -139,14 +153,27 @@ void Engine_input(struct Engine *this) {
 		case 'x':   this->gameOver = true;			break;
 		case 27:	exit(0);
 		}
+		if(wait==true)	wait = false;
 	}
 }
 
-void Object_script(struct Engine *engine, struct Object *this) {
-	if(strcmp(this->type, "monster") == 0) {
-		script_death(engine);
-	} else if(strcmp(this->type, "goal") == 0) {
+void Object_script(struct Engine *engine, int loc) {
+	int i;
+	if(strcmp(entityObjects[loc].type, "monster") == 0) {
+		for(i = 0; i<totStates; i++) {
+			if(strcmp(states[i].name, "IMM") == 0)	break;
+		}
+		if(i==totStates)	script_death(engine);
+		else {
+			Object_remove(entityObjects, loc);
+			State_remove(states, i);
+			//gotoxy(3 + 5*totStates, 22);	cprintf("     ");
+			gotoxy(2, 4 + totStates);	cprintf("      ");
+		}
+	} else if(strcmp(entityObjects[loc].type, "goal") == 0) {
 		script_cleared(engine);
+	} else if(State_add(states, entityObjects[loc].type, Engine_tick(engine))) {
+		Object_remove(entityObjects, loc);
 	}
 }
 
@@ -155,15 +182,27 @@ void Engine_handle(struct Engine *this) {
 	//gotoxy(1, 25);	cprintf("%5u",timer);
 	i = posCheck(this->player->pos, "", true);
 	if(i > 0) {
-		Object_script(this, &entityObjects[i]);
+		Object_script(this, i);
 		if(this->gameOver == true)	return;
+	}
+	if( Engine_tick(this) < 1 ) {
+		this->gameOver = true;	return;
 	}
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
 			Object_route(&entityObjects[i], this->timer);
 	}
-	if( Engine_tick(this) < 1 )
-		this->gameOver = true;
+	//Update States
+	for(i = 0; i<totStates; i++) {
+		if(states[i].duration <= 0) {
+			State_remove(states, i);
+			//gotoxy(3 + 5*totStates, 22);	cprintf("     ");
+			gotoxy(2, 4 + totStates);	cprintf("      ");
+		}
+		else if(states[i].last!=Engine_tick(this)) {
+			states[i].duration--;	states[i].last = Engine_tick(this);
+		}
+	}
 	this->timer--;
 }
 

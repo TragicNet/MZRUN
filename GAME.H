@@ -35,7 +35,7 @@ void init() {
 	Object_init(&wall, 0, 0, STOP, '#', "wall", WHITE, LIGHTGRAY, 0, 0, 1);
 	Object_init(&air, 0, 0, STOP, '.', "air", LIGHTGRAY, BLACK, 0, 0, 0);
 	Object_init(&blackair, 0, 0, STOP, '.', "air", BLACK, BLACK, 0, 0, 0);
-	coord_init(&board, 2, 4);
+	coord_init(&board, 9, 4);
 	coord_init(&screen, 39, 13);
 	levelCnt = 0;
 	totLevels = 0;
@@ -57,6 +57,7 @@ void initGame() {
 
 int generateLevel() {
 	int gen = 0, t = totLevels;
+	totStates = 0;
 	gen = rand() % t--;
 	while(pathsCleared[gen] == true && t > 0) {
 		gen = rand() % t--;
@@ -68,6 +69,7 @@ int generateLevel() {
 void GameLoop() {
 	struct Engine game;
 	int gen;
+	wait = true;
 	do {
 		gen = generateLevel();
 		Engine_init(&game, gen);
@@ -75,6 +77,7 @@ void GameLoop() {
 		while(!Engine_getState(&game)) {
 			Engine_draw(&game);
 			Engine_input(&game);
+			if(wait == true)	continue;
 			Engine_handle(&game);
 		}
 		if(game.cleared == true)	pathsCleared[gen] = true;
@@ -181,11 +184,11 @@ bool Start() {
 		if(unlockedModes<3 && strcmp(currentMode, Modes[unlockedModes]) == 0) {
 			unlockedModes++;
 			x = 29, y = 12, width = 18+strlen(Modes[unlockedModes]);
-			textcolor(GREEN);	highvideo();
+			textcolor(LIGHTGREEN);
 			gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 			gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[unlockedModes], border[1]);
 			gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
-			getch();	normvideo();
+			getch();
 		}
 		saveData();
 		return true;
