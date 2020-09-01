@@ -56,9 +56,9 @@ int posCheck(struct coord pos, char *search, bool same) {
 	int i;
 	for(i = totalEntities-1; i >= 0; i--) {
 		if(coord_cmp(entityObjects[i].pos, pos)) {
-			if( strcmp(search, "") || strcmp(search, entityObjects[i].type) )
+			if( strcmp(search, "") == 0 || strcmp(search, entityObjects[i].type) == 0 )
 				return i;
-		} else if( same == false && !strcmp(search, entityObjects[i].type) ) {
+		} else if( same == false && !strcmp(search, entityObjects[i].type) == 0 ) {
 			return i;
 		}
 	}

@@ -33,7 +33,7 @@ bool State_add(struct State states[], char name[], int time) {
     } else if(strcmp(name, "breaker1") == 0) {
         strcpy(stateName, "BRK");   stateVal = 0;   stateDuration = 10;
     } else if(strcmp(name, "fullvision1") == 0) {
-        strcpy(stateName, "VIS");   stateVal = 0;   stateDuration = 10;
+        strcpy(stateName, "VIS");   stateVal = 0;   stateDuration = 5;
     } else if(strcmp(name, "slow1") == 0) {
         strcpy(stateName, "SLW");   stateVal = 1;   stateDuration = 5;
     } else if(strcmp(name, "fast1") == 0) {
