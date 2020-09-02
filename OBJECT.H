@@ -22,7 +22,7 @@ unsigned int totalEntities = 1;
 
 void Object_reloc(struct Object *this, struct coord pos) {	this->pos = pos;	}
 bool Object_isThere(struct Object *this, struct coord t) {	return (this->pos.x==t.x && this->pos.y == t.y) ? true : false;	}
-void Engine_death(struct Engine *this);
+
 void Object_init(struct Object *this, int x, int y, enum eDirection dir, char symbol, char type[], char name[], int color,  int bgcolor, int speed, int range, int weight) {
 	coord_init(&this->pos, x, y);	this->dir = dir;	this->symbol = symbol;	
 	strcpy(this->name, name);	strcpy(this->type, type);	this->range = range;
