@@ -1,5 +1,6 @@
 #ifndef STATES_H
 #define STATES_H
+
 struct State {
     char name[20];
     int duration;
@@ -72,4 +73,5 @@ void State_remove(struct State states[], int loc) {
         totStates--;
     }
 }
+
 #endif

@@ -3,7 +3,7 @@
 
 struct coord {
 	int x, y;
-} board, screen, fullmap, tmp;;
+} board, screen, fullmap, tmp;
 
 void coord_init(struct coord *trg, int x, int y) {   trg->x = x;  trg->y = y;  }
 void coord_cpy(struct coord *trg, struct coord src) {   trg->x = src.x;  trg->y = src.y;  }
