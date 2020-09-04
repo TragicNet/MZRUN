@@ -21,10 +21,10 @@ void Engine_init(struct Engine *this, int gen) {
 	
 	State_add(states, "fullvision1",  Engine_tick(this));
 	State_add(states, "immunity1",  Engine_tick(this));
-	State_add(states, "invisible1",  Engine_tick(this));
+	/*State_add(states, "invisible1",  Engine_tick(this));
 	State_add(states, "hinder1",  Engine_tick(this));
 	State_add(states, "paralyze1",  Engine_tick(this));
-	State_add(states, "stop1",  Engine_tick(this));
+	State_add(states, "stop1",  Engine_tick(this));*/
 }
 
 void Engine_HUD() {
