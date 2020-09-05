@@ -41,7 +41,7 @@ void Object_remove(struct Object objects[], int loc) {
     }
 }
 
-void Object_setColor(struct Object *this, int color,  int bgcolor)	{
+void Object_setColor(struct Object *this, int color,  int bgcolor) {
 	this->color = color;	this->bgcolor = bgcolor;
 }
 
