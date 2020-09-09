@@ -73,7 +73,7 @@ void GameLoop() {
 	do {
 		gen = generateLevel();
 		Engine_init(&game, gen);
-		Engine_HUD(&game);
+		Engine_HUD();
 		while(!Engine_getState(&game)) {
 			Engine_draw(&game);
 			Engine_input(&game);
@@ -141,7 +141,7 @@ void Options() {
 
 bool Start() {
 	int i, x = 35, y = 12, width, key;
-	bool pressed = false;
+	bool selected = false;
 	initGame();
 	clrscr();
     /*int t = CYAN;
@@ -163,6 +163,10 @@ bool Start() {
 	}
 	gotoxy(33, 11);	cprintf("%c", border[2]);	gotoxy(47, 11);	cprintf("%c", border[3]);
 	gotoxy(33, 15);	cprintf("%c", border[4]);	gotoxy(47, 15);	cprintf("%c", border[5]);
+	textcolor(CYAN);	gotoxy(1, 24);
+	cprintf("  w: UP       ");	cprintf("  a: LEFT     ");	cprintf("  s: DOWN     ");	cprintf("  d: RIGHT    ");
+	cprintf("  h: HELP     ");	cprintf("rtn: ENTER    ");
+	textcolor(YELLOW);
 	while(1) {
 		gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
 		key = getch();
@@ -170,10 +174,11 @@ bool Start() {
 		switch(key) {
 		case 'w':	y = (y==12) ? 12 : y-1;	break;
 		case 's':	y = (y==14) ? 14 : y+1;	break;
-		case 13:	pressed = true;	break;
+		case 'h':	help();
+		case 13:	selected = true;	break;
 		case 27:	return false;
 		}
-		if(pressed)	break;
+		if(selected)	break;
 	}
 	switch(y-12) {
 	case 0:	GameLoop();	break;

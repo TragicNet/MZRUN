@@ -72,7 +72,6 @@ void Engine_draw(struct Engine *this) {
 	bool fullvision = false;
 	struct coord tmp, sumtmp;
 	struct coord camera = view(this->player->pos, screen, fullmap);
-	fflush(stdout);
 	for(i = 0; i<totStates; i++) {
 		if(strcmp(states[i].name, "VIS") == 0) {
 			fullvision = true;	break;
@@ -98,7 +97,15 @@ void Engine_draw(struct Engine *this) {
 	}
 	gotoxy(3, 2);	textcolor(YELLOW);	cprintf("Level:");	textcolor(WHITE);	cprintf("%2d", levelCnt);
 	gotoxy(13, 2);	textcolor(YELLOW);	cprintf("Mode:");	textcolor(WHITE);	cprintf("%s", currentMode);
-	gotoxy(3, 24);	textcolor(YELLOW);	cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d", Engine_tick(this));
+	gotoxy(3, 24);	textcolor(YELLOW);	
+	if(wait == false) {
+		cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d ", Engine_tick(this));
+	} else cprintf("<<PAUSED>>");
+	textcolor(CYAN);
+	gotoxy(9, 19);	cprintf("  w: UP       ");	gotoxy(9, 20);	cprintf("  a: LEFT     ");
+	gotoxy(9, 21);	cprintf("  s: DOWN     ");	gotoxy(9, 22);	cprintf("  d: RIGHT    ");
+	gotoxy(23, 19);	cprintf("  h: HELP     ");	gotoxy(23, 20);	cprintf("  p: PAUSE    ");
+	gotoxy(23, 21);	cprintf("esc: EXIT     ");	gotoxy(23, 22);	cprintf("rtn: ENTER    ");
 	textcolor(YELLOW);
 	for(i = 0; i<totStates; i++) {
 		gotoxy(2, 4 + i);	cprintf("%s ", states[i].name);
@@ -163,10 +170,10 @@ void Engine_input(struct Engine *this) {
 			break;
 		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0);
 			break;
-		case 'h':	//help()
+		case 'h':	help();
 		case 'p':	wait = true;	return;
-		case 'x':   this->gameOver = true;			break;
-		case 27:	exit(0);
+		case 'x':	exit(0);
+		case 27:   this->gameOver = true;	break;
 		}
 		if(wait==true)	wait = false;
 	}

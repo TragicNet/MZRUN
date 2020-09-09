@@ -50,7 +50,7 @@ void halt(int x) {
 #include "MZRUN/TILE.H"
 #include "MZRUN/STATE.H"
 #include "MZRUN/OBJECT.H"
-#include "MZRUN/EVENTS.H"
+#include "MZRUN/HELP.H"
 #include "MZRUN/SAVE.H"
 #include "MZRUN/ENGINE.H"
 #include "MZRUN/GAME.H"
