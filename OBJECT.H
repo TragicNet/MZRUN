@@ -63,10 +63,10 @@ bool Object_move(struct Object *this, int posX, int posY) {
 		return false;
 	else if(Tile_isBlocked(&map[this->pos.y+posY][this->pos.x+posX]))
 		return false;
-	
-	if(strcmp(this->type, "player")!=0)	map[this->pos.y][this->pos.x].player_only = false;
-	if(strcmp(this->type, "player")!=0 && map[this->pos.y+posY][this->pos.x+posX].player_only == true)
-		return false;
+	if(strcmp(this->type, "player")!=0) {
+		map[this->pos.y][this->pos.x].player_only = false;
+		if(map[this->pos.y+posY][this->pos.x+posX].player_only == true)	return false;
+	}
 	this->pos.x+=posX;	this->pos.y+=posY;
 	if(strcmp(this->type, "player")!=0)	map[this->pos.y][this->pos.x].player_only = true;
 	return true;
