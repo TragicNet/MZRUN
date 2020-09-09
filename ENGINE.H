@@ -170,7 +170,7 @@ void Engine_input(struct Engine *this) {
 			break;
 		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0);
 			break;
-		case 'h':	help();
+		case 'h':	help();	Engine_HUD();
 		case 'p':	wait = true;	return;
 		case 'x':	exit(0);
 		case 27:   this->gameOver = true;	break;
@@ -207,7 +207,7 @@ void Engine_handle(struct Engine *this) {
 		if(this->gameOver == true)	return;
 	}
 	if( Engine_tick(this) < 1 ) {
-		this->gameOver = true;	return;
+		script_death(this);	return;
 	}
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
