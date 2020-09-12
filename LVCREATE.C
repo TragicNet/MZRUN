@@ -152,7 +152,7 @@ void Creator_create_lvl(struct Creator *this) {
 			}
 		}
 	}
-	Save_Export(&this->data, "./MZRUN/LEVELS/area1.lvl");
+	Save_Export(&this->data, "./MZRUN/LEVELS/area3.lvl");
 }
 
 int main() {
