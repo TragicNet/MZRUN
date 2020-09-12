@@ -163,9 +163,9 @@ bool Start() {
 	}
 	gotoxy(33, 11);	cprintf("%c", border[2]);	gotoxy(47, 11);	cprintf("%c", border[3]);
 	gotoxy(33, 15);	cprintf("%c", border[4]);	gotoxy(47, 15);	cprintf("%c", border[5]);
-	textcolor(CYAN);	gotoxy(1, 24);
-	cprintf("  w: UP       ");	cprintf("  a: LEFT     ");	cprintf("  s: DOWN     ");	cprintf("  d: RIGHT    ");
-	cprintf("  h: HELP     ");	cprintf("rtn: ENTER    ");
+	textcolor(CYAN);	gotoxy(5, 24);
+	cprintf("w: UP       ");	cprintf("a: LEFT     ");	cprintf("s: DOWN     ");	cprintf("d: RIGHT    ");
+	cprintf("h: HELP     ");	cprintf("rtn: ENTER    ");
 	textcolor(YELLOW);
 	while(1) {
 		gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
@@ -174,7 +174,7 @@ bool Start() {
 		switch(key) {
 		case 'w':	y = (y==12) ? 12 : y-1;	break;
 		case 's':	y = (y==14) ? 14 : y+1;	break;
-		case 'h':	help();
+		case 'h':	help();	return true;
 		case 13:	selected = true;	break;
 		case 27:	return false;
 		}
