@@ -125,8 +125,8 @@ void Options() {
 		case 'w':	if(y!=11) y--;	break;
 		case 's':	if(y!=11+unlockedModes) y++;	break;
 		case 13:	pressed = true;	break;
-		case 'x':	return;
-		case 27:	exit(0);
+		case 27:	return;
+		case 'x':	exit(0);
 		}
 		if(pressed)	break;
 	}
