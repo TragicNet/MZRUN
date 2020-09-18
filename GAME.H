@@ -58,11 +58,10 @@ void initGame() {
 int generateLevel() {
 	int gen = 0, t = totLevels;
 	totStates = 0;
-	gen = rand() % t--;
-	while(pathsCleared[gen] == true && t > 0) {
-		gen = rand() % t--;
-	}
-	levelCnt++;
+	if(t<=0)	return -1;	//No Levels
+	do {
+		gen = rand() % t;
+	} while(pathsCleared[gen] == true);
 	return gen;
 }
 
@@ -72,6 +71,8 @@ void GameLoop() {
 	wait = true;
 	do {
 		gen = generateLevel();
+		if(gen == -1)	return;	//No Levels
+		levelCnt++;
 		Engine_init(&game, gen);
 		Engine_HUD();
 		while(!Engine_getState(&game)) {

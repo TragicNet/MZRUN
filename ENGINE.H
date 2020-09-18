@@ -234,13 +234,21 @@ int getPaths(char paths[][50]) {
 	if(dr == NULL) return 0;
 	while((de = readdir(dr)) != NULL)  {
 		s = strlen(de->d_name);
-		for(i=s-4; i>0; i--) {
+		/*for(i=s-4; i>0; i--) {
 			if(de->d_name[i] != ext[s-4-i])	continue;
 			else {
 				pathsCleared[cnt] = false;
 				strcpy(paths[cnt], "./MZRUN/LEVELS/");
 				strcat(paths[cnt++], de->d_name);
 			}
+		}*/
+		for(i = s-4; i < s; i++) {
+			if(de->d_name[i] != ext[i-(s-4)])	break;
+		}
+		if(i==s) {
+			pathsCleared[cnt] = false;
+			strcpy(paths[cnt], "./MZRUN/LEVELS/");
+			strcat(paths[cnt++], de->d_name);
 		}
 	}
 	closedir(dr);
