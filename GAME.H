@@ -186,10 +186,11 @@ bool Start() {
 	case 1:	Options();	break;
 	case 2: return false;
 	}
+	//Unlock New Mode and Finish
 	if(levelCnt == totLevels) {
 		if(unlockedModes<3 && strcmp(currentMode, Modes[unlockedModes]) == 0) {
 			unlockedModes++;
-			x = 29, y = 12, width = 18+strlen(Modes[unlockedModes]);
+			x = 29, y = 12, width = 18 + strlen(Modes[unlockedModes]);
 			textcolor(LIGHTGREEN);
 			gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 			gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[unlockedModes], border[1]);
