@@ -3,6 +3,6 @@
 void main() {
 	clrscr();
 	_setcursortype(_NOCURSOR);
-	init();
-	while(Start()) {}
+	Game_init();
+	while(Game_Start()) {}
 }

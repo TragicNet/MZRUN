@@ -172,7 +172,7 @@ void Engine_input(struct Engine *this) {
 			break;
 		case 'h':	help();	Engine_HUD();
 		case 'p':	wait = true;	return;
-		case 'x':	exit(0);
+		//case 'x':	exit(0);
 		case 27:   this->gameOver = true;	break;
 		}
 		if(wait==true)	wait = false;
@@ -224,27 +224,6 @@ void Engine_handle(struct Engine *this) {
 		}
 	}
 	this->timer--;
-}
-
-int getPaths(char paths[][50]) {
-	struct dirent *de;
-	int i, cnt=0, s;
-	char ext[] = ".LVL";
-	DIR *dr = opendir("./MZRUN/LEVELS");
-	if(dr == NULL) return 0;
-	while((de = readdir(dr)) != NULL)  {
-		s = strlen(de->d_name);
-		for(i = s-4; i < s; i++) {
-			if(de->d_name[i] != ext[i-(s-4)])	break;
-		}
-		if(i==s) {
-			pathsCleared[cnt] = false;
-			strcpy(paths[cnt], "./MZRUN/LEVELS/");
-			strcat(paths[cnt++], de->d_name);
-		}
-	}
-	closedir(dr);
-	return cnt;
 }
 
 #endif
