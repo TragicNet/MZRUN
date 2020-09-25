@@ -1,28 +1,28 @@
 #ifndef GAME_H
 #define GAME_H
 
-struct saveData {
+struct Game {
 	int unlockedModes;
 };
 
 void Game_loadData() {
 	FILE *file;
-	struct saveData d;
+	struct Game d;
 	file = fopen("./MZRUN/data.sav", "rb" );
 	if(file == NULL) {
 		unlockedModes = 0;
 	} else {
-		fread((char*) &d, sizeof(struct saveData), 1, file);
+		fread((char*) &d, sizeof(struct Game), 1, file);
 		unlockedModes = d.unlockedModes;
 	}
 	fclose(file);
 }
 void Game_saveData() {
 	FILE *file;
-	struct saveData d;
+	struct Game d;
 	d.unlockedModes = unlockedModes;
 	file = fopen("./MZRUN/data.sav", "wb" );
-	fwrite((char*) &d, sizeof(struct saveData), 1, file);
+	fwrite((char*) &d, sizeof(struct Game), 1, file);
 	fclose(file);
 }
 
@@ -104,29 +104,20 @@ void Game_gameLoop() {
 }
 
 void Game_Options() {
-	int i, x = 35, y = 11, key;
+	int i, x = 35, y = 11, key, spaces = 0;
 	bool pressed = false;
 	clrscr();
 	gotoxy(37,9);
 	textcolor(YELLOW);	cprintf("OPTIONS");
 	textcolor(WHITE);
-	//sggfbf
-	if(strcmp(currentMode, "Normal") == 0) {
-		textcolor(WHITE);	y+=0;
-	} else textcolor(LIGHTGRAY);
-	gotoxy(37, 11);	cprintf("Normal  ");
-	if(strcmp(currentMode, "Normal+") == 0) {
-		textcolor(WHITE);	y+=1;
-	} else ((unlockedModes > 0) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
-	gotoxy(37, 12);	cprintf("Normal+ ");
-	if(strcmp(currentMode, "Hard") == 0) {
-		textcolor(WHITE);	y+=2;
-	} else ((unlockedModes > 1) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
-	gotoxy(37, 13);	cprintf(" Hard   ");
-	if(strcmp(currentMode, "Hard+") == 0) {
-		textcolor(WHITE);	y+=3;
-	} else ((unlockedModes > 2) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
-	gotoxy(37, 14);	cprintf(" Hard+  ");
+	//Print Modes based on unlocked, or current
+	for(i = 0; i<sizeof(Modes)/sizeof(Modes[0]); i++) {
+		if(strcmp(currentMode, Modes[i]) == 0) {
+			textcolor(WHITE);	y+=i;
+		} else ((unlockedModes >= i) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
+		spaces = 3 - strlen(Modes[i])/2;
+		gotoxy(37+spaces, 11+i);	cprintf("%s", Modes[i]);
+	}
 	textcolor(GREEN);
 	for(i = 0; i < 4; i++) {	//Vertical
 		gotoxy(33, i + 11);	cprintf("%c", border[1]);	gotoxy(47, i + 11);	cprintf("%c", border[1]);
@@ -145,7 +136,6 @@ void Game_Options() {
 		case 's':	if(y!=11+unlockedModes) y++;	break;
 		case 13:	pressed = true;	break;
 		case 27:	return;
-		//case 'x':	exit(0);
 		}
 		if(pressed)	break;
 	}
