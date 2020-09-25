@@ -62,23 +62,23 @@ int Game_getPaths(char paths[][50]) {
 }
 
 void Game_initRun() {
-	int i, j;
+	totLevels = Game_getPaths(paths);	levelCnt = 0;
+}
+
+int Game_generateLevel() {
+	int i, j, gen = 0, t = totLevels;
+	totStates = 0;
+	if(t<=0)	return -1;	//No Levels
+	//Generate Random Level
+	do {
+		gen = rand() % t;
+	} while(pathsCleared[gen] == true);
+	//Reset Map
 	for(i = 0; i < MaxY; i++) {
 		for(j = 0; j < MaxX; j++) {
 			Tile_init(&map[i][j], false, false, false);
 		}
 	}
-	totLevels = Game_getPaths(paths);
-	levelCnt = 0;
-}
-
-int Game_generateLevel() {
-	int gen = 0, t = totLevels;
-	totStates = 0;
-	if(t<=0)	return -1;	//No Levels
-	do {
-		gen = rand() % t;
-	} while(pathsCleared[gen] == true);
 	return gen;
 }
 
@@ -110,6 +110,7 @@ void Game_Options() {
 	gotoxy(37,9);
 	textcolor(YELLOW);	cprintf("OPTIONS");
 	textcolor(WHITE);
+	//sggfbf
 	if(strcmp(currentMode, "Normal") == 0) {
 		textcolor(WHITE);	y+=0;
 	} else textcolor(LIGHTGRAY);
@@ -200,7 +201,7 @@ bool Game_Start() {
 	}
 	switch(y-12) {
 	case 0:	Game_gameLoop();	break;
-	case 1:	Game_Options();	break;
+	case 1:	Game_Options();		break;
 	case 2: return false;
 	}
 	//Unlock New Mode and Finish
@@ -215,7 +216,6 @@ bool Game_Start() {
 			getch();
 		}
 		Game_saveData();
-		return true;
 	}
 	return true;
 }
