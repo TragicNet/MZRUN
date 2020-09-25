@@ -62,7 +62,8 @@ int Game_getPaths(char paths[][50]) {
 }
 
 void Game_initRun() {
-	totLevels = Game_getPaths(paths);	levelCnt = 0;
+	totLevels = Game_getPaths(paths);
+	levelCnt = 0;
 }
 
 int Game_generateLevel() {
@@ -153,10 +154,6 @@ bool Game_Start() {
 	bool selected = false;
 	Game_initRun();
 	clrscr();
-    /*int t = CYAN;
-    textcolor(t); lowvideo();   cprintf("Hello");
-    textcolor(t); highvideo();  cprintf("Hello");
-    textcolor(t); normvideo();  cprintf("Hello");*/
 	gotoxy(35,9);
 	textcolor(YELLOW);	cprintf("MAZE RUNNER");
 	textcolor(WHITE);
