@@ -4,7 +4,7 @@
 struct Level {
 	struct coord fullmap;
 	int totalEntities;
-	struct Object entities[50];
+	struct Object entities[70];
 	struct Tile map[MaxY][MaxX];
 };
 

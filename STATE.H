@@ -31,7 +31,7 @@ bool addState(struct State states[], char name[], int time) {
     } else if(strcmp(name, "breaker1") == 0) {
         strcpy(stateName, "BRK");   stateVal = 0;   stateDuration = 10; //kill monsters and remove state
     } else if(strcmp(name, "fullvision1") == 0) {
-        strcpy(stateName, "VIS");   stateVal = 0;   stateDuration = 2;  //give vision of full map
+        strcpy(stateName, "VIS");   stateVal = 0;   stateDuration = 5;  //give vision of full map
     } else if(strcmp(name, "slow1") == 0) {
         strcpy(stateName, "SLW");   stateVal = 1;   stateDuration = 5;  //decrease speed of time
     } else if(strcmp(name, "fast1") == 0) {

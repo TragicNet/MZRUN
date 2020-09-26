@@ -17,7 +17,7 @@ struct Object {
 
 	//Temporary Variables: Change Frequently
 	unsigned int last;
-} entityObjects[50], wall, air, blackair;
+} entityObjects[70], wall, air, blackair;
 unsigned int totalEntities = 1;
 
 void Object_reloc(struct Object *this, struct coord pos) {	this->pos = pos;	}
