@@ -82,15 +82,15 @@ bool Creator_move(struct Creator *this, int PosX, int PosY) {
 void Creator_create_lvl(struct Creator *this) {
 	int i = 0, j;
 	struct Object *temp;
-	struct tmp;
 	FILE *file;
+	//coord_init(&fullmap, 90, 30);
 	//Create Map file
 	file = fopen("MZRUN/map.txt","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
-	coord_init(&fullmap, strlen(cmap[0]), i);
 	fclose(file);
+	coord_init(&fullmap, strlen(cmap[0]), i);
 	for(i = 0; i<fullmap.y; i++) {
 		for(j = 0; j<fullmap.x; j++) {
 			Tile_init(&map[i][j], true, false, false, true);
