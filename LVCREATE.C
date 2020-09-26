@@ -4,6 +4,8 @@
 
 */
 
+char fileName[] = "AREA3";
+
 #include "MZRUN/GLOBALS.H"
 
 struct Creator {
@@ -12,6 +14,7 @@ struct Creator {
 	struct coord pos;
 	bool end;
 };
+char src[50], trg[50];
 
 void Creator_init(struct Creator *this) {
 	this->pos.x = this->pos.y = 1;	this->end = false;
@@ -63,7 +66,7 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 	totFiles = Creator_getPaths(paths);
 	//while(cnt < totFiles) {
 		//Create Map file
-		strcpy(fileName, "MZRUN/TXTFILES/area3.txt");
+		strcpy(fileName, src);
 		//strcat(fileName, paths[cnt]);
 		//printf("%d: %s %s\t", totFiles, fileName, paths[cnt]);	getch();
 		s = strlen(fileName);
@@ -138,13 +141,13 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 				}
 			}
 		}
-		strcpy(fileName, "MZRUN/LEVELS/AREA3.LVL");
+		strcpy(fileName, trg);
 		/*strcat(fileName, paths[cnt]);
 		s = strlen(fileName);
 		for(i = s-4; i < s; i++) {
 			fileName[i] = ext[i-(s-4)];
 		}*/
-		//printf("%d: %s %s\n", cnt, fileName, paths[cnt]);	getch();
+		//printf("%s\n%s\n", src, trg);	getch();
 		Level_Export(&(this->data), fileName);
 		cnt++;
 	//}
@@ -154,5 +157,7 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 void main() {
 	struct Creator creator;
 	clrscr();
+	sprintf(src, "MZRUN/TXTFILES/%s.TXT", fileName);
+	sprintf(trg, "MZRUN/LEVELS/%s.LVL", fileName);
 	Creator_create_lvl(&creator, paths);
 }

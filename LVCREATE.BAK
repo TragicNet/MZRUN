@@ -10,9 +10,10 @@ struct Creator {
 	struct Level data;
 	char cmap[MaxY][MaxX];
 	struct coord pos;
-	struct Object temp;
 	bool end;
 };
+char fileName[] = "AREA3";
+char src[50], trg[50];
 
 void Creator_init(struct Creator *this) {
 	this->pos.x = this->pos.y = 1;	this->end = false;
@@ -47,7 +48,6 @@ int Creator_getPaths(char paths[][50]) {
 		}
 		if(i==s) {
 			strcpy(paths[cnt++], de->d_name);
-			printf("%s\n", paths[cnt-1]);
 		}
 	}
 	closedir(dr);
@@ -56,15 +56,18 @@ int Creator_getPaths(char paths[][50]) {
 
 void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 	int i = 0, j, s, cnt = 0, totFiles;
+	struct Object *temp;
 	FILE *file;
-	char fileName[50];
+	char fileName[50] = "MZRUN/TXTFILES/";
 	char ext[] = ".LVL";
 	coord_init(&fullmap, 90, 30);
+	temp = (struct Object*) malloc(sizeof(struct Object));
 	totFiles = Creator_getPaths(paths);
-	while(cnt < totFiles) {
+	//while(cnt < totFiles) {
 		//Create Map file
-		strcpy(fileName, "MZRUN/TXTFILES/");	strcat(fileName, paths[cnt]);
-		printf("%d: %s %s\t", cnt, fileName, paths[cnt]);
+		strcpy(fileName, src);
+		//strcat(fileName, paths[cnt]);
+		//printf("%d: %s %s\t", totFiles, fileName, paths[cnt]);	getch();
 		s = strlen(fileName);
 		file = fopen(fileName,"r");
 		while(!feof(file)) {
@@ -72,52 +75,62 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 		}
 		fclose(file);
 		totalEntities = 1;
-		/*for(i = 0; i<fullmap.y; i++) {
+		for(i = 0; i<fullmap.y; i++) {
 			for(j = 0; j<fullmap.x; j++) {
 				Tile_init(&map[i][j], true, false, false, true);
+				//coord_init(&tmp, j, i);
 				if(this->cmap[i][j]=='@') {
-					Object_init(&this->temp, j, i, RIGHT, '@', "player", "player", GREEN, BLACK, 0, 0, 1);
-					this->cmap[i][j] = '.';	entityObjects[0] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, RIGHT, '@', "player", "player", GREEN, BLACK, 0, 0, 1);
+					this->cmap[i][j] = '.';	entityObjects[0] = *temp;	//free(temp);
 					Tile_unblock(&map[i][j]);
 				} else if(this->cmap[i][j] == '*') {
-					Object_init(&this->temp, j, i, STOP, '*', "monster", "normal", RED, BLACK, 5, 4, 1); //RED
-					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, '*', "monster", "normal", RED, BLACK, 5, 4, 1); //RED
+					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = *temp;	//free(temp);
 					Tile_unblock(&map[i][j]);	map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '#') {
 					Tile_blockSight(&map[i][j]);	Tile_close(&map[i][j]);
 				} else if(this->cmap[i][j] == 'g') {
-					Object_init(&this->temp, j, i, STOP, 'g', "goal", "goal1", CYAN, CYAN, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 'g', "goal", "goal1", CYAN, CYAN, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';
 					Tile_unblock(&map[i][j]);	map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 's') {
-					Object_init(&this->temp, j, i, STOP, 4, "effect", "slow1", LIGHTBLUE, BLACK, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 4, "effect", "slow1", LIGHTBLUE, BLACK, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'f') {
-					Object_init(&this->temp, j, i, STOP, 4, "effect", "fast1", LIGHTBLUE, BLACK, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 4, "effect", "fast1", LIGHTBLUE, BLACK, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'x') {
-					Object_init(&this->temp, j, i, STOP, 4, "effect", "breaker1", LIGHTBLUE, BLACK, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 4, "effect", "breaker1", LIGHTBLUE, BLACK, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'r') {
-					Object_init(&this->temp, j, i, STOP, 4, "effect", "repel1", LIGHTBLUE, BLACK, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 4, "effect", "repel1", LIGHTBLUE, BLACK, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'a') {
-					Object_init(&this->temp, j, i, STOP, 4, "effect", "attract1", LIGHTBLUE, BLACK, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 4, "effect", "attract1", LIGHTBLUE, BLACK, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'v') {
-					Object_init(&this->temp, j, i, STOP, 4, "effect", "fullvision1", LIGHTBLUE, BLACK, 0, 0, 0);
-					entityObjects[totalEntities++] = this->temp;
+					//temp = (struct Object*) malloc(sizeof(struct Object));
+					Object_init(temp, j, i, STOP, 4, "effect", "fullvision1", LIGHTBLUE, BLACK, 0, 0, 0);
+					entityObjects[totalEntities++] = *temp;	//free(temp);
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'V') {
@@ -126,22 +139,24 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 					Tile_unblock(&map[i][j]);
 				}
 			}
-		}*/
-		strcpy(fileName, "MZRUN/LEVELS/");	strcat(fileName, paths[cnt]);
+		}
+		strcpy(fileName, trg);
+		/*strcat(fileName, paths[cnt]);
 		s = strlen(fileName);
 		for(i = s-4; i < s; i++) {
 			fileName[i] = ext[i-(s-4)];
-		}
-		printf("%d: %s %s\n", cnt, fileName, paths[cnt]);
+		}*/
+		printf("%s\n%s\n", src, trg);	getch();
 		//Level_Export(&(this->data), fileName);
 		cnt++;
-	}
-	getch();
+	//}
+	free(temp);
 }
 
 void main() {
 	struct Creator creator;
 	clrscr();
+	sprintf(src, "MZRUN/TXTFILES/%s.TXT", fileName);
+	sprintf(trg, "MZRUN/LEVELS/%s.LVL", fileName);
 	Creator_create_lvl(&creator, paths);
-	//Creator_getPaths(paths);
 }
