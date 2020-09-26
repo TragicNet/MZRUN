@@ -7,15 +7,13 @@ struct Game {
 
 void Game_loadData(struct Game *this) {
 	FILE *file;
-	struct Game temp;
 	file = fopen("./MZRUN/data.sav", "rb" );
 	if(file == NULL) {
-		temp.unlockedModes = 0;
+		this->unlockedModes = 0;
 	} else {
-		fread((char*) &temp, sizeof(struct Game), 1, file);
+		fread((char*) this, sizeof(struct Game), 1, file);
 	}
 	fclose(file);
-	*this = temp;
 }
 void Game_saveData(struct Game *this) {
 	FILE *file;
