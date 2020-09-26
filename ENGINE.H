@@ -184,9 +184,9 @@ void Object_script(struct Engine *engine, int loc) {
 	if(strcmp(entityObjects[loc].type, "monster") == 0) {
 		for(i = 0; i<totStates; i++) {
 			if(strcmp(states[i].name, "IMM") == 0) {
-				Object_remove(entityObjects, loc);	return;
+				removeObject(entityObjects, loc);	return;
 			} else if(strcmp(states[i].name, "BRK") == 0) {
-				Object_remove(entityObjects, loc);	State_remove(states, i);
+				removeObject(entityObjects, loc);	removeState(states, i);
 				gotoxy(2, 4 + totStates);	cprintf("      ");	return;
 			}
 		}
@@ -194,7 +194,7 @@ void Object_script(struct Engine *engine, int loc) {
 	} else if(strcmp(entityObjects[loc].type, "goal") == 0) {
 		script_cleared(engine);
 	} else if(State_add(states, entityObjects[loc].name, Engine_tick(engine))) {
-		Object_remove(entityObjects, loc);
+		removeObject(entityObjects, loc);
 	}
 }
 
@@ -216,7 +216,7 @@ void Engine_handle(struct Engine *this) {
 	//Update States
 	for(i = 0; i<totStates; i++) {
 		if(states[i].duration <= 0) {
-			State_remove(states, i);
+			removeState(states, i);
 			gotoxy(2, 4 + totStates);	cprintf("      ");
 		}
 		else if(states[i].last!=Engine_tick(this)) {

@@ -30,7 +30,7 @@ void Object_init(struct Object *this, int x, int y, enum eDirection dir, char sy
 	this->last = 0;	this->weight = weight;
 }
 
-void Object_remove(struct Object objects[], int loc) {
+void removeObject(struct Object objects[], int loc) {
     int i;
 	Tile_unblock(&map[objects[loc].pos.y][objects[loc].pos.x]);
     if(totalEntities>0) {

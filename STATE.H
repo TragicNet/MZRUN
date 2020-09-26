@@ -64,7 +64,7 @@ bool State_add(struct State states[], char name[], int time) {
     State_sort(states);
     return true;
 }
-void State_remove(struct State states[], int loc) {
+void removeState(struct State states[], int loc) {
     int i;
     if(totStates>0) {
         for(i = loc; i<totStates; i++) {
