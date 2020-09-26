@@ -132,12 +132,8 @@ void Game_Options(struct Game *this) {
 		}
 		if(pressed)	break;
 	}
-	switch(y-11) {
-	case 0:	strcpy(currentMode, "Normal");	break;
-	case 1:	strcpy(currentMode, "Normal+");	break;
-	case 2:	strcpy(currentMode, "Hard");	break;
-	case 3:	strcpy(currentMode, "Hard+");	break;
-	}
+	//Set Current Mode
+	strcpy(currentMode, Modes[y-11]);
 }
 
 bool Game_Start(struct Game *this) {
