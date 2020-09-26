@@ -36,7 +36,7 @@ void Game_init(struct Game *this) {
 	strcpy(currentMode, "Normal");
 }
 
-int Game_getPaths(struct Game *this, char paths[][50]) {
+int Game_getPaths(char paths[][50]) {
 	struct dirent *de;
 	int i, cnt=0, s;
 	char ext[] = ".LVL";
@@ -57,12 +57,7 @@ int Game_getPaths(struct Game *this, char paths[][50]) {
 	return cnt;
 }
 
-void Game_initRun(struct Game *this) {
-	totLevels = Game_getPaths(this, paths);
-	levelCnt = 0;
-}
-
-int Game_generateLevel(struct Game *this) {
+int Game_generateLevel() {
 	int i, j, gen = 0, t = totLevels;
 	totStates = 0;
 	if(t<=0)	return -1;	//No Levels
@@ -82,6 +77,8 @@ int Game_generateLevel(struct Game *this) {
 void Game_gameLoop(struct Game *this) {
 	struct Engine run;
 	int gen;
+	totLevels = Game_getPaths(paths);
+	levelCnt = 0;
 	wait = true;
 	do {
 		gen = Game_generateLevel(this);
