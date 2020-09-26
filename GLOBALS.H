@@ -20,10 +20,9 @@
 #define oTICKSPEED 100//30
 #define oTIMELIMIT 100//200
 
-int torchRange = 7;	//7.0f
+int torchRange = 7;
 int totLevels;
 int levelCnt;
-int unlockedModes;
 bool returnTitle = false;
 bool wait = false;
 char cmap[MaxY][MaxX];

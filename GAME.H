@@ -5,28 +5,26 @@ struct Game {
 	int unlockedModes;
 };
 
-void Game_loadData() {
+void Game_loadData(struct Game *this) {
 	FILE *file;
-	struct Game d;
+	struct Game temp;
 	file = fopen("./MZRUN/data.sav", "rb" );
 	if(file == NULL) {
-		unlockedModes = 0;
+		temp.unlockedModes = 0;
 	} else {
-		fread((char*) &d, sizeof(struct Game), 1, file);
-		unlockedModes = d.unlockedModes;
+		fread((char*) &temp, sizeof(struct Game), 1, file);
 	}
 	fclose(file);
+	*this = temp;
 }
-void Game_saveData() {
+void Game_saveData(struct Game *this) {
 	FILE *file;
-	struct Game d;
-	d.unlockedModes = unlockedModes;
 	file = fopen("./MZRUN/data.sav", "wb" );
-	fwrite((char*) &d, sizeof(struct Game), 1, file);
+	fwrite((char*) this, sizeof(struct Game), 1, file);
 	fclose(file);
 }
 
-void Game_init() {
+void Game_init(struct Game *this) {
 	srand((unsigned)time(0));
 	Object_init(&wall, 0, 0, STOP, '#', "wall", "wall", WHITE, LIGHTGRAY, 0, 0, 1);
 	Object_init(&air, 0, 0, STOP, '.', "air", "air", LIGHTGRAY, BLACK, 0, 0, 0);
@@ -35,12 +33,12 @@ void Game_init() {
 	coord_init(&screen, 39, 13);
 	levelCnt = 0;
 	totLevels = 0;
-	unlockedModes = 0;
-	Game_loadData();
+	this->unlockedModes = 0;
+	Game_loadData(this);
 	strcpy(currentMode, "Normal");
 }
 
-int Game_getPaths(char paths[][50]) {
+int Game_getPaths(struct Game *this, char paths[][50]) {
 	struct dirent *de;
 	int i, cnt=0, s;
 	char ext[] = ".LVL";
@@ -61,12 +59,12 @@ int Game_getPaths(char paths[][50]) {
 	return cnt;
 }
 
-void Game_initRun() {
-	totLevels = Game_getPaths(paths);
+void Game_initRun(struct Game *this) {
+	totLevels = Game_getPaths(this, paths);
 	levelCnt = 0;
 }
 
-int Game_generateLevel() {
+int Game_generateLevel(struct Game *this) {
 	int i, j, gen = 0, t = totLevels;
 	totStates = 0;
 	if(t<=0)	return -1;	//No Levels
@@ -83,28 +81,28 @@ int Game_generateLevel() {
 	return gen;
 }
 
-void Game_gameLoop() {
-	struct Engine game;
+void Game_gameLoop(struct Game *this) {
+	struct Engine run;
 	int gen;
 	wait = true;
 	do {
-		gen = Game_generateLevel();
+		gen = Game_generateLevel(this);
 		if(gen == -1)	return;	//No Levels
 		levelCnt++;
-		Engine_init(&game, gen);
+		Engine_init(&run, gen);
 		Engine_HUD();
-		while(!Engine_getState(&game)) {
-			Engine_draw(&game);
-			Engine_input(&game);
+		while(!Engine_getState(&run)) {
+			Engine_draw(&run);
+			Engine_input(&run);
 			if(wait == true)	continue;
-			Engine_handle(&game);
+			Engine_handle(&run);
 		}
-		if(game.cleared == true)	pathsCleared[gen] = true;
+		if(run.cleared == true)	pathsCleared[gen] = true;
 		else	return;
 	} while(levelCnt != totLevels);
 }
 
-void Game_Options() {
+void Game_Options(struct Game *this) {
 	int i, x = 35, y = 11, key, spaces = 0;
 	bool pressed = false;
 	clrscr();
@@ -115,7 +113,7 @@ void Game_Options() {
 	for(i = 0; i<sizeof(Modes)/sizeof(Modes[0]); i++) {
 		if(strcmp(currentMode, Modes[i]) == 0) {
 			textcolor(WHITE);	y+=i;
-		} else ((unlockedModes >= i) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
+		} else ((this->unlockedModes >= i) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
 		spaces = 3 - strlen(Modes[i])/2;
 		gotoxy(37+spaces, 11+i);	cprintf("%s", Modes[i]);
 	}
@@ -134,7 +132,7 @@ void Game_Options() {
 		gotoxy(x,y);	cprintf(" ");	gotoxy(x+10,y);	cprintf(" ");
 		switch(key) {
 		case 'w':	if(y!=11) y--;	break;
-		case 's':	if(y!=11+unlockedModes) y++;	break;
+		case 's':	if(y!=11+this->unlockedModes) y++;	break;
 		case 13:	pressed = true;	break;
 		case 27:	return;
 		}
@@ -146,13 +144,13 @@ void Game_Options() {
 	case 2:	strcpy(currentMode, "Hard");	break;
 	case 3:	strcpy(currentMode, "Hard+");	break;
 	}
-	Game_Options();
+	Game_Options(this);
 }
 
-bool Game_Start() {
+bool Game_Start(struct Game *this) {
 	int i, x = 35, y = 12, width, key;
 	bool selected = false;
-	Game_initRun();
+	Game_initRun(this);
 	clrscr();
 	gotoxy(35,9);
 	textcolor(YELLOW);	cprintf("MAZE RUNNER");
@@ -187,22 +185,22 @@ bool Game_Start() {
 		if(selected)	break;
 	}
 	switch(y-12) {
-	case 0:	Game_gameLoop();	break;
-	case 1:	Game_Options();		break;
+	case 0:	Game_gameLoop(this);	break;
+	case 1:	Game_Options(this);		break;
 	case 2: return false;
 	}
 	//Unlock New Mode and Finish
 	if(levelCnt == totLevels) {
-		if(unlockedModes<3 && strcmp(currentMode, Modes[unlockedModes]) == 0) {
-			unlockedModes++;
-			x = 29, y = 12, width = 18 + strlen(Modes[unlockedModes]);
+		if(this->unlockedModes<3 && strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
+			this->unlockedModes++;
+			x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);
 			textcolor(LIGHTGREEN);
 			gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
-			gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[unlockedModes], border[1]);
+			gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[this->unlockedModes], border[1]);
 			gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 			getch();
 		}
-		Game_saveData();
+		Game_saveData(this);
 	}
 	return true;
 }
