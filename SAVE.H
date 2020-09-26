@@ -1,27 +1,26 @@
-#ifndef SAVE_H
-#define SAVE_H
+#ifndef H
+#define H
 
 struct Save {
-	struct coord save_fullmap;
-	int save_totalEntities;
-	//struct Object save_goal;
-	struct Object save_monsters[50];
-	char save_cmap[MaxY][MaxX];
-	struct Tile save_map[MaxY][MaxX];
+	struct coord fullmap;
+	int totalEntities;
+	struct Object entities[50];
+	char cmap[MaxY][MaxX];
+	struct Tile map[MaxY][MaxX];
 };
 
 void Save_Export(struct Save *this, char path[]) {
 	int i, j;
 	FILE *file;
-	this->save_fullmap = fullmap;
-	this->save_totalEntities = totalEntities;
-	//this->save_goal = goal;
-	for(i=0; i<this->save_totalEntities; i++)
-		this->save_monsters[i] = entityObjects[i];
+	this->fullmap = fullmap;
+	this->totalEntities = totalEntities;
+	//this->goal = goal;
+	for(i=0; i<this->totalEntities; i++)
+		this->entities[i] = entityObjects[i];
 	for(i=0; i<MaxY; i++) {
 		for(j=0; j<MaxX; j++) {
-			this->save_cmap[i][j] = cmap[i][j];
-			this->save_map[i][j] = map[i][j];
+			this->cmap[i][j] = cmap[i][j];
+			this->map[i][j] = map[i][j];
 		}
 	}
 
@@ -38,15 +37,15 @@ void Save_Import(struct Save *this, char path[]) {
 	fread((char*) this, sizeof(struct Save), 1, file);
 	fclose(file);
 
-	fullmap = this->save_fullmap;
-	totalEntities = this->save_totalEntities;
-	//Object_reloc(&goal, this->save_goal.pos);
+	fullmap = this->fullmap;
+	totalEntities = this->totalEntities;
+	//Object_reloc(&goal, this->goal.pos);
 	for(i=0; i<totalEntities; i++)
-		entityObjects[i] = this->save_monsters[i];
+		entityObjects[i] = this->entities[i];
 	for(i=0; i<MaxY; i++) {
 		for(j=0; j<MaxX; j++) {
-			cmap[i][j] = this->save_cmap[i][j];
-			map[i][j] = this->save_map[i][j];
+			cmap[i][j] = this->cmap[i][j];
+			map[i][j] = this->map[i][j];
 		}
 	}
 }

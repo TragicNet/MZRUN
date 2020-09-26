@@ -142,7 +142,6 @@ void Game_Options(struct Game *this) {
 	case 2:	strcpy(currentMode, "Hard");	break;
 	case 3:	strcpy(currentMode, "Hard+");	break;
 	}
-	Game_Options(this);
 }
 
 bool Game_Start(struct Game *this) {
@@ -178,7 +177,6 @@ bool Game_Start(struct Game *this) {
 		case 's':	y = (y==14) ? 14 : y+1;	break;
 		case 'h':	help();	return true;
 		case 13:	selected = true;	break;
-		case 27:	return false;
 		}
 		if(selected)	break;
 	}
@@ -188,7 +186,10 @@ bool Game_Start(struct Game *this) {
 	case 2: return false;
 	}
 	//Unlock New Mode and Finish
-	if(levelCnt == totLevels) {
+	for(i = 0; i<totLevels; i++) {
+		if(pathsCleared[i] == false)	break;
+	}
+	if(i == totLevels) {
 		if(this->unlockedModes<3 && strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
 			this->unlockedModes++;
 			x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);
