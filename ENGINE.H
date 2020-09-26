@@ -2,7 +2,7 @@
 #define ENGINE_H
 
 struct Engine {
-	struct Save data;
+	struct Level data;
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
@@ -17,7 +17,7 @@ void Engine_init(struct Engine *this, int gen) {
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
 	
-	Save_Import(&this->data, paths[gen]);
+	Level_Import(&this->data, paths[gen]);
 	
 	addState(states, "fullvision1",  Engine_tick(this));
 	addState(states, "immunity1",  Engine_tick(this));
@@ -172,7 +172,6 @@ void Engine_input(struct Engine *this) {
 			break;
 		case 'h':	help();	Engine_HUD();
 		case 'p':	wait = true;	return;
-		//case 'x':	exit(0);
 		case 27:   this->gameOver = true;	break;
 		}
 		if(wait==true)	wait = false;

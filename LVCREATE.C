@@ -7,7 +7,7 @@
 #include "MZRUN/GLOBALS.H"
 
 struct Creator {
-	struct Save data;
+	struct Level data;
 	char cmap[MaxY][MaxX];
 	char list[50];
 	struct coord pos;
@@ -152,7 +152,7 @@ void Creator_create_lvl(struct Creator *this) {
 			}
 		}
 	}
-	Save_Export(&this->data, "./MZRUN/LEVELS/area3.lvl");
+	Level_Export(&this->data, "./MZRUN/LEVELS/area3.lvl");
 }
 
 int main() {

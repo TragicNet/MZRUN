@@ -181,8 +181,8 @@ bool Game_Start(struct Game *this) {
 		if(pathsCleared[i] == false)	break;
 	}
 	if(i == totLevels && levelCnt == totLevels) {
-		if(this->unlockedModes<3 && strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
-			this->unlockedModes++;
+		if(this->unlockedModes<sizeof(Modes)/sizeof(Modes[0]) && strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
+			this->unlockedModes++;	levelCnt = 0;
 			x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);
 			textcolor(LIGHTGREEN);
 			gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);

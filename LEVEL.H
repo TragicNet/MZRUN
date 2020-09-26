@@ -1,7 +1,7 @@
-#ifndef H
-#define H
+#ifndef LEVEL_H
+#define LEVEL_H
 
-struct Save {
+struct Level {
 	struct coord fullmap;
 	int totalEntities;
 	struct Object entities[50];
@@ -9,7 +9,7 @@ struct Save {
 	struct Tile map[MaxY][MaxX];
 };
 
-void Save_Export(struct Save *this, char path[]) {
+void Level_Export(struct Level *this, char path[]) {
 	int i, j;
 	FILE *file;
 	this->fullmap = fullmap;
@@ -25,16 +25,16 @@ void Save_Export(struct Save *this, char path[]) {
 	}
 
 	file = fopen(path, "wb" );
-	fwrite((char*) this, sizeof(struct Save), 1, file);
+	fwrite((char*) this, sizeof(struct Level), 1, file);
 	fclose(file);
 }
 
-void Save_Import(struct Save *this, char path[]) {
+void Level_Import(struct Level *this, char path[]) {
 	int i, j;
 	FILE *file;
 
 	file = fopen(path, "rb" );
-	fread((char*) this, sizeof(struct Save), 1, file);
+	fread((char*) this, sizeof(struct Level), 1, file);
 	fclose(file);
 
 	fullmap = this->fullmap;
