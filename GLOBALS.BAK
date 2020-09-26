@@ -42,16 +42,16 @@ void halt(int x) {
     delay(x);
 	while(1)
 	{	if(kbhit())	getch();
-		if(!kbhit())	break;
+		else	break;
 	}
 }
 
-float distance(int x1, int y1, int x2, int y2) {
-	return sqrt( (x2-x1) * (x2-x1) + (y2-y1) * (y2-y1) );
-}
-
 float distance(int xdiff, int ydiff) {
-	return sqrt( abs(xdiff) * abs(xdiff) + abs(ydiff) * abs(ydiff) );
+	unsigned int val = xdiff * xdiff) + ydiff * ydiff;
+	if(val <= 0) {
+		clrscr();	printf("Less");	getch();	exit(0);
+	}
+	return (val <= 0) ? 0 : sqrt(val);
 }
 
 #include "MZRUN/COORD.H"

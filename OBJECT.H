@@ -108,10 +108,12 @@ void Object_route(struct Object *this, unsigned int last) {
 			i = this->pos.y;
 			if(this->range!=MaxX) {
 				do {
-					if(ydiff > 0) i++;	else if(ydiff < 0)	i--;
+					if(i>0 && i<MaxY)
+						if(ydiff > 0) i++;	else if(ydiff < 0)	i--;
 					j = this->pos.x;
 					do {
-						if(xdiff > 0) j++;	else if(xdiff < 0)	j--;
+						if(j>0 && j<MaxX)
+							if(xdiff > 0) j++;	else if(xdiff < 0)	j--;
 						if(Tile_isOpaque(&map[i][j]) && i>=0 && j>=0) {
 							viewBlocked = true;	break;
 						}

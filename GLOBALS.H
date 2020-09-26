@@ -47,7 +47,11 @@ void halt(int x) {
 }
 
 float distance(int xdiff, int ydiff) {
-	int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
+	unsigned int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
+	val = (unsigned)(val<0) ? -val : val;
+	if(val < 0) {
+		clrscr();	printf("xdiff: %d\nydiff: %d\nval: ", xdiff, ydiff, val);	getch();	exit(0);
+	}
 	return (val <= 0) ? 0 : sqrt(val);
 }
 
