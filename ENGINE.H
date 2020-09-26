@@ -90,7 +90,7 @@ void Engine_draw(struct Engine *this) {
 				Object_draw(&blackair);
 			} else if(obj>=0)	{
 				if( coord_cmp(entityObjects[obj].pos, this->player->pos) ) {
-					if(this->gameOver) {
+					if(this->gameOver && strcmp(entityObjects[obj].type, "player") == 0) {
 						Object_draw(&blackair);	continue;
 					} else if( entityObjects[obj].weight < this->player->weight ) {
 						Object_setColor(this->player, WHITE, entityObjects[obj].bgcolor);	obj = 0;
@@ -129,7 +129,9 @@ void Engine_draw(struct Engine *this) {
 void script_death(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 12;
-	this->gameOver = true;
+	Engine_draw(this);
+	//Halt visible player Death
+	halt(100);	this->gameOver = true;
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	textcolor(LIGHTRED);

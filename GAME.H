@@ -8,7 +8,7 @@ struct Game {
 
 void Game_loadData(struct Game *this) {
 	FILE *file;
-	file = fopen("./MZRUN/data.sav", "rb" );
+	file = fopen("MZRUN/data.sav", "rb" );
 	if(file == NULL) {
 		this->unlockedModes = 0;
 		this->wished = false;
@@ -19,7 +19,7 @@ void Game_loadData(struct Game *this) {
 }
 void Game_saveData(struct Game *this) {
 	FILE *file;
-	file = fopen("./MZRUN/data.sav", "wb" );
+	file = fopen("MZRUN/data.sav", "wb" );
 	fwrite((char*) this, sizeof(struct Game), 1, file);
 	fclose(file);
 }
@@ -39,7 +39,7 @@ int Game_getPaths(char paths[][50]) {
 	struct dirent *de;
 	int i, cnt=0, s;
 	char ext[] = ".LVL";
-	DIR *dr = opendir("./MZRUN/LEVELS");
+	DIR *dr = opendir("MZRUN/LEVELS");
 	if(dr == NULL) return 0;
 	while((de = readdir(dr)) != NULL)  {
 		s = strlen(de->d_name);
@@ -48,7 +48,7 @@ int Game_getPaths(char paths[][50]) {
 		}
 		if(i==s) {
 			pathsCleared[cnt] = false;
-			strcpy(paths[cnt], "./MZRUN/LEVELS/");
+			strcpy(paths[cnt], "MZRUN/LEVELS/");
 			strcat(paths[cnt++], de->d_name);
 		}
 	}
