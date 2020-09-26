@@ -14,8 +14,8 @@
 #define bool int
 #define true 1
 #define false 0
-#define MaxX 60
-#define MaxY 20
+#define MaxX 90
+#define MaxY 30
 #define MaxSpeed 9
 #define oTICKSPEED 100//30
 #define oTIMELIMIT 100//200
@@ -27,16 +27,16 @@ int levelCnt;
 int wished = false;
 bool returnTitle = false;
 bool wait = false;
-char cmap[MaxY][MaxX];
-char paths[50][50];
-bool pathsCleared[50];
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
 
-char currentMode[20];
-char Modes[totModes][20] = { "Normal", "Normal+", "Hard", "Hard+" };
+char paths[50][50];
+bool pathsCleared[50];
+
+char currentMode[10];
+char Modes[totModes][10] = { "Normal", "Normal+", "Hard", "Hard+" };
 
 void halt(int x) {   
     delay(x);
@@ -47,8 +47,8 @@ void halt(int x) {
 }
 
 float distance(int xdiff, int ydiff) {
-	unsigned int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
-	val = (unsigned)(val<0) ? -val : val;
+	int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
+	val = (unsigned)((val<0) ? -val : val);
 	if(val < 0) {
 		clrscr();	printf("xdiff: %d\nydiff: %d\nval: ", xdiff, ydiff, val);	getch();	exit(0);
 	}

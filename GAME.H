@@ -65,20 +65,20 @@ int Game_generateLevel() {
 		gen = rand() % totLevels;
 	} while(pathsCleared[gen] == true);
 	//Reset Map
-	for(i = 0; i < MaxY; i++) {
-		for(j = 0; j < MaxX; j++) {
+	for(i = 0; i < fullmap.y; i++) {
+		for(j = 0; j < fullmap.x; j++) {
 			Tile_init(&map[i][j], false, false, false, true);
 		}
 	}
 	return gen;
 }
 
-void Game_gameLoop(struct Game *this) {
+void Game_gameLoop() {
 	struct Engine run;
 	int gen;
 	wait = true;
 	do {
-		gen = Game_generateLevel(this);
+		gen = Game_generateLevel();
 		if(gen == -1)	return;	//No Levels
 		levelCnt++;
 		Engine_init(&run, gen);

@@ -6,6 +6,8 @@
 
 #include "MZRUN/GLOBALS.H"
 
+char cmap[MaxY][MaxX];
+
 struct Creator {
 	struct Level data;
 	char cmap[MaxY][MaxX];
@@ -83,11 +85,11 @@ void Creator_create_lvl(struct Creator *this) {
 	struct tmp;
 	FILE *file;
 	//Create Map file
-	coord_init(&fullmap, 60, 20);
 	file = fopen("MZRUN/map.txt","r");
 	while(!feof(file)) {
 		fscanf(file, "%s", &cmap[i++]);
 	}
+	coord_init(&fullmap, strlen(cmap[0]), i);
 	fclose(file);
 	for(i = 0; i<fullmap.y; i++) {
 		for(j = 0; j<fullmap.x; j++) {

@@ -5,6 +5,7 @@ struct Level {
 	struct coord fullmap;
 	int totalEntities;
 	struct Object entities[50];
+	char cmap[MaxY][MaxX];
 	struct Tile map[MaxY][MaxX];
 };
 

@@ -16,7 +16,7 @@ bool Engine_isCleared(struct Engine *this)	{	return this->cleared;			}
 void Engine_init(struct Engine *this, int gen) {
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
-	
+
 	Level_Import(&this->levelData, paths[gen]);
 	
 	addState(states, "fullvision1",  Engine_tick(this));
