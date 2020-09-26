@@ -91,7 +91,7 @@ void Creator_create_lvl(struct Creator *this) {
 	fclose(file);
 	for(i = 0; i<fullmap.y; i++) {
 		for(j = 0; j<fullmap.x; j++) {
-			Tile_init(&map[i][j], true, false, false, true);
+			Tile_block(&map[i][j]);
 			//coord_init(&tmp, j, i);
 			if(cmap[i][j]=='@') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
@@ -104,7 +104,7 @@ void Creator_create_lvl(struct Creator *this) {
 				cmap[i][j] = '.';	entityObjects[totalEntities++] = *temp;	free(temp);
 				Tile_unblock(&map[i][j]);	map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == '#') {
-				Tile_blockSight(&map[i][j]);	Tile_close(&map[i][j]);
+				Tile_blockSight(&map[i][j]);
 			} else if(cmap[i][j] == 'g') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 'g', "goal", "goal1", CYAN, CYAN, 0, 0, 0);
@@ -147,14 +147,14 @@ void Creator_create_lvl(struct Creator *this) {
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 				//map[i][j].playerOnly = true;
-			} else if(cmap[i][j] == '~') {
-				cmap[i][j] = ' ';	Tile_unblock(&map[i][j]);	Tile_close(&map[i][j]);
+			} else if(cmap[i][j] == ' ') {
+				cmap[i][j] = ' ';
 			} else {
 				Tile_unblock(&map[i][j]);
 			}
 		}
 	}
-	Level_Export(&this->data, "./MZRUN/LEVELS/AREA1.lvl");
+	Level_Export(&this->data, "./MZRUN/LEVELS/area3.lvl");
 }
 
 int main() {

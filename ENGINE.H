@@ -71,6 +71,7 @@ void Engine_draw(struct Engine *this) {
 	int i, j, k, obj;
 	bool fullvision = false;
 	struct coord tmp, sumtmp;
+	struct Tile *tmpTile;
 	struct coord camera = view(this->player->pos, screen, fullmap);
 	for(i = 0; i<totStates; i++) {
 		if(strcmp(states[i].name, "VIS") == 0) {
@@ -80,6 +81,7 @@ void Engine_draw(struct Engine *this) {
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
+			tmpTile = &map[camera.y + i][camera.x + j];
 			sumtmp = coord_add(camera, tmp);
 			gotoxy(board.x+j, board.y+i);
 			obj = posCheck(coord_add(camera, tmp), "", true);
@@ -87,12 +89,22 @@ void Engine_draw(struct Engine *this) {
 			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange && fullvision == false) {
 				Object_draw(&blackair);
 			} else if(obj>=0)	{
-				if( coord_cmp(entityObjects[obj].pos, this->player->pos) && entityObjects[obj].weight < this->player->weight) {
-					Object_setColor(this->player, WHITE, entityObjects[obj].bgcolor);	obj = 0;
+				if( coord_cmp(entityObjects[obj].pos, this->player->pos) ) {
+					if(this->gameOver) {
+						Object_draw(&blackair);	continue;
+					} else if( entityObjects[obj].weight < this->player->weight ) {
+						Object_setColor(this->player, WHITE, entityObjects[obj].bgcolor);	obj = 0;
+					}
 				}
 				Object_draw(&entityObjects[obj]);
-			} else if(Tile_isBlocked(&map[camera.y + i][camera.x + j])) Object_draw(&wall);
-			else	Object_draw(&air);
+			} else if(!Tile_isOpen(tmpTile)) {
+				if(Tile_isBlocked(tmpTile))
+					Object_draw(&wall);
+				else
+					Object_draw(&blackair);
+			} else {
+				Object_draw(&air);
+			}
 		}
 	}
 	gotoxy(3, 2);	textcolor(YELLOW);	cprintf("Level:");	textcolor(WHITE);	cprintf("%2d", levelCnt);
@@ -117,9 +129,9 @@ void Engine_draw(struct Engine *this) {
 void script_death(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 12;
+	this->gameOver = true;
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
-	this->gameOver = true;
 	textcolor(LIGHTRED);
 	gotoxy(cx, cy++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
@@ -207,7 +219,9 @@ void Engine_handle(struct Engine *this) {
 	}
 	if( Engine_tick(this) < 1 ) {
 		script_death(this);	return;
-	}
+	} else if(!Tile_isOpen(&map[this->player->pos.y][this->player->pos.x])) {
+		script_death(this);	return;
+	} 
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
 			Object_route(&entityObjects[i], this->timer);

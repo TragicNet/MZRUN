@@ -3,6 +3,7 @@
 
 struct Game {
 	int unlockedModes;
+	bool wished;
 };
 
 void Game_loadData(struct Game *this) {
@@ -10,6 +11,7 @@ void Game_loadData(struct Game *this) {
 	file = fopen("./MZRUN/data.sav", "rb" );
 	if(file == NULL) {
 		this->unlockedModes = 0;
+		this->wished = false;
 	} else {
 		fread((char*) this, sizeof(struct Game), 1, file);
 	}
@@ -29,8 +31,6 @@ void Game_init(struct Game *this) {
 	Object_init(&blackair, 0, 0, STOP, '.', "air", "air", BLACK, BLACK, 0, 0, 0);
 	coord_init(&board, 9, 4);
 	coord_init(&screen, 39, 13);
-	levelCnt = 0;
-	totLevels = Game_getPaths(paths);
 	Game_loadData(this);
 	strcpy(currentMode, "Normal");
 }
@@ -67,7 +67,7 @@ int Game_generateLevel() {
 	//Reset Map
 	for(i = 0; i < MaxY; i++) {
 		for(j = 0; j < MaxX; j++) {
-			Tile_init(&map[i][j], false, false, false);
+			Tile_init(&map[i][j], false, false, false, true);
 		}
 	}
 	return gen;
@@ -89,7 +89,7 @@ void Game_gameLoop(struct Game *this) {
 			if(wait == true)	continue;
 			Engine_handle(&run);
 		}
-		if(run.cleared == true)	pathsCleared[gen] = true;
+		if(run.cleared)	pathsCleared[gen] = true;
 		else	return;
 	} while(levelCnt != totLevels);
 }
@@ -102,7 +102,7 @@ void Game_Options(struct Game *this) {
 	textcolor(YELLOW);	cprintf("OPTIONS");
 	textcolor(WHITE);
 	//Print Modes based on unlocked, or current
-	for(i = 0; i<sizeof(Modes)/sizeof(Modes[0]); i++) {
+	for(i = 0; i<totModes; i++) {
 		if(strcmp(currentMode, Modes[i]) == 0) {
 			textcolor(WHITE);	y+=i;
 		} else ((this->unlockedModes >= i) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
@@ -138,6 +138,7 @@ bool Game_Start(struct Game *this) {
 	int i, x = 35, y = 12, width, key;
 	bool selected = false;
 	levelCnt = 0;
+	totLevels = Game_getPaths(paths);
 	clrscr();
 	gotoxy(35,9);
 	textcolor(YELLOW);	cprintf("MAZE RUNNER");
@@ -180,14 +181,24 @@ bool Game_Start(struct Game *this) {
 		if(pathsCleared[i] == false)	break;
 	}
 	if(i == totLevels && levelCnt == totLevels) {
-		if(this->unlockedModes<sizeof(Modes)/sizeof(Modes[0]) && strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
-			this->unlockedModes++;
-			x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);
-			textcolor(LIGHTGREEN);
-			gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
-			gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[this->unlockedModes], border[1]);
-			gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
-			getch();
+		if(strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
+			if(this->unlockedModes < totModes-1) {	//Unlock New Mode
+				this->unlockedModes++;
+				x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);
+				textcolor(LIGHTGREEN);
+				gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
+				gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[this->unlockedModes], border[1]);
+				gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
+				getch();
+			} else if(!this->wished){	//Wish Once for Clearing all levels
+				x = 31, y = 12, width = 19;
+				textcolor(LIGHTGREEN);
+				gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
+				gotoxy(x, y++);	cprintf("%c CONGRATULATIONS %c", border[1], border[1]);
+				gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
+				getch();
+				this->wished = true;
+			}
 		}
 		Game_saveData(this);
 	}

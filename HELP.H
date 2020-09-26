@@ -53,10 +53,12 @@ void help_page2() {
 
 	textcolor(YELLOW);	gotoxy(38, 4);	cprintf("KEY");	textcolor(WHITE);
 	gotoxy(5, 6);	Object_draw(&player);	cprintf(" Player");
-	gotoxy(20, 6);	Object_draw(&wall);		cprintf(" Wall");
-	gotoxy(35, 6);	Object_draw(&air);		cprintf(" Air/Floor");
+	gotoxy(25, 6);	Object_draw(&wall);		cprintf(" Wall");
+	gotoxy(45, 6);	Object_draw(&air);		cprintf(" Air/Floor");
 	gotoxy(65, 6);	Object_draw(&item);		cprintf(" Item");
 	gotoxy(5, 8);	Object_draw(&monster);	cprintf(" Normal Monster");
+	gotoxy(25, 8);	Object_draw(&goal);		cprintf(" Goal");
+	gotoxy(45, 8);	Object_draw(&blackair);	cprintf(" No Vision/Pit");
 	
 	textcolor(YELLOW);
 	gotoxy(20, 24);	cprintf("  a: LEFT     ");	cprintf("  d: RIGHT    ");	cprintf("esc: EXIT    ");

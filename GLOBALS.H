@@ -19,10 +19,12 @@
 #define MaxSpeed 9
 #define oTICKSPEED 100//30
 #define oTIMELIMIT 100//200
+#define totModes 4
 
 int torchRange = 7;
 int totLevels;
 int levelCnt;
+int wished = false;
 bool returnTitle = false;
 bool wait = false;
 char cmap[MaxY][MaxX];
@@ -34,7 +36,7 @@ unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
 
 char currentMode[20];
-char Modes[][20] = { "Normal", "Normal+", "Hard", "Hard+" };
+char Modes[totModes][20] = { "Normal", "Normal+", "Hard", "Hard+" };
 
 void halt(int x) {   
     delay(x);
