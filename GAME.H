@@ -182,17 +182,17 @@ bool Game_Start(struct Game *this) {
 	}
 	if(i == totLevels && levelCnt == totLevels) {
 		if(strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
+			x = 29, y = 12;
+			textcolor(LIGHTGREEN);
 			if(this->unlockedModes < totModes-1) {	//Unlock New Mode
 				this->unlockedModes++;
-				x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);
-				textcolor(LIGHTGREEN);
+				width = 18 + strlen(Modes[this->unlockedModes]);
 				gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 				gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[this->unlockedModes], border[1]);
 				gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 				getch();
 			} else if(!this->wished){	//Wish Once for Clearing all levels
-				x = 31, y = 12, width = 19;
-				textcolor(LIGHTGREEN);
+				width = 19;
 				gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 				gotoxy(x, y++);	cprintf("%c CONGRATULATIONS %c", border[1], border[1]);
 				gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
