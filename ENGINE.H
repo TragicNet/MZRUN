@@ -68,11 +68,13 @@ void Engine_HUD() {
 }
 
 void Engine_draw(struct Engine *this) {
-	int i, j, k, obj;
+	int i, j, objPos, colorVal, tempColor, tempBgColor;
 	bool fullvision = false;
 	struct coord tmp, sumtmp;
 	struct Tile *tmpTile;
 	struct coord camera = view(this->player->pos, screen, fullmap);
+	tempColor = this->player->color;
+	tempBgColor = this->player->bgcolor;
 	for(i = 0; i<totStates; i++) {
 		if(strcmp(states[i].name, "VIS") == 0) {
 			fullvision = true;	break;
@@ -84,19 +86,22 @@ void Engine_draw(struct Engine *this) {
 			tmpTile = &map[camera.y + i][camera.x + j];
 			sumtmp = coord_add(camera, tmp);
 			gotoxy(board.x+j, board.y+i);
-			obj = posCheck(coord_add(camera, tmp), "", true);
+			objPos = posCheck(coord_add(camera, tmp), "", true);
 			//Vision
 			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange && fullvision == false) {
 				Object_draw(&blackair);
-			} else if(obj>=0)	{
-				if( coord_cmp(entityObjects[obj].pos, this->player->pos) ) {
-					if(this->gameOver && strcmp(entityObjects[obj].type, "player") == 0) {
+			} else if(objPos>=0)	{
+				if( coord_cmp(entityObjects[objPos].pos, this->player->pos) ) {
+					if(this->gameOver && strcmp(entityObjects[objPos].type, "player") == 0) {
 						Object_draw(&blackair);	continue;
-					} else if( entityObjects[obj].weight < this->player->weight ) {
-						Object_setColor(this->player, WHITE, entityObjects[obj].bgcolor);	obj = 0;
+					} else if( entityObjects[objPos].weight < this->player->weight ) {
+						colorVal = (entityObjects[objPos].bgcolor == BLACK) ? tempColor : WHITE;
+						Object_setColor(this->player, colorVal, entityObjects[objPos].bgcolor);
+						objPos = 0;
 					}
 				}
-				Object_draw(&entityObjects[obj]);
+				Object_draw(&entityObjects[objPos]);
+				Object_setColor(this->player, tempColor, tempBgColor);
 			} else if(!Tile_isOpen(tmpTile)) {
 				if(Tile_isBlocked(tmpTile))
 					Object_draw(&wall);
@@ -129,9 +134,8 @@ void Engine_draw(struct Engine *this) {
 void script_death(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 12;
-	Engine_draw(this);
-	//Halt visible player Death
-	halt(100);	this->gameOver = true;
+	this->gameOver = true;
+	halt(225);
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	textcolor(LIGHTRED);
@@ -139,10 +143,29 @@ void script_death(struct Engine *this) {
 	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 
-	sound(120);	halt(100);	nosound();
-	halt(15);
-	sound(120);	halt(100);	nosound();
+	sound(100);	halt(100);	nosound();
+	halt(15);	sound(100);	halt(100);	nosound();
 	getch();
+}
+
+void script_fall(struct Engine *this) {
+	Engine_draw(this);
+	this->gameOver = true;
+	//Halt for visible player Death
+	sound(30);	halt(50);	nosound();
+	Engine_draw(this);	halt(50);
+	sound(25);	halt(75);	nosound();
+	script_death(this);
+}
+
+void script_eaten(struct Engine *this) {
+	Engine_draw(this);
+	this->gameOver = true;
+	//Halt for visible player Death
+	sound(200);	halt(125);	nosound();
+	Engine_draw(this);	halt(125);
+	sound(300);	halt(125);	nosound();
+	script_death(this);
 }
 
 void script_cleared(struct Engine *this) {
@@ -158,12 +181,9 @@ void script_cleared(struct Engine *this) {
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 
 	sound(100);	halt(100);	nosound();
-	halt(5);
-	sound(250);	halt(100);	nosound();
-	halt(5);
-	sound(150);	halt(100);	nosound();
-	halt(5);
-	sound(300);	halt(100);	nosound();
+	halt(5);	sound(250);	halt(100);	nosound();
+	halt(5);	sound(150);	halt(100);	nosound();
+	halt(5);	sound(300);	halt(100);	nosound();
 	getch();
 }
 
@@ -186,7 +206,8 @@ void Engine_input(struct Engine *this) {
 			break;
 		case 'h':	help();	Engine_HUD();
 		case 'p':	wait = true;	return;
-		case 27:   this->gameOver = true;	break;
+		case 27:   this->gameOver = true;	
+			break;
 		}
 		if(wait==true)	wait = false;
 	}
@@ -203,7 +224,7 @@ void Object_script(struct Engine *engine, int loc) {
 				gotoxy(2, 4 + totStates);	cprintf("      ");	return;
 			}
 		}
-		script_death(engine);
+		script_eaten(engine);
 	} else if(strcmp(entityObjects[loc].type, "goal") == 0) {
 		script_cleared(engine);
 	} else if(addState(states, entityObjects[loc].name, Engine_tick(engine))) {
@@ -222,7 +243,7 @@ void Engine_handle(struct Engine *this) {
 	if( Engine_tick(this) < 1 ) {
 		script_death(this);	return;
 	} else if(!Tile_isOpen(&map[this->player->pos.y][this->player->pos.x])) {
-		script_death(this);	return;
+		script_fall(this);	return;
 	} 
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)

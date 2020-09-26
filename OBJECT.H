@@ -161,7 +161,7 @@ void Object_draw(struct Object *this) {
 }
 
 int Object_torchRadius(struct coord this, struct coord t) {	
-	return (int)distance( this.x - t.x, (this.y - t.y) * 2 );
+	return distance( this.x - t.x, (this.y - t.y) * 2 );
 }
 
 #endif

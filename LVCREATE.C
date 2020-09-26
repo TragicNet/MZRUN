@@ -147,7 +147,7 @@ void Creator_create_lvl(struct Creator *this) {
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 				//map[i][j].playerOnly = true;
-			} else if(cmap[i][j] == '~') {
+			} else if(cmap[i][j] == 'V') {
 				cmap[i][j] = ' ';	Tile_unblock(&map[i][j]);	Tile_close(&map[i][j]);
 			} else {
 				Tile_unblock(&map[i][j]);
