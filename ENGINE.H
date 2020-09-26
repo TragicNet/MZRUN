@@ -19,12 +19,12 @@ void Engine_init(struct Engine *this, int gen) {
 	
 	Save_Import(&this->data, paths[gen]);
 	
-	State_add(states, "fullvision1",  Engine_tick(this));
-	State_add(states, "immunity1",  Engine_tick(this));
-	//State_add(states, "invisible1",  Engine_tick(this));
-	//State_add(states, "hinder1",  Engine_tick(this));
-	/*State_add(states, "paralyze1",  Engine_tick(this));
-	State_add(states, "stop1",  Engine_tick(this));*/
+	addState(states, "fullvision1",  Engine_tick(this));
+	addState(states, "immunity1",  Engine_tick(this));
+	//addState(states, "invisible1",  Engine_tick(this));
+	//addState(states, "hinder1",  Engine_tick(this));
+	/*addState(states, "paralyze1",  Engine_tick(this));
+	addState(states, "stop1",  Engine_tick(this));*/
 }
 
 void Engine_HUD() {
@@ -193,7 +193,7 @@ void Object_script(struct Engine *engine, int loc) {
 		script_death(engine);
 	} else if(strcmp(entityObjects[loc].type, "goal") == 0) {
 		script_cleared(engine);
-	} else if(State_add(states, entityObjects[loc].name, Engine_tick(engine))) {
+	} else if(addState(states, entityObjects[loc].name, Engine_tick(engine))) {
 		removeObject(entityObjects, loc);
 	}
 }

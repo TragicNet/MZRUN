@@ -11,7 +11,7 @@ int totStates = 0;
 void State_init(struct State *this, char name[], int val, int duration, int last) {
     strcpy(this->name, name);   this->val = val;    this->duration = duration;  this->last = last;
 }
-void State_sort(struct State states[]) {
+void sortStates(struct State states[]) {
 	int i, j;
     struct State temp;
     for(i = 0; i<totStates; i++)
@@ -22,7 +22,7 @@ void State_sort(struct State states[]) {
                 states[j] = temp;
             }
 }
-bool State_add(struct State states[], char name[], int time) {
+bool addState(struct State states[], char name[], int time) {
     int i, loc, stateVal, stateDuration;
     bool found = false;
     char stateName[20];
@@ -61,7 +61,7 @@ bool State_add(struct State states[], char name[], int time) {
         } else  loc = i;
         State_init(&states[loc], stateName, stateVal, stateDuration, time);
     }
-    State_sort(states);
+    sortStates(states);
     return true;
 }
 void removeState(struct State states[], int loc) {
