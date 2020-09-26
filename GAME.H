@@ -30,7 +30,7 @@ void Game_init(struct Game *this) {
 	coord_init(&board, 9, 4);
 	coord_init(&screen, 39, 13);
 	levelCnt = 0;
-	totLevels = 0;
+	totLevels = Game_getPaths(paths);
 	this->unlockedModes = 0;
 	Game_loadData(this);
 	strcpy(currentMode, "Normal");
@@ -58,12 +58,12 @@ int Game_getPaths(char paths[][50]) {
 }
 
 int Game_generateLevel() {
-	int i, j, gen = 0, t = totLevels;
+	int i, j, gen = 0;
 	totStates = 0;
-	if(t<=0)	return -1;	//No Levels
+	if(totLevels<=0)	return -1;	//No Levels
 	//Generate Random Level
 	do {
-		gen = rand() % t;
+		gen = rand() % totLevels;
 	} while(pathsCleared[gen] == true);
 	//Reset Map
 	for(i = 0; i < MaxY; i++) {
@@ -77,7 +77,6 @@ int Game_generateLevel() {
 void Game_gameLoop(struct Game *this) {
 	struct Engine run;
 	int gen;
-	totLevels = Game_getPaths(paths);
 	levelCnt = 0;
 	wait = true;
 	do {
@@ -144,7 +143,6 @@ void Game_Options(struct Game *this) {
 bool Game_Start(struct Game *this) {
 	int i, x = 35, y = 12, width, key;
 	bool selected = false;
-	Game_initRun(this);
 	clrscr();
 	gotoxy(35,9);
 	textcolor(YELLOW);	cprintf("MAZE RUNNER");
@@ -186,7 +184,7 @@ bool Game_Start(struct Game *this) {
 	for(i = 0; i<totLevels; i++) {
 		if(pathsCleared[i] == false)	break;
 	}
-	if(i == totLevels) {
+	if(i == totLevels && levelCnt == totLevels) {
 		if(this->unlockedModes<3 && strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
 			this->unlockedModes++;
 			x = 29, y = 12, width = 18 + strlen(Modes[this->unlockedModes]);

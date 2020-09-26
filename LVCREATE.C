@@ -102,7 +102,7 @@ void Creator_create_lvl(struct Creator *this) {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, '*', "monster", "normal", RED, BLACK, 5, 4, 1); //RED
 				cmap[i][j] = '.';	entityObjects[totalEntities++] = *temp;	free(temp);
-				Tile_unblock(&map[i][j]);	map[i][j].player_only = true;
+				Tile_unblock(&map[i][j]);	map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == '#') {
 				Tile_blockSight(&map[i][j]);
 			} else if(cmap[i][j] == 'g') {
@@ -110,43 +110,43 @@ void Creator_create_lvl(struct Creator *this) {
 				Object_init(temp, j, i, STOP, 'g', "goal", "goal1", CYAN, CYAN, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';
-				Tile_unblock(&map[i][j]);	map[i][j].player_only = true;
+				Tile_unblock(&map[i][j]);	map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == 's') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 4, "effect", "slow1", LIGHTBLUE, BLACK, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
-				//map[i][j].player_only = true;
+				//map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == 'f') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 4, "effect", "fast1", LIGHTBLUE, BLACK, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
-				//map[i][j].player_only = true;
+				//map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == 'x') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 4, "effect", "breaker1", LIGHTBLUE, BLACK, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
-				//map[i][j].player_only = true;
+				//map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == 'r') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 4, "effect", "repel1", LIGHTBLUE, BLACK, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
-				//map[i][j].player_only = true;
+				//map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == 'a') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 4, "effect", "attract1", LIGHTBLUE, BLACK, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
-				//map[i][j].player_only = true;
+				//map[i][j].playerOnly = true;
 			} else if(cmap[i][j] == 'v') {
 				temp = (struct Object*) malloc(sizeof(struct Object));
 				Object_init(temp, j, i, STOP, 4, "effect", "fullvision1", LIGHTBLUE, BLACK, 0, 0, 0);
 				entityObjects[totalEntities++] = *temp;	free(temp);
 				cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
-				//map[i][j].player_only = true;
+				//map[i][j].playerOnly = true;
 			} else {
 				Tile_unblock(&map[i][j]);
 			}
