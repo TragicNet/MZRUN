@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Java1</title>
+	<style type="text/css">
+
+	</style>
+
+	<script type="text/javascript">
+
+		var pfsize = false;
+		var name = prompt("What is Your Name?");	
+
+		var arr1 = [ "Apple", "Banana", "Cherry"];
+		var arr2 = [ "A", "B", "C"];
+		
+		function ArrayMethods()
+		{
+			document.write("Array 1: " + arr1 + "<br>");	document.write("Array 2: " + arr2 + "<br>");
+			
+			document.write("Join Array by '_': " + arr1.join("_") + "<br>");
+			document.write("Reverse Array: " + arr1.reverse() + "<br>");
+			document.write("Array: " + arr1 + "<br>");
+			arr1.pop();	document.write("Poped Array: " + arr1 + "<br>");
+			arr1.push(arr2[0], arr2[1], arr2[2]);	document.write("Pushed Array: " + arr1 + "<br>");
+			arr1.shift();	document.write("Shifted Array: " + arr1 + "<br>");
+			document.write("Sliced Array: " + arr1.slice(1, 3) + "<br>");
+			arr1.sort();	document.write("Sorted Array: " + arr1 + "<br>");
+			document.write("Spliced: " + arr1.splice(1,2, 'Apple') + "<br>Spliced Array: " + arr1 + "<br>");
+			/*document.write(location.host + "<br>" + location.hostname + "<br>" + location.path + "<br>" + location.href
+					+ "<br>" + location.protocol + "<br>" + location.path);
+			*/
+			//document.write(arr1 + "<br>");	document.write(arr2 + "<br>");
+		}
+		ArrayMethods();
+
+		function changeBodyBg(color) {
+			document.body.style.background = color;
+			if (color==="black") {
+				document.body.style.color = "white";
+				//if (document.getElementById('demo').style.color == color)
+				//	document.getElementById('demo').style.color = "white";
+			}
+			else {
+				document.body.style.color = "black";
+				//if (document.getElementById('demo').style.color == color)
+				//	document.getElementById('demo').style.color = "black";
+			}
+			if (document.getElementById('demo').style.color == color)
+					document.getElementById('demo').style.color = document.body.style.color;
+		}
+		
+		function changePColor() {
+			if (pfsize) {
+				document.getElementById('demo').style.color = document.body.style.color;
+				document.getElementById('demo').style.fontSize = '100%';
+				pfsize = false;
+			}
+			else {
+				document.getElementById('demo').style.color = 'red';
+				document.getElementById('demo').style.fontSize = '200%';
+				pfsize = true;
+			}
+		}
+
+		function genrandom() {
+			var x = Math.floor( Math.random()*100 + 1);
+			var y = Math.floor( Math.random()*100 + 1);
+			document.getElementById('generator').innerHTML = ' Numbers: ' + x + ', ' + y + '\t'+' Maximum: ' + Math.max(x,y) + ' Minimum: ' + Math.min(x,y);
+		}
+
+		function upcase(elem) {
+			elem.value = elem.value.toUpperCase();
+		}
+		function winopen() {
+			//mywindow = new window();
+			mywindow = window.open("", "", "height: 100, width: 200");
+			mywindow.document.write("Hello " + name);
+		}
+		function winclose() {
+			mywindow.close();
+		}
+	</script>
+
+</head>
+<body> <!--bgcolor="black" text="white"-->
+	
+	<div>
+	<button type="button" onclick="document.getElementById('demo').innerHTML='Hello JavaScript!';">ClickMe!</button>
+	<button type="button" onclick="document.getElementById('demo').innerHTML='JavaScript?';">Reset</button>
+	<script>
+		if (name=='null' || name=="") {
+			name = "Mr.Nobody";
+		}
+		alert("Hi " + name);
+		//if(name=='null')
+			document.write(name.fontcolor("red").bold() + " is " + name.length + " letters long.");
+	</script>
+	</div>
+	
+	<hr>
+
+	<div style="float: left; width: 50%;">
+		<label>Change Background Color:</label>
+		<button type="button" onclick="changeBodyBg('pink');">Pink</button>
+		<button type="button" onclick="changeBodyBg('powderblue');">Powderblue</button>
+		<button type="button" onclick="changeBodyBg('white');">White</button>
+		<button type="button" onclick="changeBodyBg('black');">Black</button>
+	</div>
+	
+	<div align="right" style="float: right; width: 50%;">
+		<label>Paragraph Color:</label>
+		<script type="text/javascript">
+			function chgval(id, newval) {
+				var elem = document.getElementById(id);
+				if(elem.value === "Reset")	{
+					elem.value = newval;
+				}
+				else {
+					elem.value = "Reset";
+				}
+			}
+		</script>
+		<input id="pcol" type="button" value="Change" onclick="chgval(this.id, 'Change'); changePColor();">
+	</div>
+
+	<br><hr>
+	
+	<p id="generator">Something</p>
+	<script type="text/javascript">genrandom();</script>
+	Generate 2 Numbers: <button type="button" onclick="genrandom();">Generate</button>
+
+	<br><hr>
+
+	<div>
+		<p id="demo">JavaScript?</p>
+		
+		Change to UpperCase onblur: <input type="text" name="fname" onblur="upcase(this);">
+		&nbsp&nbsp&nbsp&nbsp&nbsp&nbspWindow: <button type="button" onclick="winopen();">Open</button>
+				<button type="button" onclick="winclose();">Close</button>
+		
+		<p style="margin-left: 5%; text-align: justify; font-size: 300%; width: 90%;">
+			Throughout the variant butter exits this preferable crush. How will the linked gesture pocket a wrapper? The peanut bounces in 	every unavailable network. A wisdom advances before the repent machinery. A medium poison hunts throughout a fifty concentrate. The chairman multiplies beneath the accidental collar.<br>
+			A surrounding peanut acts after any structured degenerate. A pace alters a bump. The cliff suffers a pedantry. The furniture dines past the erroneous beast.<br>
+			The bookstore prohibits the cutting stone after the divine. Why won't the floor wed? The shut foot pumps. A honorary passage succeeds against any patent decade. A daft interior mends beside an officer.<br>
+			An earth shies away on top of the novice! A simplistic dinner coins the atmospheric army. The enough daylight interacts with a center. The pool overflows the cult below a sterile workload. Against the syntactic archive shouts the each asterisk.<br>
+			How will a trail respond? The absolute groans before a mystic hog. The archive camps? The astronomer escapes outside the voltage. A coverage divines a resting connector. A driver scores the tactical cabinet.
+		</p>
+		
+	</div>
+
+	<img src="Thug Life.png" alt="Thug Life" width="10%" align="right"
+		 style="opacity: 0.7; position: fixed; bottom: 0; left: 0;">
+	<img src="Thug Life.png" alt="Thug Life" width="10%" align="right"
+		 style="opacity: 0.7; position: fixed; bottom: 0; right: 0; transform: scale(-1,1);">
+	<!--img src="Thug Life.png" alt="Thug Life"-->
+	
+</body>
+</html>
