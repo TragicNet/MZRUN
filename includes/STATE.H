@@ -33,7 +33,7 @@ bool getState(struct State *this, const char name[]) {
 	char *ch, str[50], vals[5][20];
 	file = fopen("MZRUN/files/STATES.DAT", "r" );
 	if(file==NULL) {
-		clrscr();   printf("STATES.DAT missing");  exit(0);
+		clrscr();	printf("\n! ERROR: MZRUN/files/STATES.DAT missing !");	getch();	exit(0);
 	}
 	while (fgets(str, 100, file) != NULL) {
 		ch = strtok(str, ", \t");

@@ -72,7 +72,7 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 		s = strlen(fileName);
 		file = fopen(fileName, "r");
 		if( file == NULL) {
-			printf("\n! ERROR: %s missing !", fileName);	getch();	exit(0);
+			clrscr();	printf("\n! ERROR: %s missing !", fileName);	getch();	exit(0);
 		}
 		while(!feof(file)) {
 			fscanf(file, "%s", &this->cmap[i++]);
