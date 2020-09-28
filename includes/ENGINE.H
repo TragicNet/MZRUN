@@ -159,13 +159,20 @@ void script_fall(struct Engine *this) {
 	script_death(this);
 }
 
+void script_kill() {
+	int i;
+	for(i=100; i<200; i+=50) {
+		sound(i);	halt(i-50);	nosound();
+	}
+}
+
 void script_eaten(struct Engine *this) {
+	int i;
 	Engine_draw(this);
 	this->gameOver = true;
-	//Halt for visible player Death
-	sound(200);	halt(125);	nosound();
-	Engine_draw(this);	halt(125);
-	sound(300);	halt(125);	nosound();
+	for(i=150; i>50; i-=10) {
+		sound(i);	halt(i-50);	nosound();
+	}
 	script_death(this);
 }
 
@@ -219,9 +226,9 @@ void Object_script(struct Engine *engine, int loc) {
 	if(strcmp(entityObjects[loc].type, "monster") == 0) {
 		for(i = 0; i<totStates; i++) {
 			if(strcmp(states[i].name, "IMM") == 0) {
-				removeObject(entityObjects, loc);	return;
+				script_kill();	removeObject(entityObjects, loc);	return;
 			} else if(strcmp(states[i].name, "BRK") == 0) {
-				removeObject(entityObjects, loc);	removeState(states, i);
+				script_kill();	removeObject(entityObjects, loc);	removeState(states, i);
 				gotoxy(2, 4 + totStates);	cprintf("      ");	return;
 			}
 		}
