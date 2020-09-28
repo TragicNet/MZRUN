@@ -4,7 +4,7 @@
 
 */
 
-char fileName[] = "AREA3";
+char fileName[50] = "AREA3";
 
 #include "MZRUN/INCLUDES/GLOBALS.H"
 
@@ -70,7 +70,10 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 		//strcat(fileName, paths[cnt]);
 		//printf("%d: %s %s\t", totFiles, fileName, paths[cnt]);	getch();
 		s = strlen(fileName);
-		file = fopen(fileName,"r");
+		file = fopen(fileName, "r");
+		if( file == NULL) {
+			printf("\n! ERROR: %s missing !", fileName);	getch();	exit(0);
+		}
 		while(!feof(file)) {
 			fscanf(file, "%s", &this->cmap[i++]);
 		}
@@ -135,7 +138,7 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);
 					//map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == 'V') {
-					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);	Tile_close(&map[i][j]);
+					this->cmap[i][j] = '.';	Tile_unblock(&map[i][j]);	Tile_close(&map[i][j]);	map[i][j].playerOnly = true;
 				} else {
 					Tile_unblock(&map[i][j]);
 				}
@@ -157,7 +160,11 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 void main() {
 	struct Creator creator;
 	clrscr();
+	printf("Enter File Name: ");
+	scanf("%s", &fileName);
 	sprintf(src, "MZRUN/files/TXTFILES/%s.TXT", fileName);
 	sprintf(trg, "MZRUN/files/LEVELS/%s.LVL", fileName);
+	printf("\nCreating: %s.LVL ...", fileName);
 	Creator_create_lvl(&creator, paths);
+	printf("\n\nDone");	getch();
 }
