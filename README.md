@@ -1,3 +1,7 @@
+#**HOW TO USE**
+
+Extract the zip, rename the the folder to MZRUN and put the folder in the "bin" folder.
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/MaxPathak/MZRUN/edit/cversion/README.md) to maintain and preview the content for your website in Markdown files.
