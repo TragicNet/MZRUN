@@ -25,6 +25,7 @@ void Engine_init(struct Engine *this, int gen) {
 	//addState(states, "hinder1",  Engine_tick(this));
 	/*addState(states, "paralyze1",  Engine_tick(this));
 	addState(states, "stop1",  Engine_tick(this));*/
+	//printState(&states[0]);	
 }
 
 void Engine_HUD() {

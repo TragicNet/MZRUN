@@ -9,7 +9,10 @@ struct State {
     int last;
 } states[20];
 int totStates = 0;
-void State_init(struct State *this, char fullName[], char name[], int val, int duration, int last) {
+void printState(struct State *this) {
+    printf("\n%s, %s, %d, %d, %d\n", this->fullName, this->name, this->val, this->duration, this->last);
+}
+void State_init(struct State *this, const char fullName[], const char name[], const int val, const int duration, const int last) {
 	strcpy(this->fullName, fullName);	strcpy(this->name, name);   this->val = val;    this->duration = duration;  this->last = last;
 }
 void sortStates(struct State states[]) {
@@ -23,19 +26,7 @@ void sortStates(struct State states[]) {
 				states[j] = temp;
 			}
 }
-void store() {
-	FILE *file;
-	struct State s;
-	file = fopen("MZRUN/STATES.TXT", "w" );
-	State_init(&s, "immunity1", "IMM", 5, 5, 0);
-	if(file != NULL) {
-		fscanf(file, "%s, %s, %d, %d, %d", s.fullName, s.name, s.duration, s.val, s.last);
-	} else {
-		clrscr();   printf("STATES.TXT missing");  exit(0);
-	}
-	fclose(file);
-}
-bool getState(struct State *this, char name[]) {
+bool getState(struct State *this, const char name[]) {
 	FILE *file;
 	int i = 0;
 	bool found = false;
@@ -46,34 +37,27 @@ bool getState(struct State *this, char name[]) {
 	}
 	while (fgets(str, 100, file) != NULL) {
 		ch = strtok(str, ", \t");
-		if(strcmp(name, ch) != 0) {
-			continue;
-		}
+		if(strcmp(name, ch) != 0)   continue;
 		while (ch != NULL) {
-			//printf("%s\n", ch);
 			strcpy(vals[i++], ch);
 			ch = strtok(NULL, ", \t");
 		}
 		State_init(this, vals[0], vals[1], atoi(vals[2]), atoi(vals[3]), atoi(vals[4]));
-		printf("\n%s, %s, %d, %d, %d\n", this->fullName, this->name, this->val, this->duration, this->last);
 		found = true;    break;
     }
 	fclose(file);
     return found;
 }
-bool addState(struct State states[], char name[], int time) {
-	int i, loc, stateVal, stateDuration;
+bool addState(struct State states[], const char name[], const int time) {
+	int i, loc;
 	bool found = false;
-	char stateName[20];
     struct State temp;
     if(!getState(&temp, name)) return false;
 	for(i = 0; i < totStates; i++) {
-		if(strcmp(name, stateName) == 0) {
-			if(strcmp(states[i].name, stateName) == 0)   break;
-		}
+		if(strcmp(states[i].name, temp.name) == 0)   break;
 	}
 	if(i != totStates)  found = true;
-	if(totStates<10 || found == true) {
+	if(totStates<20 || found == true) {
 		if(found == false) {
 			totStates++;    loc = totStates-1;
 		} else  loc = i;
@@ -83,7 +67,7 @@ bool addState(struct State states[], char name[], int time) {
 	sortStates(states);
     return true;
 }
-void removeState(struct State states[], int loc) {
+void removeState(struct State states[], const int loc) {
     int i;
     if(totStates>0) {
         for(i = loc; i<totStates; i++) {
