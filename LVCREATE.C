@@ -6,7 +6,7 @@
 
 char fileName[] = "AREA3";
 
-#include "MZRUN/GLOBALS.H"
+#include "MZRUN/INCLUDES/GLOBALS.H"
 
 struct Creator {
 	struct Level data;
@@ -40,7 +40,7 @@ int Creator_getPaths(char paths[][50]) {
 	struct dirent *de;
 	int i, cnt=0, s;
 	char ext[] = ".TXT";
-	DIR *dr = opendir("MZRUN/TXTFILES");
+	DIR *dr = opendir("MZRUN/files/TXTFILES");
 	if(dr == NULL) return 0;
 	while((de = readdir(dr)) != NULL)  {
 		s = strlen(de->d_name);
@@ -59,7 +59,7 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 	int i = 0, j, s, cnt = 0, totFiles;
 	struct Object *temp;
 	FILE *file;
-	char fileName[50] = "MZRUN/TXTFILES/";
+	char fileName[50] = "MZRUN/files/TXTFILES/";
 	char ext[] = ".LVL";
 	coord_init(&fullmap, 90, 30);
 	temp = (struct Object*) malloc(sizeof(struct Object));
@@ -157,7 +157,7 @@ void Creator_create_lvl(struct Creator *this, char paths[][50]) {
 void main() {
 	struct Creator creator;
 	clrscr();
-	sprintf(src, "MZRUN/TXTFILES/%s.TXT", fileName);
-	sprintf(trg, "MZRUN/LEVELS/%s.LVL", fileName);
+	sprintf(src, "MZRUN/files/TXTFILES/%s.TXT", fileName);
+	sprintf(trg, "MZRUN/files/LEVELS/%s.LVL", fileName);
 	Creator_create_lvl(&creator, paths);
 }

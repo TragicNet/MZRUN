@@ -55,13 +55,13 @@ float distance(int xdiff, int ydiff) {
 	return (val <= 0) ? 0 : sqrt(val);
 }
 
-#include "MZRUN/COORD.H"
-#include "MZRUN/TILE.H"
-#include "MZRUN/STATE.H"
-#include "MZRUN/OBJECT.H"
-#include "MZRUN/HELP.H"
-#include "MZRUN/LEVEL.H"
-#include "MZRUN/ENGINE.H"
-#include "MZRUN/GAME.H"
+#include "MZRUN/INCLUDES/COORD.H"
+#include "MZRUN/INCLUDES/TILE.H"
+#include "MZRUN/INCLUDES/STATE.H"
+#include "MZRUN/INCLUDES/OBJECT.H"
+#include "MZRUN/INCLUDES/HELP.H"
+#include "MZRUN/INCLUDES/LEVEL.H"
+#include "MZRUN/INCLUDES/ENGINE.H"
+#include "MZRUN/INCLUDES/GAME.H"
 
 #endif

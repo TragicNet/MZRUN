@@ -6,7 +6,7 @@ struct Tile {
     bool sightBlocked;
     bool playerOnly;
     bool floor;
-};// map[50][150];
+} map[MaxY][MaxX];
 
 bool Tile_isBlocked(struct Tile *this)      {   return this->blocked;       }
 void Tile_block(struct Tile *this)          {   this->blocked = true;       }
@@ -24,13 +24,5 @@ void Tile_init(struct Tile *this, bool blocked, bool sightBlocked, bool playerOn
     this->playerOnly = playerOnly;
     this->floor = floor;
 }
-
-struct globals {
-	char cmap[MaxY][MaxX];
-	char paths[50][50];
-	bool pathsCleared[50];
-    struct Tile map[MaxY][MaxX];
-} g;
-
 
 #endif

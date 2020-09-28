@@ -31,7 +31,7 @@ bool getState(struct State *this, const char name[]) {
 	int i = 0;
 	bool found = false;
 	char *ch, str[50], vals[5][20];
-	file = fopen("MZRUN/STATES.DAT", "r" );
+	file = fopen("MZRUN/files/STATES.DAT", "r" );
 	if(file==NULL) {
 		clrscr();   printf("STATES.DAT missing");  exit(0);
 	}

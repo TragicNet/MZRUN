@@ -1,4 +1,4 @@
-#include "MZRUN/GLOBALS.H"
+#include "MZRUN/INCLUDES/GLOBALS.H"
 //Hello
 void main() {
 	struct Game game;
