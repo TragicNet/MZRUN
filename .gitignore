@@ -1,7 +1,3 @@
-temp/BASE.CPP
-temp/FRAME.CPP
-temp/SCROLL.cpp
-temp/TOTFILES.CPP
-temp/combined.cpp
+temp/
 blank.txt
-*.java
+*.bak
