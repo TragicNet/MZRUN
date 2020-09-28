@@ -37,35 +37,60 @@ void store() {
 }
 bool getState(struct State *this, char name[]) {
 	FILE *file;
-	int i = 0;
-	bool found = false;
+    int i = 0;
 	char *ch, str[50], vals[5][20];
-	file = fopen("MZRUN/STATES.DAT", "r" );
+	file = fopen("MZRUN/STATES.TXT", "r" );
 	if(file==NULL) {
-		clrscr();   printf("STATES.DAT missing");  exit(0);
+		clrscr();   printf("STATES.TXT missing");  exit(0);
 	}
 	while (fgets(str, 100, file) != NULL) {
-		ch = strtok(str, ", \t");
-		if(strcmp(name, ch) != 0) {
-			continue;
-		}
-		while (ch != NULL) {
-			//printf("%s\n", ch);
-			strcpy(vals[i++], ch);
-			ch = strtok(NULL, ", \t");
-		}
+		ch = strtok(str, ", ");
+        if(strcmp(name, ch) != 0) {
+            continue;
+        }
+        while (ch != NULL) {
+            //printf("%s\n", ch);
+            strcpy(vals[i++], ch);
+            ch = strtok(NULL, ", ");
+        }
 		State_init(this, vals[0], vals[1], atoi(vals[2]), atoi(vals[3]), atoi(vals[4]));
 		printf("\n%s, %s, %d, %d, %d\n", this->fullName, this->name, this->val, this->duration, this->last);
-		found = true;    break;
+        found =true;    break;
     }
 	fclose(file);
-    return found;
+    if(found)
+	    return true;
+    else
+        return false;
 }
 bool addState(struct State states[], char name[], int time) {
 	int i, loc, stateVal, stateDuration;
 	bool found = false;
 	char stateName[20];
     struct State temp;
+	/*if(strcmp(name, "immunity1") == 0) {
+		strcpy(stateName, "IMM");   stateVal = 0;   stateDuration = 5;  //kill monsters
+	} else if(strcmp(name, "breaker1") == 0) {
+		strcpy(stateName, "BRK");   stateVal = 0;   stateDuration = 10; //kill monsters and remove state
+	} else if(strcmp(name, "fullvision1") == 0) {
+		strcpy(stateName, "VIS");   stateVal = 0;   stateDuration = 5;  //give vision of full map
+	} else if(strcmp(name, "slow1") == 0) {
+		strcpy(stateName, "SLW");   stateVal = 1;   stateDuration = 5;  //decrease speed of time
+	} else if(strcmp(name, "fast1") == 0) {
+		strcpy(stateName, "FST");   stateVal = 1;   stateDuration = 5;  //increase speed of time
+	} else if(strcmp(name, "repel1") == 0) {
+		strcpy(stateName, "RPL");   stateVal = 1;   stateDuration = 5;  //decrease range
+	} else if(strcmp(name, "attract1") == 0) {
+		strcpy(stateName, "ATR");   stateVal = 1;   stateDuration = 5;  //increase range
+	} else if(strcmp(name, "invisible1") == 0) {
+		strcpy(stateName, "INV");   stateVal = 0;   stateDuration = 5;  //invisible player
+	} else if(strcmp(name, "hinder1") == 0) {
+		strcpy(stateName, "HND");   stateVal = 0;   stateDuration = 10;  //hinder player input 50% chance
+	} else if(strcmp(name, "paralyze1") == 0) {
+		strcpy(stateName, "PAR");   stateVal = 0;   stateDuration = 2;  //paralyze player
+	} else if(strcmp(name, "stop1") == 0) {
+		strcpy(stateName, "STP");   stateVal = 0;   stateDuration = 2;  //stop monsters
+	} else return false;*/
     if(!getState(&temp, name)) return false;
 	for(i = 0; i < totStates; i++) {
 		if(strcmp(name, stateName) == 0) {
