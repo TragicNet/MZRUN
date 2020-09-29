@@ -25,7 +25,7 @@ html[theme="dark"] {
 
 body {
 	width: 100vw;
-	//background-image: url('../images/roguelike-generic.png');
+	//background-image: url('../images/roguelike-generic.jpg');
 	background-image: url('../images/ascii-bg.png');
 	background-repeat: repeat;
 	/*background-attachment: fixed;*/
