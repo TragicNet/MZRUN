@@ -86,7 +86,6 @@ a { text-decoration: none; color:blue; }
 	flex-direction: row;
 	justify-content: space-around;
 	min-height: calc(100vh - 300px);
-	height: 120vh;
 	//margin: 10px;
 	padding: 10px;
 }
@@ -122,7 +121,7 @@ a { text-decoration: none; color:blue; }
 
 @media screen and (max-width: 639px) {
 	//.content {	flex-direction: column;	}
-	.content { display: none; }
+	.side { display: none; }
 }
 
 ::-webkit-scrollbar { width: 6px; height: 3px; background: transparent; }
