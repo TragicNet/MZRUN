@@ -59,13 +59,15 @@ int posCheck(struct coord pos, char *search, bool same) {
 }
 
 bool Object_move(struct Object *this, int posX, int posY) {
+	bool ghost = false;
+	if(strcmp(this->name, "ghost") == 0)	ghost = true;
 	if(this->pos.x+posX<0 || this->pos.x+posX>fullmap.x || this->pos.y+posY<0 || this->pos.y+posY>fullmap.y)
 		return false;
-	else if(Tile_isBlocked(&map[this->pos.y+posY][this->pos.x+posX]))
+	else if(Tile_isBlocked(&map[this->pos.y+posY][this->pos.x+posX]) && !ghost)
 		return false;
 	if(strcmp(this->type, "player")!=0) {
-		map[this->pos.y][this->pos.x].playerOnly = false;
 		if(map[this->pos.y+posY][this->pos.x+posX].playerOnly == true)	return false;
+		map[this->pos.y][this->pos.x].playerOnly = false;
 	}
 	this->pos.x+=posX;	this->pos.y+=posY;
 	if(strcmp(this->type, "player")!=0)	map[this->pos.y][this->pos.x].playerOnly = true;
@@ -95,18 +97,18 @@ void Object_route(struct Object *this, unsigned int last) {
 		else if(strcmp(states[i].name, "STP") == 0)	return;
 	}
 	rngform = this->range + rngmod;
-	spdform = MaxSpeed + 1 - this->speed - spdmod;
-	if(spdform >MaxSpeed)	spdform = MaxSpeed;
-	if(this->speed == 0 || this->last - last < (spdform*20))
+	spdform = MaxSpeed - this->speed - spdmod;
+	if(spdform <= 0)	spdform = 1 + spdmod;
+	if(this->speed == 0 || this->last - last < (spdform*5))
 		return;
     do {
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
 		ydiff = entityObjects[0].pos.y - this->pos.y;
 		if(abs(ydiff)<=rngform && abs(xdiff)<=rngform) {
-			//Don't Follow if Vision Blocked
 			i = this->pos.y;
-			if(this->range!=fullmap.x) {
+			if(this->range!=fullmap.x && strcmp(this->name, "ghost") != 0) {
+				//Don't Follow if Vision Blocked
 				do {
 					if(i>0 && i<fullmap.y)
 						if(ydiff > 0) i++;	else if(ydiff < 0)	i--;

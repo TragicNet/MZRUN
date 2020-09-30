@@ -1,0 +1,22 @@
+Map Creation Keys:
+#: Wall
+V: Pit
+@: Player
+l: Immunity
+b: Breaker
+v: Full Vision
+s: Slow
+f: Fast
+r: Repel
+a: Attract
+i: Invisible
+h: Hinder
+p: Paralyze
+n: Stop
+1: Normal Monster
+2: Range Monster
+3: Speed Monster
+4: Reaper Monster
+5: Immortal Monster
+6: Elite Monster
+7: Ghost Monster

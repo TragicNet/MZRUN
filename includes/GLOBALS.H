@@ -16,7 +16,7 @@
 #define false 0
 #define MaxX 90
 #define MaxY 30
-#define MaxSpeed 9
+#define MaxSpeed 20
 #define oTICKSPEED 100//30
 #define oTIMELIMIT 100//200
 #define totModes 4

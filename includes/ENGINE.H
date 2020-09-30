@@ -74,6 +74,7 @@ void Engine_draw(struct Engine *this) {
 	struct coord tmp, sumtmp;
 	struct Tile *tmpTile;
 	struct coord camera = view(this->player->pos, screen, fullmap);
+	struct Object *entity;
 	tempColor = this->player->color;
 	tempBgColor = this->player->bgcolor;
 	for(i = 0; i<totStates; i++) {
@@ -88,26 +89,29 @@ void Engine_draw(struct Engine *this) {
 			sumtmp = coord_add(camera, tmp);
 			gotoxy(board.x+j, board.y+i);
 			objPos = posCheck(coord_add(camera, tmp), "", true);
+			if( objPos >= 0 ) {
+				entity = &entityObjects[objPos];
+			}
 			//Vision
 			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange && fullvision == false) {
 				Object_draw(&blackair);
-			} else if(objPos>=0)	{
-				if( coord_cmp(entityObjects[objPos].pos, this->player->pos) ) {
-					if(this->gameOver && strcmp(entityObjects[objPos].type, "player") == 0) {
-						Object_draw(&blackair);	continue;
-					} else if( entityObjects[objPos].weight < this->player->weight ) {
-						colorVal = (entityObjects[objPos].bgcolor == BLACK) ? tempColor : WHITE;
-						Object_setColor(this->player, colorVal, entityObjects[objPos].bgcolor);
-						objPos = 0;
-					}
-				}
-				Object_draw(&entityObjects[objPos]);
-				Object_setColor(this->player, tempColor, tempBgColor);
 			} else if(!Tile_isOpen(tmpTile)) {
 				if(Tile_isBlocked(tmpTile))
 					Object_draw(&wall);
 				else
 					Object_draw(&blackair);
+			} else if(objPos>=0) {
+				if( coord_cmp(entity->pos, this->player->pos) ) {
+					if(this->gameOver && strcmp(entity->type, "player") == 0) {
+						Object_draw(&blackair);	continue;
+					} else if( entity->weight < this->player->weight ) {
+						colorVal = (entity->bgcolor == BLACK) ? tempColor : WHITE;
+						Object_setColor(this->player, colorVal, entity->bgcolor);
+						objPos = 0;
+					}
+				}
+				Object_draw(entity);
+				Object_setColor(this->player, tempColor, tempBgColor);
 			} else {
 				Object_draw(&air);
 			}
@@ -223,19 +227,30 @@ void Engine_input(struct Engine *this) {
 
 void Object_script(struct Engine *engine, int loc) {
 	int i;
-	if(strcmp(entityObjects[loc].type, "monster") == 0) {
+	bool immortal = false;
+	struct Object *temp = &entityObjects[loc];
+	if(strcmp(temp->type, "monster") == 0) {
+		//turn immortal on for certain monsters
+		if(strcmp(temp->name, "vampire") == 0 || strcmp(temp->name, "ghost") == 0 /*|| strcmp(temp->name, "reaper") == 0*/) {
+			immortal = true;
+		}
 		for(i = 0; i<totStates; i++) {
 			if(strcmp(states[i].name, "IMM") == 0) {
-				script_kill();	removeObject(entityObjects, loc);	return;
+				if(!immortal) {
+					script_kill();	removeObject(entityObjects, loc);
+				}
+				return;
 			} else if(strcmp(states[i].name, "BRK") == 0) {
-				script_kill();	removeObject(entityObjects, loc);	removeState(states, i);
-				gotoxy(2, 4 + totStates);	cprintf("      ");	return;
+				if(!immortal) {
+					script_kill();	removeObject(entityObjects, loc);
+				}
+				removeState(states, i);	gotoxy(2, 4 + totStates);	cprintf("      ");	return;
 			}
 		}
 		script_eaten(engine);
-	} else if(strcmp(entityObjects[loc].type, "goal") == 0) {
+	} else if(strcmp(temp->type, "goal") == 0) {
 		script_cleared(engine);
-	} else if(addState(states, entityObjects[loc].name, Engine_tick(engine))) {
+	} else if(addState(states, temp->name, Engine_tick(engine))) {
 		removeObject(entityObjects, loc);
 	}
 }
