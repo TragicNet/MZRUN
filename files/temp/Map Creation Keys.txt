@@ -13,10 +13,10 @@ i: Invisible
 h: Hinder
 p: Paralyze
 n: Stop
-1: Normal Monster
-2: Range Monster
-3: Speed Monster
-4: Reaper Monster
-5: Immortal Monster
-6: Elite Monster
-7: Ghost Monster
+1: Monster - Normal
+2: Monster - Ranger
+3: Monster - Sprinter
+4: Monster - Reaper
+5: Monster - Immortal
+6: Monster - Elite
+7: Monster - Ghost
