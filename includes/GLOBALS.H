@@ -1,10 +1,10 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <math.h>
 #include <dos.h>
 #include <bios.h>
 #include <string.h>

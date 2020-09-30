@@ -128,12 +128,12 @@ void Object_route(struct Object *this, unsigned int last) {
 				r = 1 + random(4);
 			} else if(tried == true) {
 				switch(r) {
-					case 1:
-					case 2:	r = ( distance(xdiff, ydiff-1) > distance(xdiff, ydiff+1)) ? 3 : 4;
-							break;
-					case 3:
-					case 4:	r = ( distance(xdiff-1, ydiff) > distance(xdiff+1, ydiff)) ? 1 : 2;
-							break;
+				case 1:
+				case 2:	r = ( distance(xdiff, ydiff-1) > distance(xdiff, ydiff+1)) ? 3 : 4;
+						break;
+				case 3:
+				case 4:	r = ( distance(xdiff-1, ydiff) > distance(xdiff+1, ydiff)) ? 1 : 2;
+						break;
 				};
 			} else if(abs(ydiff) > abs(xdiff)) {
 				r = ( ydiff > 0 ) ? DOWN : UP;
