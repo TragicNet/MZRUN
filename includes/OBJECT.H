@@ -157,11 +157,9 @@ void Object_route(struct Object *this, unsigned int last) {
 }
 
 void Object_draw(struct Object *this) {
-	textcolor(this->color);
-	textbackground(this->bgcolor);
+	textattr(this->color + ( this->bgcolor << 4));
 	cprintf("%c", this->symbol);
-	textcolor(WHITE);
-	textbackground(BLACK);
+	textattr(WHITE + (BLACK<<4));
 }
 
 int Object_torchRadius(struct coord this, struct coord t) {	

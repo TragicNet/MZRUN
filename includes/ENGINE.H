@@ -93,7 +93,7 @@ void Engine_draw(struct Engine *this) {
 				entity = &entityObjects[objPos];
 			}
 			//Vision
-			if(Object_torchRadius(this->player->pos, sumtmp) > torchRange && fullvision == false) {
+			if(Object_torchRadius(this->player->pos, sumtmp) > (torchRange * torchRange) && fullvision == false) {
 				Object_draw(&blackair);
 			} else if(!Tile_isOpen(tmpTile)) {
 				if(Tile_isBlocked(tmpTile))
@@ -157,16 +157,16 @@ void script_fall(struct Engine *this) {
 	Engine_draw(this);
 	this->gameOver = true;
 	//Halt for visible player Death
-	sound(30);	halt(50);	nosound();
+	noise(30, 50);
 	Engine_draw(this);	halt(50);
-	sound(25);	halt(75);	nosound();
+	noise(25, 75);
 	script_death(this);
 }
 
 void script_kill() {
 	int i;
 	for(i=100; i<200; i+=50) {
-		sound(i);	halt(i-50);	nosound();
+		noise(i, i-50);
 	}
 }
 
@@ -175,7 +175,7 @@ void script_eaten(struct Engine *this) {
 	Engine_draw(this);
 	this->gameOver = true;
 	for(i=150; i>50; i-=10) {
-		sound(i);	halt(i-50);	nosound();
+		noise(i, i-50);
 	}
 	script_death(this);
 }
@@ -192,10 +192,10 @@ void script_cleared(struct Engine *this) {
 	gotoxy(cx, cy++);	cprintf("%c CLEARED %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 
-	sound(100);	halt(100);	nosound();
-	halt(5);	sound(250);	halt(100);	nosound();
-	halt(5);	sound(150);	halt(100);	nosound();
-	halt(5);	sound(300);	halt(100);	nosound();
+	noise(100, 100);	halt(5);
+	noise(250, 100);	halt(5);
+	noise(150, 100);	halt(5);
+	noise(300, 100);	halt(5);
 	getch();
 }
 

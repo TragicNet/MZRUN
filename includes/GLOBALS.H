@@ -52,7 +52,11 @@ int distance(int xdiff, int ydiff) {
 	if(val < 0) {
 		clrscr();	printf("xdiff: %d\nydiff: %d\nval: ", xdiff, ydiff, val);	getch();	exit(0);
 	}
-	return (val <= 0) ? 0 : sqrt(val);
+	return (val <= 0) ? 0 : val;//sqrt(val);
+}
+
+void noise(int f, int d) {
+	sound(f);	halt(d);	nosound();
 }
 
 #include "MZRUN/INCLUDES/COORD.H"
