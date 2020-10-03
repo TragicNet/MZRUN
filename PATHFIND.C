@@ -9,7 +9,7 @@
 #define true 1
 #define false 0
 
-char map[10][40] = {
+/*char map[10][40] = {
 	"########################################",
 	"#         #  #                         #",
 	"#         #  ##### ###                 #",
@@ -20,9 +20,9 @@ char map[10][40] = {
 	"#         ####  #### #                 #",
 	"#            #       #                 #",
 	"########################################"
-};
+};*/
 
-/*char map[10][40] = {
+char map[10][40] = {
 	"########################################",
 	"#                                      #",
 	"#            #####                     #",
@@ -33,7 +33,7 @@ char map[10][40] = {
 	"#                                      #",
 	"#                                      #",
 	"########################################"
-};*/
+};
 
 void draw() {
 	int i, j;
@@ -195,7 +195,7 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 		printf("\n\nclosed: ");	block_Print(closed_list);*/
 
 		//Display Whole
-		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
+		if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
 
 		// Found the goal
 		if(block_Equal(current_node, end_node)) {
@@ -252,9 +252,7 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 					break;
 			if(closed_child == NULL) {
 				// Create the f, g, and h values
-				child->g = heuristic(child->pos, start_node.pos);
-				//Not Finding best route
-				//child->g = current_node.g + 1;
+				child->g = current_node.g + 1;
 				child->h = heuristic(child->pos, end_node.pos);
 				child->f = child->g + child->h;
 
