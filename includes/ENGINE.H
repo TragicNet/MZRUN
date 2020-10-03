@@ -31,18 +31,9 @@ void Engine_init(struct Engine *this, int gen) {
 void Engine_HUD() {
 	int i, j;
 	clrscr();
-	textcolor(GREEN);
 	//Outer Window
-	for(i=1; i<=24; i++) {	//Vertical
-		gotoxy(1, i);	cprintf("%c", border[1]);	gotoxy(80, i);	cprintf("%c", border[1]);
-	}
-	gotoxy(1, 24);	cprintf("%c", border[4]);	gotoxy(80, 24);	cprintf("%c", border[5]);
-	gotoxy(80, 1);	insline();
-	gotoxy(1, 1);	cprintf("%c", border[2]);	gotoxy(80, 1);	cprintf("%c", border[3]);
-	for(i=2; i<80; i++) {	//Horizontal
-		gotoxy(i, 1);	cprintf("%c", border[0]);	gotoxy(i, 25);	cprintf("%c", border[0]);
-	}
-
+	drawBorder();
+	textcolor(GREEN);
 	//Map Window
 	for(i = board.y; i < board.y + screen.y; i++) {	//Vertical
 		gotoxy(board.x-1, i);	cprintf("%c", border[1]);	gotoxy(board.x+screen.x, i);	cprintf("%c", border[1]);
@@ -52,14 +43,8 @@ void Engine_HUD() {
 	}
 	gotoxy(board.x-1, board.y-1);	cprintf("%c", border[2]);	gotoxy(board.x+screen.x, board.y-1);	cprintf("%c", border[3]);
 	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
-	gotoxy(board.x+screen.x-3, board.y-1);	cprintf("Map");
-	//gotoxy(board.x-1, board.y-1);	cprintf("%c", 195);	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", 195);
-	//Top
-	/*gotoxy(1, 3);	cprintf("%c", 195);
-	for(i=2; i<80; i++) {
-		gotoxy(i, 3);	cprintf("%c", border[0]);
-	}
-	gotoxy(80, 3);	cprintf("%c", 180);*/
+	gotoxy(board.x+screen.x-7, board.y-1);	textcolor(GREEN); cprintf("[ "); textcolor(MAGENTA); cprintf("MAP"); textcolor(GREEN); cprintf(" ]");
+	
 	//Bottom
 	gotoxy(1, 23);	cprintf("%c", 195);
 	for(i=2; i<80; i++) {
@@ -70,7 +55,7 @@ void Engine_HUD() {
 
 void Engine_draw(struct Engine *this) {
 	int i, j, objPos, colorVal, tempColor, tempBgColor;
-	bool fullvision = false;
+	bool fullvision = false, notVisible;
 	struct coord tmp, sumtmp;
 	struct Tile *tmpTile;
 	struct coord camera = view(this->player->pos, screen, fullmap);
@@ -92,14 +77,16 @@ void Engine_draw(struct Engine *this) {
 			if( objPos >= 0 ) {
 				entity = &entityObjects[objPos];
 			}
+			notVisible = Object_torchRadius(this->player->pos, sumtmp) > (torchRange * torchRange) && fullvision == false;
+			
 			//Vision
-			if(Object_torchRadius(this->player->pos, sumtmp) > (torchRange * torchRange) && fullvision == false) {
-				Object_draw(&blackair);
+			if(notVisible) {
+				Object_draw(&outVision);
 			} else if(!Tile_isOpen(tmpTile)) {
-				if(Tile_isBlocked(tmpTile))
+				if(Tile_isBlocked(tmpTile) && !notVisible)
 					Object_draw(&wall);
 				else
-					Object_draw(&blackair);
+					Object_draw(&outVision);
 			} else if(objPos>=0) {
 				if( coord_cmp(entity->pos, this->player->pos) ) {
 					if(this->gameOver && strcmp(entity->type, "player") == 0) {
@@ -113,7 +100,7 @@ void Engine_draw(struct Engine *this) {
 				Object_draw(entity);
 				Object_setColor(this->player, tempColor, tempBgColor);
 			} else {
-				Object_draw(&air);
+				Object_draw(&blackair);
 			}
 		}
 	}
@@ -128,10 +115,11 @@ void Engine_draw(struct Engine *this) {
 	gotoxy(9, 21);	cprintf("  s: DOWN     ");	gotoxy(9, 22);	cprintf("  d: RIGHT    ");
 	gotoxy(23, 19);	cprintf("  h: HELP     ");	gotoxy(23, 20);	cprintf("  p: PAUSE    ");
 	gotoxy(23, 21);	cprintf("esc: EXIT     ");	gotoxy(23, 22);	cprintf("rtn: ENTER    ");
-	textcolor(YELLOW);
 	for(i = 0; i<totStates; i++) {
-		gotoxy(2, 4 + i);	cprintf("%s ", states[i].name);
-		cprintf("%2d", states[i].duration);
+		textcolor(GREEN);
+		gotoxy(2, 4 + i);	cprintf("%s", states[i].name);
+		if(states[i].duration <= 3)	textcolor(RED + BLINK);
+		cprintf("%3d", states[i].duration);
 	}
 	textcolor(WHITE);
 }
@@ -257,7 +245,7 @@ void Object_script(struct Engine *engine, int loc) {
 
 void Engine_handle(struct Engine *this) {
 	int i;
-	//gotoxy(1, 25);	cprintf("%5u",timer);
+	//gotoxy(1, 25);	cprintf("%5u",this->timer);
 	i = posCheck(this->player->pos, "", true);
 	if(i > 0) {
 		Object_script(this, i);

@@ -17,8 +17,8 @@
 #define MaxX 90
 #define MaxY 30
 #define MaxSpeed 20
-#define oTICKSPEED 100//30
-#define oTIMELIMIT 100//200
+#define oTICKSPEED 150
+#define oTIMELIMIT 100
 #define totModes 4
 
 int torchRange = 7;
@@ -57,6 +57,21 @@ int distance(int xdiff, int ydiff) {
 
 void noise(int f, int d) {
 	sound(f);	halt(d);	nosound();
+}
+
+void drawBorder() {
+	int i;
+	textcolor(GREEN);
+	for(i=1; i<=24; i++) {	//Vertical
+		gotoxy(1, i);	cprintf("%c", border[1]);	gotoxy(80, i);	cprintf("%c", border[1]);
+	}
+	gotoxy(1, 24);	cprintf("%c", border[4]);	gotoxy(80, 24);	cprintf("%c", border[5]);
+	gotoxy(80, 1);	insline();
+	gotoxy(1, 1);	cprintf("%c", border[2]);	gotoxy(80, 1);	cprintf("%c", border[3]);
+	for(i=2; i<80; i++) {	//Horizontal
+		gotoxy(i, 1);	cprintf("%c", border[0]);	gotoxy(i, 25);	cprintf("%c", border[0]);
+	}
+	textcolor(YELLOW);
 }
 
 #include "MZRUN/INCLUDES/COORD.H"

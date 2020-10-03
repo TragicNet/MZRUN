@@ -17,7 +17,7 @@ struct Object {
 
 	//Temporary Variables: Change Frequently
 	unsigned int last;
-} entityObjects[70], wall, air, blackair;
+} entityObjects[70], wall, air, blackair, outVision, pit;
 unsigned int totalEntities = 1;
 
 void Object_reloc(struct Object *this, struct coord pos) {	this->pos = pos;	}
@@ -74,7 +74,6 @@ bool Object_move(struct Object *this, int posX, int posY) {
 	return true;
 }
 
-
 void Object_route(struct Object *this, unsigned int last) {
     int spdform, rngform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
 	bool tried = false, viewBlocked = false, invisible = false;
@@ -101,6 +100,7 @@ void Object_route(struct Object *this, unsigned int last) {
 	if(spdform <= 0)	spdform = 1 + spdmod;
 	if(this->speed == 0 || this->last - last < (spdform*5))
 		return;
+
     do {
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
@@ -163,7 +163,7 @@ void Object_draw(struct Object *this) {
 }
 
 int Object_torchRadius(struct coord this, struct coord t) {	
-	return distance( this.x - t.x, (this.y - t.y) * 2 );
+	return distance( (this.x - t.x + 1), (this.y - t.y) * 2 );
 }
 
 #endif

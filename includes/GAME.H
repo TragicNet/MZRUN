@@ -28,7 +28,9 @@ void Game_init(struct Game *this) {
 	srand((unsigned)time(0));
 	Object_init(&wall, 0, 0, STOP, '#', "wall", "wall", WHITE, LIGHTGRAY, 0, 0, 1);
 	Object_init(&air, 0, 0, STOP, '.', "air", "air", LIGHTGRAY, BLACK, 0, 0, 0);
-	Object_init(&blackair, 0, 0, STOP, '.', "air", "air", BLACK, BLACK, 0, 0, 0);
+	Object_init(&blackair, 0, 0, STOP, '.', "blackair", "blackair", BLACK, BLACK, 0, 0, 0);
+	Object_init(&outVision, 0, 0, STOP, '.', "out", "out", DARKGRAY, BLACK, 0, 0, 0);
+	Object_init(&pit, 0, 0, STOP, '.', "out", "out", BROWN, BLACK, 0, 0, 0);
 	coord_init(&board, 9, 4);
 	coord_init(&screen, 39, 13);
 	Game_loadData(this);
@@ -95,11 +97,13 @@ void Game_gameLoop() {
 }
 
 void Game_Options(struct Game *this) {
-	int i, x = 35, y = 11, key, spaces = 0;
+	int i, x = 15, y = 11, key, spaces = 0;
 	bool pressed = false;
 	clrscr();
-	gotoxy(37,9);
-	textcolor(YELLOW);	cprintf("OPTIONS");
+	drawBorder();
+
+	gotoxy(34, 1); textcolor(GREEN);	cprintf("[ "); textcolor(MAGENTA); cprintf("OPTIONS"); textcolor(GREEN); cprintf(" ]");
+
 	textcolor(WHITE);
 	//Print Modes based on unlocked, or current
 	for(i = 0; i<totModes; i++) {
@@ -107,17 +111,17 @@ void Game_Options(struct Game *this) {
 			textcolor(WHITE);	y+=i;
 		} else ((this->unlockedModes >= i) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
 		spaces = 3 - strlen(Modes[i])/2;
-		gotoxy(37+spaces, 11+i);	cprintf("%s", Modes[i]);
+		gotoxy(17+spaces, 11+i);	cprintf("%s", Modes[i]);
 	}
 	textcolor(GREEN);
 	for(i = 0; i < 4; i++) {	//Vertical
-		gotoxy(33, i + 11);	cprintf("%c", border[1]);	gotoxy(47, i + 11);	cprintf("%c", border[1]);
+		gotoxy(13, i + 11);	cprintf("%c", border[1]);	gotoxy(27, i + 11);	cprintf("%c", border[1]);
 	}
 	for(i = 0; i < 15; i++) {	//Horizontal
-		gotoxy(33 + i, 10);	cprintf("%c", border[0]);	gotoxy(33 + i, 15);	cprintf("%c", border[0]);
+		gotoxy(13 + i, 10);	cprintf("%c", border[0]);	gotoxy(13 + i, 15);	cprintf("%c", border[0]);
 	}
-	gotoxy(33, 10);	cprintf("%c", border[2]);	gotoxy(47, 10);	cprintf("%c", border[3]);
-	gotoxy(33, 15);	cprintf("%c", border[4]);	gotoxy(47, 15);	cprintf("%c", border[5]);
+	gotoxy(13, 10);	cprintf("%c", border[2]);	gotoxy(27, 10);	cprintf("%c", border[3]);
+	gotoxy(13, 15);	cprintf("%c", border[4]);	gotoxy(27, 15);	cprintf("%c", border[5]);
 	while(1) {
 		gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
 		key = getch();
@@ -135,14 +139,25 @@ void Game_Options(struct Game *this) {
 }
 
 bool Game_Start(struct Game *this) {
-	int i, x = 35, y = 12, width, key;
+	int i, k = 0, l, x = 35, y = 12, width, key;
+	unsigned int t = TIMELIMIT * TICKSPEED;
 	bool selected = false;
+	char banner[][39] = {
+		"       _____ _____ _____ _____       ",
+		"      |     |  _  |__   |   __|      ",
+		"      | | | |     |   __|   __|      ",
+		"      |_|_|_|__|__|_____|_____|      ",
+		" _____ _____ _____ _____ _____ _____ ",
+		"| __  |  |  |   | |   | |   __| __  |",
+		"|    -|  |  | | | | | | |   __|    -|",
+		"|__|__|_____|_|___|_|___|_____|__|__|"
+	};
 	levelCnt = 0;
 	totLevels = Game_getPaths(paths);
 	clrscr();
-	gotoxy(35,9);
-	textcolor(YELLOW);	cprintf("MAZE RUNNER");
-	textcolor(WHITE);
+	
+	drawBorder();
+	textcolor(YELLOW);
 	gotoxy(37,12);	cprintf(" Start ");
 	gotoxy(37,13);	cprintf("Options");
 	gotoxy(37,14);	cprintf(" Exit  ");
@@ -161,7 +176,20 @@ bool Game_Start(struct Game *this) {
 	textcolor(YELLOW);
 	while(1) {
 		gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
+		while(1) {
+			if(t/1000 < 13) {
+				t = TIMELIMIT * TICKSPEED;	k++;
+			}
+			for(i = 0; i < 8; i++) {
+				if(k>=8)	k = 0;
+				textcolor(8 - k + i);
+				gotoxy(22, i + 2);	cprintf("%s", banner[i]);
+			}
+			t--;
+			if(kbhit())	break;
+		}
 		key = getch();
+		textcolor(YELLOW);
 		gotoxy(x,y);	cprintf(" ");	gotoxy(x+10,y);	cprintf(" ");
 		switch(key) {
 		case 'w':	y = (y==12) ? 12 : y-1;	break;
