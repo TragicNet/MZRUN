@@ -24,14 +24,14 @@
 
 char map[10][40] = {
 	"########################################",
-	"#                                      #",
+	"#*                                     #",
 	"#            #####                     #",
 	"#                #                     #",
-	"#            #   #@                    #",
-	"#           *## ##                     #",
+	"#            #   #                     #",
+	"#            ## ##                     #",
 	"#                                      #",
 	"#                                      #",
-	"#                                      #",
+	"#                                     @#",
 	"########################################"
 };
 
@@ -79,7 +79,7 @@ int heuristic(const struct coord a, const struct coord b) {
 	return abs(a.x-b.x) +  abs(a.y-b.y);
 }
 
-int distance(const struct coord a, const struct coord b) {
+int coord_distance(const struct coord a, const struct coord b) {
 	return abs((a.x-b.x) * (a.x-b.x)) + abs((a.y-b.y) * (a.y-b.y));
 }
 
@@ -157,6 +157,15 @@ bool block_Search(struct block *this, struct block obj) {
 	return false;
 }
 
+void Block_deleteAll(struct block **this) {
+	struct block *p = *this, *q;
+	while(p != NULL) {
+		q = p->next;
+		block_Delete(this, *p);
+		p = q;
+	}
+}
+
 enum eDirection astar(struct block start_node, struct block end_node) {
 	// Initialize both open and closed list
 	struct block *open_list = NULL, *closed_list = NULL, *children = NULL;
@@ -195,14 +204,14 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 		printf("\n\nclosed: ");	block_Print(closed_list);*/
 
 		//Display Whole
-		if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
+		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
 
 		// Found the goal
 		if(block_Equal(current_node, end_node)) {
 			r = current_node.pos;
 			for(closed_child = closed_list; closed_child->next != NULL; closed_child = closed_child->next) {}
 			for(; closed_child != NULL; closed_child = closed_child->prev) {
-				if(distance(r, closed_child->pos) == 1 && !coord_cmp(closed_child->pos, start_node.pos))
+				if(coord_distance(r, closed_child->pos) == 1 && !coord_cmp(closed_child->pos, start_node.pos))
 					r = closed_child->pos;	//printf(" > %2d, %2d", r.x, r.y);
 			}
 
@@ -212,15 +221,14 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 			getch();	exit(0);*/
 
 			for(k = 0; k < 4; k++) {
-				if(r.x - start_node.pos.x == nx[k] && r.y - start_node.pos.y == ny[k])
+				if(r.x - start_node.pos.x == nx[k] && r.y - start_node.pos.y == ny[k]) {
+					Block_deleteAll(&open_list);	Block_deleteAll(&closed_child);
 					return k + 1;
+				}
 				//{	printf("\ndir: %d", k+1);	getch();	exit(0);	}
 			}
 		}
-		block_Delete(&children, *children);
-		block_Delete(&children, *children);
-		block_Delete(&children, *children);
-		block_Delete(&children, *children);
+		Block_deleteAll(&children);
 		children = NULL;
 		// Generate children
 		for(k = 0; k<4; k++) {
@@ -267,6 +275,7 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 			}
 		}
 	}
+	Block_deleteAll(&open_list);	Block_deleteAll(&closed_child);
 	return rand() % 4;
 }
 

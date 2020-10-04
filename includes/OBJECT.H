@@ -76,6 +76,7 @@ bool Object_move(struct Object *this, int posX, int posY) {
 
 void Object_route(struct Object *this, unsigned int last) {
     int spdform, rngform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
+	int xi, yi;
 	bool tried = false, viewBlocked = false, invisible = false;
 	if(strcmp(currentMode, "Hard+") == 0) {
 		spdmod = 3;	rngmod = 3;
@@ -105,23 +106,20 @@ void Object_route(struct Object *this, unsigned int last) {
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
 		ydiff = entityObjects[0].pos.y - this->pos.y;
-		if(abs(ydiff)<=rngform && abs(xdiff)<=rngform) {
-			i = this->pos.y;
+		if(Object_view(this->pos, entityObjects[0].pos) <= (rngform * rngform)) {
+
 			if(this->range!=fullmap.x && strcmp(this->name, "ghost") != 0) {
 				//Don't Follow if Vision Blocked
-				do {
-					if(i>0 && i<fullmap.y)
-						if(ydiff > 0) i++;	else if(ydiff < 0)	i--;
-					j = this->pos.x;
-					do {
-						if(j>0 && j<fullmap.x)
-							if(xdiff > 0) j++;	else if(xdiff < 0)	j--;
-						if(Tile_isOpaque(&map[i][j]) && i>=0 && j>=0) {
-							viewBlocked = true;	break;
-						}
-					} while(j != entityObjects[0].pos.x);
+				xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
+    			yi = ydiff;	if(yi > 0)  yi = 1;  else if(yi < 0) yi = -1;
+				for(i = this->pos.y; i != entityObjects[0].pos.y + ((xi != yi) ? yi : 0); ) {
+					if(i>0 && i<fullmap.y)	i+=yi;
+					for(j = this->pos.x; j != entityObjects[0].pos.x + ((xi != yi) ? xi : 0); ) {
+						if(j>0 && j<fullmap.x)	j+=xi;
+						if(Tile_isOpaque(&map[i][j])) {	viewBlocked = true;	break;	}
+					}
 					if(viewBlocked == true)	break;
-				} while(i != entityObjects[0].pos.y);
+				}
 			}
 			
 			if(viewBlocked == true || invisible == true) {
@@ -142,6 +140,7 @@ void Object_route(struct Object *this, unsigned int last) {
 			}
 		} else {
 			r = 1 + random(4);
+			//break;	stop all for debugging
 		}
 
 		this->dir = (enum eDirection) r;
@@ -162,8 +161,8 @@ void Object_draw(struct Object *this) {
 	textattr(WHITE + (BLACK<<4));
 }
 
-int Object_torchRadius(struct coord this, struct coord t) {	
-	return distance( (this.x - t.x + 1), (this.y - t.y) * 2 );
+int Object_view(struct coord this, struct coord t) {	
+	return distance( (this.x - t.x), (this.y - t.y) * 2 );
 }
 
 #endif

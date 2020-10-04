@@ -56,8 +56,8 @@ void Engine_HUD() {
 void Engine_draw(struct Engine *this) {
 	int i, j, objPos, colorVal, tempColor, tempBgColor;
 	bool fullvision = false, notVisible;
-	struct coord tmp, sumtmp;
-	struct Tile *tmpTile;
+	struct coord tmp;
+	struct Tile *thisTile;
 	struct coord camera = view(this->player->pos, screen, fullmap);
 	struct Object *entity;
 	tempColor = this->player->color;
@@ -70,20 +70,21 @@ void Engine_draw(struct Engine *this) {
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
-			tmpTile = &map[camera.y + i][camera.x + j];
-			sumtmp = coord_add(camera, tmp);
+			thisTile = &map[camera.y + i][camera.x + j];
 			gotoxy(board.x+j, board.y+i);
 			objPos = posCheck(coord_add(camera, tmp), "", true);
 			if( objPos >= 0 ) {
 				entity = &entityObjects[objPos];
 			}
-			notVisible = Object_torchRadius(this->player->pos, sumtmp) > (torchRange * torchRange) && fullvision == false;
+			notVisible = Object_view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
 			
+			/*if(Object_view(entityObjects[k].pos, coord_add(tmp, camera)) <= entityObjects[k].range)
+				cprintf(".");*/
 			//Vision
 			if(notVisible) {
 				Object_draw(&outVision);
-			} else if(!Tile_isOpen(tmpTile)) {
-				if(Tile_isBlocked(tmpTile) && !notVisible)
+			} else if(!Tile_isOpen(thisTile)) {
+				if(Tile_isBlocked(thisTile) && !notVisible)
 					Object_draw(&wall);
 				else
 					Object_draw(&outVision);

@@ -28,6 +28,8 @@ int wished = false;
 bool returnTitle = false;
 bool wait = false;
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
+int nx[] = { -1, 1, 0, 0 };
+int ny[] = { 0, 0, -1, 1 };
 char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
@@ -76,6 +78,7 @@ void drawBorder() {
 
 #include "MZRUN/INCLUDES/COORD.H"
 #include "MZRUN/INCLUDES/TILE.H"
+#include "MZRUN/INCLUDES/PATHFIND.H"
 #include "MZRUN/INCLUDES/STATE.H"
 #include "MZRUN/INCLUDES/OBJECT.H"
 #include "MZRUN/INCLUDES/HELP.H"

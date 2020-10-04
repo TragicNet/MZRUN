@@ -20,6 +20,10 @@ bool coord_cmp(struct coord a, struct coord b) {
     return (a.x == b.x && a.y == b.y) ? true : false;
 }
 
+int coord_distance(const struct coord a, const struct coord b) {
+	return abs((a.x-b.x) * (a.x-b.x)) + abs((a.y-b.y) * (a.y-b.y));
+}
+
 struct coord view(struct coord p, struct coord s, struct coord m) {
     struct coord hs, c;
     coord_init(&hs, s.x/2, s.y/2);
