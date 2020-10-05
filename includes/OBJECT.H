@@ -100,12 +100,12 @@ void Object_route(struct Object *this, unsigned int last) {
 	if(spdform <= 0)	spdform = 1 + spdmod;
 	if(this->speed == 0 || this->last - last < (spdform*5))
 		return;
-	if(strcmp(this->name, "reaper") == 0) {
+	/*if(strcmp(this->name, "reaper") == 0) {
 		r = 1 + random(4);
 		Object_move(this, nx[r], ny[r]);
 		this->last = last;
 		return;
-	}
+	}*/
     do {
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
@@ -127,7 +127,7 @@ void Object_route(struct Object *this, unsigned int last) {
 			
 			if(viewBlocked == true) {
 				r = 1 + random(4);
-			}/* else if(tried == true) {
+			} else if(tried == true) {
 				switch(r) {
 				case 1:
 				case 2:	r = ( distance(xdiff, ydiff-1) > distance(xdiff, ydiff+1)) ? 3 : 4;
@@ -140,23 +140,17 @@ void Object_route(struct Object *this, unsigned int last) {
 				r = ( ydiff > 0 ) ? DOWN : UP;
 			} else {
 				r = ( xdiff > 0 ) ? RIGHT : LEFT;
-			}*/else {
+			}/*else {
 				r = astar(this->pos, entityObjects[0].pos, this->type);
-			}
+			}*/
 		} else {
 			r = 1 + random(4);
 			//break;	stop all for debugging
 		}
 
 		this->dir = (enum eDirection) r;
-		switch(r) {
-		case 1:		xdiff = -1;	ydiff = +0;	break;
-		case 2:		xdiff = +1;	ydiff = +0; break;
-		case 3:		xdiff = +0;	ydiff = -1; break;
-		case 4:		xdiff = +0;	ydiff = +1; break;
-		};
 		tried = true;
-	} while(!Object_move(this, xdiff, ydiff) && ch < rngform);
+	} while(!Object_move(this, nx[r-1], ny[r-1]) && ch < rngform);
 	this->last = last;
 }
 

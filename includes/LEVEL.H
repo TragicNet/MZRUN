@@ -13,7 +13,6 @@ void Level_Export(struct Level *this, char path[]) {
 	FILE *file;
 	this->fullmap = fullmap;
 	this->totalEntities = totalEntities;
-	//this->goal = goal;
 	for(i=0; i<this->totalEntities; i++)
 		this->entities[i] = entityObjects[i];
 	for(i=0; i<MaxY; i++) {
@@ -37,7 +36,6 @@ void Level_Import(struct Level *this, char path[]) {
 
 	fullmap = this->fullmap;
 	totalEntities = this->totalEntities;
-	//Object_reloc(&goal, this->goal.pos);
 	for(i=0; i<totalEntities; i++)
 		entityObjects[i] = this->entities[i];
 	for(i=0; i<MaxY; i++) {

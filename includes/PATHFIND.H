@@ -96,6 +96,8 @@ enum eDirection astar(struct coord s, struct coord e, char *name) {
 		//path_push(&path_list, current_node.pos);
 		Block_push(&closed_list, current_node);
 		
+		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(board.x + current_node.pos.x, board.y + current_node.pos.y);	printf("."); }
+		
 		// Found the goal
 		if(Block_equal(current_node, end_node)) {
 			r = current_node.pos;
@@ -108,7 +110,6 @@ enum eDirection astar(struct coord s, struct coord e, char *name) {
 			for(k = 0; k < 4; k++) {
 				if(r.x - start_node.pos.x == nx[k] && r.y - start_node.pos.y == ny[k]) {
 					Block_deleteAll(&open_list);	Block_deleteAll(&closed_child);
-					p = NULL, open_node = NULL, closed_child = NULL, child = NULL;
 					free(p);	free(open_node);	free(closed_child);	free(child);
 					//gotoxy(1, 1);	printf("dir: %d : Found: %d, %d : %d, %d", k, r.x, r.y, start_node.pos.x, end_node.pos.y);	getch();
 					return k + 1;
@@ -127,7 +128,7 @@ enum eDirection astar(struct coord s, struct coord e, char *name) {
 				continue;
 			
 			// Make sure walkable terrain
-			if(!Tile_isOpen(&map[r.y][r.x]) && (Tile_isBlocked(&map[r.y][r.x]) && strcmp(name, "ghost") != 0) && map[r.y][r.x].playerOnly)
+			if(!Tile_isOpen(&map[r.y][r.x]) || map[r.y][r.x].playerOnly || Tile_isBlocked(&map[r.y][r.x]))
 				continue;
 			/*if(Tile_isBlocked(&map[r.y][r.x]))
 				continue;*/
@@ -165,8 +166,7 @@ enum eDirection astar(struct coord s, struct coord e, char *name) {
 		}
 	}
 	Block_deleteAll(&open_list);	Block_deleteAll(&closed_child);
-	p = NULL, open_node = NULL, closed_child = NULL, child = NULL;
-	//free(p);	free(open_node);	free(closed_child);	free(child);
+	free(p);	free(open_node);	free(closed_child);	free(child);
 	return 1 + random(4);
 }
 
