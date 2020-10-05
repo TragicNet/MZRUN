@@ -23,8 +23,8 @@ void Engine_init(struct Engine *this, int gen) {
 	addState(states, "immunity1",  Engine_tick(this));
 	//addState(states, "invisible1",  Engine_tick(this));
 	//addState(states, "hinder1",  Engine_tick(this));
-	/*addState(states, "paralyze1",  Engine_tick(this));
-	addState(states, "stop1",  Engine_tick(this));*/
+	//addState(states, "paralyze1",  Engine_tick(this));
+	//addState(states, "stop1",  Engine_tick(this));
 	//printState(&states[0]);	
 }
 
@@ -84,15 +84,15 @@ void Engine_draw(struct Engine *this) {
 			if(notVisible) {
 				Object_draw(&outVision);
 			} else if(!Tile_isOpen(thisTile)) {
-				if(Tile_isBlocked(thisTile) && !notVisible)
+				if(Tile_isBlocked(thisTile))
 					Object_draw(&wall);
 				else
 					Object_draw(&outVision);
 			} else if(objPos>=0) {
 				if( coord_cmp(entity->pos, this->player->pos) ) {
 					if(this->gameOver && strcmp(entity->type, "player") == 0) {
-						Object_draw(&blackair);	continue;
-					} else if( entity->weight < this->player->weight ) {
+						Object_draw(&blackair);	continue;	//prob
+					} else if( entity->weight <= this->player->weight ) {
 						colorVal = (entity->bgcolor == BLACK) ? tempColor : WHITE;
 						Object_setColor(this->player, colorVal, entity->bgcolor);
 						objPos = 0;
@@ -172,6 +172,7 @@ void script_eaten(struct Engine *this) {
 void script_cleared(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 11;
+	halt(225);
 	Engine_draw(this);
 	cx-=width/2;	cy-=height/2;
 	this->gameOver = true;
@@ -266,8 +267,7 @@ void Engine_handle(struct Engine *this) {
 		if(states[i].duration <= 0) {
 			removeState(states, i);
 			gotoxy(2, 4 + totStates);	cprintf("      ");
-		}
-		else if(states[i].last!=Engine_tick(this)) {
+		} else if(states[i].last!=Engine_tick(this)) {
 			states[i].duration--;	states[i].last = Engine_tick(this);
 		}
 	}

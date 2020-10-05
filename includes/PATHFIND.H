@@ -68,7 +68,7 @@ void Block_deleteAll(struct Block **this) {
 	}
 }
 
-enum eDirection astar(struct coord s, struct coord e) {
+enum eDirection astar(struct coord s, struct coord e, char *name) {
 	// initialize both open and closed list
 	struct Block *open_list = NULL, *closed_list = NULL, *children = NULL;
 	struct Block start_node, end_node, current_node, item, temp, *p, *closed_child = NULL, *open_node = NULL, *child = NULL;
@@ -111,7 +111,7 @@ enum eDirection astar(struct coord s, struct coord e) {
 					p = NULL, open_node = NULL, closed_child = NULL, child = NULL;
 					free(p);	free(open_node);	free(closed_child);	free(child);
 					//gotoxy(1, 1);	printf("dir: %d : Found: %d, %d : %d, %d", k, r.x, r.y, start_node.pos.x, end_node.pos.y);	getch();
-					return k;
+					return k + 1;
 				}
 			}
 		}
@@ -127,7 +127,7 @@ enum eDirection astar(struct coord s, struct coord e) {
 				continue;
 			
 			// Make sure walkable terrain
-			if(!Tile_isOpen(&map[r.y][r.x]) && Tile_isBlocked(&map[r.y][r.x]) && map[r.y][r.x].playerOnly)
+			if(!Tile_isOpen(&map[r.y][r.x]) && (Tile_isBlocked(&map[r.y][r.x]) && strcmp(name, "ghost") != 0) && map[r.y][r.x].playerOnly)
 				continue;
 			/*if(Tile_isBlocked(&map[r.y][r.x]))
 				continue;*/

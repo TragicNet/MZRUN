@@ -1,8 +1,6 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-//typedef void(*Scripts)(struct Engine *this);
-
 struct Object {
 	struct coord pos;
 	enum eDirection dir;
@@ -17,7 +15,7 @@ struct Object {
 
 	//Temporary Variables: Change Frequently
 	unsigned int last;
-} entityObjects[70], wall, air, blackair, outVision, pit;
+} entityObjects[50], wall, air, blackair, outVision, pit;
 unsigned int totalEntities = 1;
 
 void Object_reloc(struct Object *this, struct coord pos) {	this->pos = pos;	}
@@ -33,6 +31,7 @@ void Object_init(struct Object *this, int x, int y, enum eDirection dir, char sy
 void removeObject(struct Object objects[], int loc) {
 	int i;
 	Tile_unblock(&map[objects[loc].pos.y][objects[loc].pos.x]);
+	map[objects[loc].pos.y][objects[loc].pos.x].playerOnly = false;
 	if(totalEntities>0) {
         for(i = loc; i<totalEntities; i++) {
 			objects[i] = objects[i+1];
@@ -66,7 +65,7 @@ bool Object_move(struct Object *this, int posX, int posY) {
 	else if(Tile_isBlocked(&map[this->pos.y+posY][this->pos.x+posX]) && !ghost)
 		return false;
 	if(strcmp(this->type, "player")!=0) {
-		if(map[this->pos.y+posY][this->pos.x+posX].playerOnly == true)	return false;
+		if(map[this->pos.y+posY][this->pos.x+posX].playerOnly == true && !ghost)	return false;
 		map[this->pos.y][this->pos.x].playerOnly = false;
 	}
 	this->pos.x+=posX;	this->pos.y+=posY;
@@ -94,20 +93,24 @@ void Object_route(struct Object *this, unsigned int last) {
 		else if(strcmp(states[i].name, "ATR") == 0)	rngmod-=states[i].val;
 		else if(strcmp(states[i].name, "RPL") == 0)	rngmod+=states[i].val;
 		else if(strcmp(states[i].name, "INV") == 0)	invisible = true;
-		else if(strcmp(states[i].name, "STP") == 0)	return;
+		else if(strcmp(states[i].name, "STP") == 0)	{ this->last = last; return; }
 	}
 	rngform = this->range + rngmod;
 	spdform = MaxSpeed - this->speed - spdmod;
 	if(spdform <= 0)	spdform = 1 + spdmod;
 	if(this->speed == 0 || this->last - last < (spdform*5))
 		return;
-
+	if(strcmp(this->name, "reaper") == 0) {
+		r = 1 + random(4);
+		Object_move(this, nx[r], ny[r]);
+		this->last = last;
+		return;
+	}
     do {
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
 		ydiff = entityObjects[0].pos.y - this->pos.y;
-		if(Object_view(this->pos, entityObjects[0].pos) <= (rngform * rngform)) {
-
+		if(Object_view(this->pos, entityObjects[0].pos) <= (rngform * rngform) && !invisible) {
 			if(this->range!=fullmap.x && strcmp(this->name, "ghost") != 0) {
 				//Don't Follow if Vision Blocked
 				xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
@@ -122,9 +125,9 @@ void Object_route(struct Object *this, unsigned int last) {
 				}
 			}
 			
-			if(viewBlocked == true || invisible == true) {
+			if(viewBlocked == true) {
 				r = 1 + random(4);
-			} else if(tried == true) {
+			}/* else if(tried == true) {
 				switch(r) {
 				case 1:
 				case 2:	r = ( distance(xdiff, ydiff-1) > distance(xdiff, ydiff+1)) ? 3 : 4;
@@ -137,6 +140,8 @@ void Object_route(struct Object *this, unsigned int last) {
 				r = ( ydiff > 0 ) ? DOWN : UP;
 			} else {
 				r = ( xdiff > 0 ) ? RIGHT : LEFT;
+			}*/else {
+				r = astar(this->pos, entityObjects[0].pos, this->type);
 			}
 		} else {
 			r = 1 + random(4);

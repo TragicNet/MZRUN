@@ -24,14 +24,14 @@
 
 char map[10][40] = {
 	"########################################",
-	"#*                                     #",
+	"#                                      #",
 	"#            #####                     #",
-	"#                #                     #",
+	"#                #@                    #",
 	"#            #   #                     #",
-	"#            ## ##                     #",
+	"#           *## ##                     #",
 	"#                                      #",
 	"#                                      #",
-	"#                                     @#",
+	"#                                      #",
 	"########################################"
 };
 
@@ -204,7 +204,7 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 		printf("\n\nclosed: ");	block_Print(closed_list);*/
 
 		//Display Whole
-		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
+		if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
 
 		// Found the goal
 		if(block_Equal(current_node, end_node)) {
