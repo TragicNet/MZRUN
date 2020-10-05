@@ -102,7 +102,7 @@ void Creator_create_lvl(struct Creator *this) {
 		getch();	exit(0);*/
 		for(i = 0; i<fullmap.y; i++) {
 			for(j = 0; j<fullmap.x; j++) {
-				Tile_init(&this->map[i][j], true, false, false, true);
+				Tile_init(&this->map[i][j], true, true, false, true);
 				if(this->cmap[i][j]=='@') {
 					Object_init(&temp, j, i, RIGHT, '@', "player", "player", GREEN, BLACK, 0, 0, 1);
 					this->cmap[i][j] = '.';	entityObjects[0] = temp;
@@ -112,11 +112,11 @@ void Creator_create_lvl(struct Creator *this) {
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);	this->map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '2') {
-					Object_init(&temp, j, i, STOP, '*', "monster", "ranger", RED, BLACK, 6, 8, 1);
+					Object_init(&temp, j, i, STOP, '*', "monster", "ranger", RED, BLACK, 7, 9, 1);
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);	this->map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '3') {
-					Object_init(&temp, j, i, STOP, '*', "monster", "sprinter", RED, BLACK, 8, 6, 1);
+					Object_init(&temp, j, i, STOP, '*', "monster", "sprinter", RED, BLACK, 9, 7, 1);
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);	this->map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '4') {
@@ -124,15 +124,15 @@ void Creator_create_lvl(struct Creator *this) {
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);	this->map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '5') {
-					Object_init(&temp, j, i, STOP, '*', "monster", "vampire", CYAN, BLACK, 10, 10, 1);
+					Object_init(&temp, j, i, STOP, '*', "monster", "vampire", CYAN, BLACK, 11, 11, 1);
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);	this->map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '6') {
-					Object_init(&temp, j, i, STOP, '*', "monster", "elite", YELLOW, BLACK, 8, 8, 1);
+					Object_init(&temp, j, i, STOP, '*', "monster", "elite", YELLOW, BLACK, 9, 9, 1);
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);	this->map[i][j].playerOnly = true;
 				} else if(this->cmap[i][j] == '7') {
-					Object_init(&temp, j, i, STOP, '*', "monster", "ghost", WHITE, BLACK, 8, 8, 1);
+					Object_init(&temp, j, i, STOP, '*', "monster", "ghost", WHITE, BLACK, 9, 9, 1);
 					this->cmap[i][j] = '.';	entityObjects[totalEntities++] = temp;
 					Tile_unblock(&this->map[i][j]);
 				} else if(this->cmap[i][j] == '#') {

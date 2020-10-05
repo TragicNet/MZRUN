@@ -6,15 +6,20 @@
 #define true 1
 #define false 0
 
-int range = 5;
+int range = 7;
 int nx[] = { -1, 1, 0, 0 };
 int ny[] = { 0, 0, -1, 1 };
 
 struct coord {
 	int x, y;
-}p, m;
+} p, m;
 
 bool coord_cmp(struct coord a, struct coord b) {	return (a.x == b.x && a.y == b.y) ? true : false;	}
+
+struct coord coord_sub(struct coord a, struct coord b) {
+    a.x-=b.x;	a.y-=b.y;
+    return a;
+}
 
 int distance(int xdiff, int ydiff) {
 	int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
@@ -33,10 +38,10 @@ char map[10][40] = {
 	"########################################",
 	"#                                      #",
 	"#            #####                     #",
-	"#                #                     #",
-	"#            #   #         p           #",
-	"#            ## ##             m       #",
-	"#                          #           #",
+	"#                #     m#              #",
+	"#            #   #         p #         #",
+	"#            ## ##                     #",
+	"#                                      #",
 	"#                                      #",
 	"#                                      #",
 	"########################################"
@@ -53,24 +58,25 @@ void getPos() {
 
 }
 
-bool visible(struct coord src, struct coord trg) {
-	int i, j, dx = src.x - trg.x, dy = src.y - trg.y, xi = dx, yi = dy;
-	struct coord t;
-	xi = dx;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
-	yi = dy;	if(yi > 0)  yi = 1;  else if(yi < 0) yi = -1;
-	if(coord_cmp(trg, m)) {
-		printf("\nsrc: %2d, %2d, trg: %2d, %2d", src.x, src.y, trg.x, trg.y);
-		printf("\ndiff = %2d, %2d", abs(dx), abs(dy));
-		printf("\nincr: %2d, %2d", xi, yi);
+bool visible(struct coord start, struct coord end) {
+	int xi, yi, error;
+	struct coord current, errorCorrect, delta;
+	if(view(start, end) >= (range*range))	return false;
+	xi = (end.x > start.x) ? 1 : -1;
+	yi = (end.y > start.y) ? 1 : -1;
+	current.x = start.x;	current.y = start.y;
+	delta.x = abs(start.x-end.x);	delta.y = abs(start.y-end.y);
+	error = delta.x - delta.y;
+	errorCorrect.x = delta.x*2, errorCorrect.y = delta.y*2;
+	while(1) {
+		if(current.x > fullmap.x || current.y > fullmap.y || current.x < 1 || current.y < 1 )	break;
+		if(coord_cmp(current, end))	break;
+		else if(map[current.y][current.x] == '#')	return false;
+		else if(current.x - end.x == xi || current.y == yi)	break;
+		if(error > 0) {	current.x+=xi;	error-=errorCorrect.y;	}
+		else if(error < 0) {	current.y+=yi;	error+=errorCorrect.x;	}
+		else {	current.x+=xi;	current.y+=yi;	}
 	}
-	//if(view(src, trg) > range*range)	return false;
-	/*for(i = src.x; i != trg.x + xi; ) {
-        if(i>0 && i<40) i+=xi;
-		for(j = src.y; j != trg.y + yi; ) {
-            if(j>0 && j<10) j+=yi;
-            if(map[j][i] == '#')    return false;
-        }
-    }*/
 	return true;
 }
 
@@ -81,12 +87,11 @@ void draw() {
 	for(j = 0; j < 10; j++) {
 		for(i = 0; i < 40; i++) {
 			t.x = i, t.y = j;
-			if(view(p, t) > range * range) {
+			if(view(t, p) >= range * range) {
+				cprintf(".", map[j][i]);
+			} else if(visible(p, t)) {
 				cprintf("%c", map[j][i]);
-			} else if(!visible(t, p))
-				cprintf("/");
-			else
-				cprintf(".");
+			} else  cprintf(".");
 			textattr(WHITE + (BLACK<<4));
 		}
 		printf("\n");
@@ -94,12 +99,14 @@ void draw() {
 	gotoxy(p.x + 1, p.y + 1);	cprintf("p");
 	gotoxy(m.x + 1, m.y + 1);	cprintf("m");
 	gotoxy(1, 11);
+	printf("p: %d, %d", p.x, p.y);
+	printf("\tm: %d, %d", m.x, m.y);
 }
 
 void main() {
     clrscr();
     getPos();
 	draw();
-	printf("\nVisible: %s", (visible(p, m) ? "true" : "false"));
-    getch();
+	printf("\nVisible: %s", (visible(m, p) ? "true" : "false"));
+	getch();
 }

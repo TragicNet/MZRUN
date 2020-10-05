@@ -64,19 +64,46 @@ bool Object_move(struct Object *this, int posX, int posY, struct Tile map[][90])
 		return false;
 	else if(Tile_isBlocked(&map[this->pos.y+posY][this->pos.x+posX]) && !ghost)
 		return false;
-	if(strcmp(this->type, "player")!=0) {
-		if(map[this->pos.y+posY][this->pos.x+posX].playerOnly == true && !ghost)	return false;
+	if(strcmp(this->type, "player")!=0 && !ghost) {
+		if(map[this->pos.y+posY][this->pos.x+posX].playerOnly == true)	return false;
 		map[this->pos.y][this->pos.x].playerOnly = false;
 	}
 	this->pos.x+=posX;	this->pos.y+=posY;
-	if(strcmp(this->type, "player")!=0)	map[this->pos.y][this->pos.x].playerOnly = true;
+	if(strcmp(this->type, "player")!=0 && !ghost)	map[this->pos.y][this->pos.x].playerOnly = true;
+	return true;
+}
+
+int view(struct coord this, struct coord t) {	
+	return distance( (this.x - t.x), (this.y - t.y) * 2 );
+}
+
+bool visible(struct coord start, struct coord end, int range, struct Tile map[][90]) {
+	int xi, yi, error;
+	struct coord current, errorCorrect, delta;
+	//if(view(start, end) >= (range*range))	return false;
+	xi = (end.x > start.x) ? 1 : -1;
+	yi = (end.y > start.y) ? 1 : -1;
+	current.x = start.x;	current.y = start.y;
+	delta.x = abs(start.x-end.x);	delta.y = abs(start.y-end.y);
+	error = delta.x - delta.y;
+	errorCorrect.x = delta.x*2, errorCorrect.y = delta.y*2;
+	while(1) {
+		if(coord_cmp(current, end))	break;
+		else if(Tile_isOpaque(&map[current.y][current.x]))	return false;
+		else if(current.x - end.x == xi || current.y == yi)	break;
+		if(error > 0) {	current.x+=xi;	error-=errorCorrect.y;	}
+		else if(error < 0) {	current.y+=yi;	error+=errorCorrect.x;	}
+		else {	current.x+=xi;	current.y+=yi;	}
+	}
 	return true;
 }
 
 void Object_route(struct Object *this, unsigned int last, struct Tile map[][90]) {
     int spdform, rngform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
 	int xi, yi;
-	bool tried = false, viewBlocked = false, invisible = false;
+	bool tried = false, viewBlocked = false, invisible = false, ghost = true, reaper = true;
+	if(strcmp(this->name, "ghost") == 0)	ghost = true;
+	else if(strcmp(this->name, "reaper") == 0)	reaper = true;
 	if(strcmp(currentMode, "Hard+") == 0) {
 		spdmod = 3;	rngmod = 3;
 	} else if(strcmp(currentMode, "Hard") == 0) {
@@ -110,10 +137,10 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
 		ydiff = entityObjects[0].pos.y - this->pos.y;
-		if(Object_view(this->pos, entityObjects[0].pos) <= (rngform * rngform) && !invisible) {
-			if(this->range!=fullmap.x && strcmp(this->name, "ghost") != 0) {
+		if(view(this->pos, entityObjects[0].pos) < (rngform * rngform) && !invisible) {
+			if(this->range!=fullmap.x && !ghost && !reaper) {
 				//Don't Follow if Vision Blocked
-				xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
+				/*xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
     			yi = ydiff;	if(yi > 0)  yi = 1;  else if(yi < 0) yi = -1;
 				for(i = this->pos.y; i != entityObjects[0].pos.y + ((xi != yi) ? yi : 0); ) {
 					if(i>0 && i<fullmap.y)	i+=yi;
@@ -122,7 +149,8 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 						if(Tile_isOpaque(&map[i][j])) {	viewBlocked = true;	break;	}
 					}
 					if(viewBlocked == true)	break;
-				}
+				}*/
+				viewBlocked = !visible(this->pos, entityObjects[0].pos, rngform, map);
 			}
 			
 			if(viewBlocked == true) {
@@ -158,10 +186,6 @@ void Object_draw(struct Object *this) {
 	textattr(this->color + ( this->bgcolor << 4));
 	cprintf("%c", this->symbol);
 	textattr(WHITE + (BLACK<<4));
-}
-
-int Object_view(struct coord this, struct coord t) {	
-	return distance( (this.x - t.x), (this.y - t.y) * 2 );
 }
 
 #endif

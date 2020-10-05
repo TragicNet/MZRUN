@@ -26,7 +26,7 @@ void Engine_init(struct Engine *this, char *path) {
 
 	Level_Import(&this->levelData, path, this->map);
 
-	addState(states, "fullvision1",  Engine_tick(this));
+	//addState(states, "fullvision1",  Engine_tick(this));
 	//addState(states, "immunity1",  Engine_tick(this));
 	
 	//addState(states, "invisible1",  Engine_tick(this));
@@ -66,7 +66,7 @@ void Engine_draw(struct Engine *this) {
 	bool fullvision = false, notVisible;
 	struct coord tmp;
 	struct Tile *thisTile;
-	struct coord camera = view(this->player->pos, screen, fullmap);
+	struct coord camera = display(this->player->pos, screen, fullmap);
 	struct Object *entity;
 	tempColor = this->player->color;
 	tempBgColor = this->player->bgcolor;
@@ -84,9 +84,9 @@ void Engine_draw(struct Engine *this) {
 			if( objPos >= 0 ) {
 				entity = &entityObjects[objPos];
 			}
-			notVisible = Object_view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
+			notVisible = view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
 			
-			/*if(Object_view(entityObjects[k].pos, coord_add(tmp, camera)) <= entityObjects[k].range)
+			/*if(view(entityObjects[k].pos, coord_add(tmp, camera)) <= entityObjects[k].range)
 				cprintf(".");*/
 			//Vision
 			if(notVisible) {
