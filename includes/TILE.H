@@ -6,7 +6,7 @@ struct Tile {
     bool sightBlocked;
     bool playerOnly;
     bool floor;
-} map[MaxY][MaxX];
+};
 
 bool Tile_isBlocked(struct Tile *this)      {   return this->blocked;       }
 void Tile_block(struct Tile *this)          {   this->blocked = true;       }

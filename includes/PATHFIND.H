@@ -68,7 +68,7 @@ void Block_deleteAll(struct Block **this) {
 	}
 }
 
-enum eDirection astar(struct coord s, struct coord e, char *name) {
+enum eDirection astar(struct coord s, struct coord e, char *name, struct Tile map[][90]) {
 	// initialize both open and closed list
 	struct Block *open_list = NULL, *closed_list = NULL, *children = NULL;
 	struct Block start_node, end_node, current_node, item, temp, *p, *closed_child = NULL, *open_node = NULL, *child = NULL;

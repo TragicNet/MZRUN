@@ -28,7 +28,7 @@ void Object_init(struct Object *this, int x, int y, enum eDirection dir, char sy
 	this->last = 0;	this->weight = weight;
 }
 
-void removeObject(struct Object objects[], int loc) {
+void removeObject(struct Object objects[], int loc, struct Tile map[][90]) {
 	int i;
 	Tile_unblock(&map[objects[loc].pos.y][objects[loc].pos.x]);
 	map[objects[loc].pos.y][objects[loc].pos.x].playerOnly = false;
@@ -57,7 +57,7 @@ int posCheck(struct coord pos, char *search, bool same) {
 	return i;
 }
 
-bool Object_move(struct Object *this, int posX, int posY) {
+bool Object_move(struct Object *this, int posX, int posY, struct Tile map[][90]) {
 	bool ghost = false;
 	if(strcmp(this->name, "ghost") == 0)	ghost = true;
 	if(this->pos.x+posX<0 || this->pos.x+posX>fullmap.x || this->pos.y+posY<0 || this->pos.y+posY>fullmap.y)
@@ -73,18 +73,18 @@ bool Object_move(struct Object *this, int posX, int posY) {
 	return true;
 }
 
-void Object_route(struct Object *this, unsigned int last) {
+void Object_route(struct Object *this, unsigned int last, struct Tile map[][90]) {
     int spdform, rngform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
 	int xi, yi;
 	bool tried = false, viewBlocked = false, invisible = false;
 	if(strcmp(currentMode, "Hard+") == 0) {
 		spdmod = 3;	rngmod = 3;
 	} else if(strcmp(currentMode, "Hard") == 0) {
-		spdmod = 2;	rngmod = 2;
+		spdmod = 1;	rngmod = 2;
 	} else if(strcmp(currentMode, "Normal+") == 0) {
-		spdmod = 1;	rngmod = 1;
+		spdmod = -1;	rngmod = 1;
 	} else {
-		spdmod = 0;	rngmod = 0;
+		spdmod = -3;	rngmod = 0;
 	}
 	//CheckStates
 	for(i = 0; i<totStates; i++) {
@@ -150,7 +150,7 @@ void Object_route(struct Object *this, unsigned int last) {
 
 		this->dir = (enum eDirection) r;
 		tried = true;
-	} while(!Object_move(this, nx[r-1], ny[r-1]) && ch < rngform);
+	} while(!Object_move(this, nx[r-1], ny[r-1], map) && ch < rngform);
 	this->last = last;
 }
 

@@ -4,6 +4,8 @@
 struct Game {
 	int unlockedModes;
 	bool wished;
+	char paths[50][50];
+	bool pathsCleared[50];
 };
 
 void Game_loadData(struct Game *this) {
@@ -37,7 +39,7 @@ void Game_init(struct Game *this) {
 	strcpy(currentMode, "Normal");
 }
 
-int Game_getPaths(char paths[][50]) {
+int Game_getpaths(struct Game *this) {
 	struct dirent *de;
 	int i, cnt=0, s;
 	char ext[] = ".LVL";
@@ -49,41 +51,37 @@ int Game_getPaths(char paths[][50]) {
 			if(de->d_name[i] != ext[i-(s-4)])	break;
 		}
 		if(i==s) {
-			pathsCleared[cnt] = false;
-			strcpy(paths[cnt], "MZRUN/files/LEVELS/");
-			strcat(paths[cnt++], de->d_name);
+			this->pathsCleared[cnt] = false;
+			strcpy(this->paths[cnt], "MZRUN/files/LEVELS/");
+			strcat(this->paths[cnt++], de->d_name);
 		}
 	}
 	closedir(dr);
 	return cnt;
 }
 
-int Game_generateLevel() {
+int Game_generateLevel(struct Game *this) {
 	int i, j, gen = 0;
 	totStates = 0;
 	if(totLevels<=0)	return -1;	//No Levels
 	//Generate Random Level
 	do {
 		gen = rand() % totLevels;
-	} while(pathsCleared[gen] == true);
+	} while(this->pathsCleared[gen] == true);
 	//Reset Map
-	for(i = 0; i < fullmap.y; i++) {
-		for(j = 0; j < fullmap.x; j++) {
-			Tile_init(&map[i][j], false, false, false, true);
-		}
-	}
+	//Game_initMap(this);
 	return gen;
 }
 
-void Game_gameLoop() {
+void Game_gameLoop(struct Game *this) {
 	struct Engine run;
 	int gen;
 	wait = true;
 	do {
-		gen = Game_generateLevel();
+		gen = Game_generateLevel(this);
 		if(gen == -1)	return;	//No Levels
 		levelCnt++;
-		Engine_init(&run, gen);
+		Engine_init(&run, this->paths[gen]);
 		Engine_HUD();
 		while(!Engine_getState(&run)) {
 			Engine_draw(&run);
@@ -91,7 +89,7 @@ void Game_gameLoop() {
 			if(wait == true)	continue;
 			Engine_handle(&run);
 		}
-		if(run.cleared)	pathsCleared[gen] = true;
+		if(run.cleared)	this->pathsCleared[gen] = true;
 		else	return;
 	} while(levelCnt != totLevels);
 }
@@ -153,7 +151,7 @@ bool Game_Start(struct Game *this) {
 		"|__|__|_____|_|___|_|___|_____|__|__|"
 	};
 	levelCnt = 0;
-	totLevels = Game_getPaths(paths);
+	totLevels = Game_getpaths(this);
 	clrscr();
 	
 	drawBorder();
@@ -206,7 +204,7 @@ bool Game_Start(struct Game *this) {
 	}
 	//Unlock New Mode and Finish
 	for(i = 0; i<totLevels; i++) {
-		if(pathsCleared[i] == false)	break;
+		if(this->pathsCleared[i] == false)	break;
 	}
 	if(i == totLevels && levelCnt == totLevels) {
 		if(strcmp(currentMode, Modes[this->unlockedModes]) == 0) {

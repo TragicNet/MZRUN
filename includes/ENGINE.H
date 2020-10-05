@@ -6,6 +6,7 @@ struct Engine {
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
+	struct Tile map[MaxY][MaxX];
 	struct Object *player;
 };
 
@@ -13,12 +14,18 @@ int Engine_tick(struct Engine *this)		{	return this->timer/TICKSPEED;	}
 bool Engine_getState(struct Engine *this)	{	return this->gameOver;			}
 bool Engine_isCleared(struct Engine *this)	{	return this->cleared;			}
 
-void Engine_init(struct Engine *this, int gen) {
+void Engine_init(struct Engine *this, char *path) {
+	int i, j;
+	for(i = 0; i < fullmap.y; i++) {
+		for(j = 0; j < fullmap.x; j++) {
+			Tile_init(&this->map[i][j], false, false, false, true);
+		}
+	}
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
 
-	Level_Import(&this->levelData, paths[gen]);
-	
+	Level_Import(&this->levelData, path, this->map);
+
 	addState(states, "fullvision1",  Engine_tick(this));
 	//addState(states, "immunity1",  Engine_tick(this));
 	
@@ -71,7 +78,7 @@ void Engine_draw(struct Engine *this) {
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
-			thisTile = &map[camera.y + i][camera.x + j];
+			thisTile = &this->map[camera.y + i][camera.x + j];
 			gotoxy(board.x+j, board.y+i);
 			objPos = posCheck(coord_add(camera, tmp), "", true);
 			if( objPos >= 0 ) {
@@ -197,13 +204,13 @@ void Engine_input(struct Engine *this) {
 	}
 	if(kbhit()) {
 		switch(getch()) {
-		case 'w':   if(!paralyzed && !hindered)	Object_move(this->player, +0, -1);
+		case 'w':   if(!paralyzed && !hindered)	Object_move(this->player, +0, -1, this->map);
 			break;
-		case 's':   if(!paralyzed && !hindered)	Object_move(this->player, +0, +1);
+		case 's':   if(!paralyzed && !hindered)	Object_move(this->player, +0, +1, this->map);
 			break;
-		case 'a':   if(!paralyzed && !hindered)	Object_move(this->player, -1, +0);
+		case 'a':   if(!paralyzed && !hindered)	Object_move(this->player, -1, +0, this->map);
 			break;
-		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0);
+		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0, this->map);
 			break;
 		case 'h':	help();	Engine_HUD();
 		case 'p':	wait = true;	return;
@@ -214,7 +221,7 @@ void Engine_input(struct Engine *this) {
 	}
 }
 
-void Object_script(struct Engine *engine, int loc) {
+void Object_script(struct Engine *engine, int loc, struct Tile map[][90]) {
 	int i;
 	bool immortal = false;
 	struct Object *temp = &entityObjects[loc];
@@ -226,12 +233,12 @@ void Object_script(struct Engine *engine, int loc) {
 		for(i = 0; i<totStates; i++) {
 			if(strcmp(states[i].name, "IMM") == 0) {
 				if(!immortal) {
-					script_kill();	removeObject(entityObjects, loc);
+					script_kill();	removeObject(entityObjects, loc, map);
 				}
 				return;
 			} else if(strcmp(states[i].name, "BRK") == 0) {
 				if(!immortal) {
-					script_kill();	removeObject(entityObjects, loc);
+					script_kill();	removeObject(entityObjects, loc, map);
 				}
 				removeState(states, i);	gotoxy(2, 4 + totStates);	cprintf("      ");	return;
 			}
@@ -240,7 +247,7 @@ void Object_script(struct Engine *engine, int loc) {
 	} else if(strcmp(temp->type, "goal") == 0) {
 		script_cleared(engine);
 	} else if(addState(states, temp->name, Engine_tick(engine))) {
-		removeObject(entityObjects, loc);
+		removeObject(entityObjects, loc, map);
 	}
 }
 
@@ -249,17 +256,17 @@ void Engine_handle(struct Engine *this) {
 	//gotoxy(1, 25);	cprintf("%5u",this->timer);
 	i = posCheck(this->player->pos, "", true);
 	if(i > 0) {
-		Object_script(this, i);
+		Object_script(this, i, this->map);
 		if(this->gameOver == true)	return;
 	}
 	if( Engine_tick(this) < 1 ) {
 		script_death(this);	return;
-	} else if(!Tile_isOpen(&map[this->player->pos.y][this->player->pos.x])) {
+	} else if(!Tile_isOpen(&this->map[this->player->pos.y][this->player->pos.x])) {
 		script_fall(this);	return;
 	} 
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
-			Object_route(&entityObjects[i], this->timer);
+			Object_route(&entityObjects[i], this->timer, this->map);
 	}
 	//Update States
 	for(i = 0; i<totStates; i++) {

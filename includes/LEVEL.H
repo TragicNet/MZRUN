@@ -8,7 +8,7 @@ struct Level {
 	struct Tile map[MaxY][MaxX];
 };
 
-void Level_Export(struct Level *this, char path[]) {
+void Level_Export(struct Level *this, char path[], struct Tile map[][90]) {
 	int i, j;
 	FILE *file;
 	this->fullmap = fullmap;
@@ -26,7 +26,7 @@ void Level_Export(struct Level *this, char path[]) {
 	fclose(file);
 }
 
-void Level_Import(struct Level *this, char path[]) {
+void Level_Import(struct Level *this, char path[], struct Tile map[][90]) {
 	int i, j;
 	FILE *file;
 
