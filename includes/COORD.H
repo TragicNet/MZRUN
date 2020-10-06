@@ -3,19 +3,19 @@
 
 struct coord {
 	int x, y;
-} board, screen, fullmap, tmp;
+} board, screen, fullmap;
 
 void coord_init(struct coord *trg, int x, int y) {   trg->x = x;  trg->y = y;  }
 void coord_cpy(struct coord *trg, struct coord src) {   trg->x = src.x;  trg->y = src.y;  }
 
 struct coord coord_sub(struct coord a, struct coord b) {
-    coord_init(&tmp, a.x - b.x, a.y - b.y);
-    return tmp;
+    a.x -= b.x, a.y -= b.y;
+    return a;
 }
 
 struct coord coord_add(struct coord a, struct coord b) {
-    coord_init(&tmp, a.x + b.x, a.y + b.y);
-    return tmp;
+	a.x += b.x, a.y += b.y;
+    return a;
 }
 bool coord_cmp(struct coord a, struct coord b) {
     return (a.x == b.x && a.y == b.y) ? true : false;

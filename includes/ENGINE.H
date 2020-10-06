@@ -23,11 +23,12 @@ void Engine_init(struct Engine *this, char *path) {
 	}
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
+	this->player->pos.y+=1;
 
 	Level_Import(&this->levelData, path, this->map);
 
-	//addState(states, "fullvision1",  Engine_tick(this));
-	//addState(states, "immunity1",  Engine_tick(this));
+	addState(states, "fullvision1",  Engine_tick(this));
+	addState(states, "immunity1",  Engine_tick(this));
 	
 	//addState(states, "invisible1",  Engine_tick(this));
 	//addState(states, "hinder1",  Engine_tick(this));
@@ -84,10 +85,8 @@ void Engine_draw(struct Engine *this) {
 			if( objPos >= 0 ) {
 				entity = &entityObjects[objPos];
 			}
-			notVisible = view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
+			notVisible = Tile_view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
 			
-			/*if(view(entityObjects[k].pos, coord_add(tmp, camera)) <= entityObjects[k].range)
-				cprintf(".");*/
 			//Vision
 			if(notVisible) {
 				Object_draw(&outVision);
@@ -103,10 +102,9 @@ void Engine_draw(struct Engine *this) {
 				Object_draw(entity);
 				Object_setColor(this->player, tempColor, tempBgColor);
 			} else if(!Tile_isOpen(thisTile)) {
-				if(Tile_isBlocked(thisTile))
-					Object_draw(&wall);
-				else
-					Object_draw(&outVision);
+				Object_draw(&pit);
+			} else if(Tile_isBlocked(thisTile)) {
+				Object_draw(&wall);
 			} else {
 				Object_draw(&blackair);
 			}

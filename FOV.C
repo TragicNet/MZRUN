@@ -38,10 +38,10 @@ char map[10][40] = {
 	"########################################",
 	"#                                      #",
 	"#            #####                     #",
-	"#                #     m#              #",
-	"#            #   #         p #         #",
-	"#            ## ##                     #",
-	"#                                      #",
+	"#                #         ####        #",
+	"#            #   #         p  #        #",
+	"#            ## ##            m        #",
+	"#                             #        #",
 	"#                                      #",
 	"#                                      #",
 	"########################################"
@@ -69,10 +69,9 @@ bool visible(struct coord start, struct coord end) {
 	error = delta.x - delta.y;
 	errorCorrect.x = delta.x*2, errorCorrect.y = delta.y*2;
 	while(1) {
-		if(current.x > fullmap.x || current.y > fullmap.y || current.x < 1 || current.y < 1 )	break;
 		if(coord_cmp(current, end))	break;
+		else if(current.x - end.x == xi || current.y - end.y == yi)	break;
 		else if(map[current.y][current.x] == '#')	return false;
-		else if(current.x - end.x == xi || current.y == yi)	break;
 		if(error > 0) {	current.x+=xi;	error-=errorCorrect.y;	}
 		else if(error < 0) {	current.y+=yi;	error+=errorCorrect.x;	}
 		else {	current.x+=xi;	current.y+=yi;	}

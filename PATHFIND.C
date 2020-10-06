@@ -8,6 +8,8 @@
 #define bool int
 #define true 1
 #define false 0
+#define MaxX 70
+#define MaxY 20
 
 /*char map[10][40] = {
 	"########################################",
@@ -22,7 +24,7 @@
 	"########################################"
 };*/
 
-char map[10][40] = {
+/*char map[10][40] = {
 	"########################################",
 	"#                                      #",
 	"#            #####                     #",
@@ -33,13 +35,36 @@ char map[10][40] = {
 	"#                                      #",
 	"#                                      #",
 	"########################################"
+};*/
+
+char map[MaxY][MaxX] = {
+	"            ################ #########                                ",
+	"            ####*##........###.......#                                ",
+	"            ##.......................#              #...#             ",
+	"              #............###....@..#              #...#             ",
+	"              #...........7# ######### ########     #...#             ",
+	"  ######      #............#          ##......##    #...#             ",
+	"  #....########............#          #...v....#    #...#     ########",
+	"  #.................1......#     #######......##    #...#     #.......",
+	"  #############............# #####.....###..###     #...#     #.......",
+	"              #............# #................#######...#######..1....",
+	"              #............###........................................",
+	"              #......................1........................########",
+	"              #.......................................1.......#       ",
+	"              #........1......................................#       ",
+	"              ##.....................1........############....####### ",
+	"               ###............................#          #..........##",
+	"                 ###..........................#          #....1.......",
+	"                   #######....#############...#          #.......#####",
+	"                         #....#           #...#          #########    ",
+	"                         #....#           #...#                       "
 };
 
 void draw() {
 	int i, j;
 	gotoxy(1, 1);
-	for(j = 0; j < 10; j++) {
-		for(i = 0; i < 40; i++) {
+	for(j = 0; j < MaxY; j++) {
+		for(i = 0; i < MaxX; i++) {
 			if(map[j][i] == '#')	textattr(WHITE + (LIGHTGRAY<<4));
 			else if(map[j][i] == '*')	textattr(RED + (BLACK<<4));
 			else if(map[j][i] == '@')	textattr(GREEN + (BLACK<<4));
@@ -204,7 +229,7 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 		printf("\n\nclosed: ");	block_Print(closed_list);*/
 
 		//Display Whole
-		if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
+		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(1+current_node.pos.x, 1 + current_node.pos.y);	printf(".");	delay(50); }
 
 		// Found the goal
 		if(block_Equal(current_node, end_node)) {
@@ -236,11 +261,11 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 			r.x = current_node.pos.x + nx[k], r.y = current_node.pos.y + ny[k];
 			
 			// Make sure within range
-			if(r.x > 40-1 || r.y > 10-1 || r.x < 1 || r.y < 0)
+			if(r.x >= MaxX || r.y >= MaxY || r.x < 0 || r.y < 0)
 				continue;
 			
 			// Make sure walkable terrain
-			if(map[r.y][r.x] == '#')
+			if(map[r.y][r.x] == '#' || map[r.y][r.x] == ' ')
 				continue;
 			
 			for(closed_child = closed_list; closed_child != NULL; closed_child = closed_child->next)
@@ -281,8 +306,8 @@ enum eDirection astar(struct block start_node, struct block end_node) {
 
 void ppos() {
 	int i, j, px, py, mx, my;
-	for(j = 0; j < 10; j++) {
-		for(i = 0; i < 40; i++) {
+	for(j = 0; j < MaxY; j++) {
+		for(i = 0; i < MaxX; i++) {
 			if(map[j][i] == '*') {	mx = i;	my = j;	}
 			else if(map[j][i] == '@') {	px = i;	py = j;	}
 		}

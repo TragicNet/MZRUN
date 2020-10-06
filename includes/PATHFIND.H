@@ -68,7 +68,7 @@ void Block_deleteAll(struct Block **this) {
 	}
 }
 
-enum eDirection astar(struct coord s, struct coord e, char *name, struct Tile map[][90]) {
+enum eDirection astar(struct coord s, struct coord e, struct Tile map[][90]) {
 	// initialize both open and closed list
 	struct Block *open_list = NULL, *closed_list = NULL, *children = NULL;
 	struct Block start_node, end_node, current_node, item, temp, *p, *closed_child = NULL, *open_node = NULL, *child = NULL;
@@ -96,7 +96,7 @@ enum eDirection astar(struct coord s, struct coord e, char *name, struct Tile ma
 		//path_push(&path_list, current_node.pos);
 		Block_push(&closed_list, current_node);
 		
-		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(board.x + current_node.pos.x, board.y + current_node.pos.y);	printf("."); }
+		//if(!coord_cmp(current_node.pos, start_node.pos) && !coord_cmp(current_node.pos, end_node.pos)) {	gotoxy(board.x + camera.x + current_node.pos.x, board.y + camera.y + current_node.pos.y);	printf("."); delay(50); }
 		
 		// Found the goal
 		if(Block_equal(current_node, end_node)) {
@@ -111,7 +111,7 @@ enum eDirection astar(struct coord s, struct coord e, char *name, struct Tile ma
 				if(r.x - start_node.pos.x == nx[k] && r.y - start_node.pos.y == ny[k]) {
 					Block_deleteAll(&open_list);	Block_deleteAll(&closed_child);
 					free(p);	free(open_node);	free(closed_child);	free(child);
-					//gotoxy(1, 1);	printf("dir: %d : Found: %d, %d : %d, %d", k, r.x, r.y, start_node.pos.x, end_node.pos.y);	getch();
+					//gotoxy(1, 1);	printf("dir: %d : Found: %d, %d : %d, %d", k, r.x, r.y, start_node.pos.x, start_node.pos.y);	getch();
 					return k + 1;
 				}
 			}
@@ -124,14 +124,14 @@ enum eDirection astar(struct coord s, struct coord e, char *name, struct Tile ma
 			r.x = current_node.pos.x + nx[k], r.y = current_node.pos.y + ny[k];
 			
 			// Make sure within range
-			if(r.x > fullmap.x || r.y > fullmap.y || r.x < 1 || r.y < 1)
+			if(r.x > fullmap.x || r.y > fullmap.y || r.x < 0 || r.y < 0)
 				continue;
 			
 			// Make sure walkable terrain
-			if(!Tile_isOpen(&map[r.y][r.x]) || map[r.y][r.x].playerOnly || Tile_isBlocked(&map[r.y][r.x]))
-				continue;
-			/*if(Tile_isBlocked(&map[r.y][r.x]))
+			/*if(!Tile_isOpen(&map[r.y][r.x]) || map[r.y][r.x].playerOnly || Tile_isBlocked(&map[r.y][r.x]))
 				continue;*/
+			if(Tile_isBlocked(&map[r.y][r.x]))
+				continue;
 			
 			for(closed_child = closed_list; closed_child != NULL; closed_child = closed_child->next)
 				if(coord_cmp(r, closed_child->pos))

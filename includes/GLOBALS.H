@@ -34,9 +34,6 @@ char border[] = { 196, 179, 218, 191, 192, 217 };
 unsigned int TICKSPEED = oTICKSPEED;
 unsigned int TIMELIMIT = oTIMELIMIT;
 
-/*char paths[50][50];
-bool pathsCleared[50];*/
-
 char currentMode[10];
 char Modes[totModes][10] = { "Normal", "Normal+", "Hard", "Hard+" };
 
