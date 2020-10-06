@@ -82,6 +82,7 @@ void drawBorder() {
 #include "MZRUN/INCLUDES/HELP.H"
 #include "MZRUN/INCLUDES/LEVEL.H"
 #include "MZRUN/INCLUDES/ENGINE.H"
+#include "MZRUN/INCLUDES/SCRIPT.H"
 #include "MZRUN/INCLUDES/GAME.H"
 
 #endif
