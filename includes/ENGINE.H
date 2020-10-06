@@ -6,7 +6,7 @@ struct Engine {
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
-	struct Tile map[MaxY][MaxX];
+	//struct Tile map[MaxY][MaxX];
 	struct Object *player;
 };
 
@@ -18,14 +18,17 @@ void Engine_init(struct Engine *this, char *path) {
 	int i, j;
 	for(i = 0; i < fullmap.y; i++) {
 		for(j = 0; j < fullmap.x; j++) {
-			Tile_init(&this->map[i][j], false, false, false, true);
+			Tile_init(&this->levelData.map[i][j], false, false, false, true);
 		}
 	}
 	this->cleared = false;	this->gameOver = false;	this->timer = TICKSPEED * TIMELIMIT;
 	this->player = &entityObjects[0];
-	this->player->pos.y+=1;
-
-	Level_Import(&this->levelData, path, this->map);
+	wait = true;
+	Level_Import(&this->levelData, path);
+	do {
+		i = random(4);
+	} while(i != random(4));
+	coord_cpy(&this->player->pos, this->levelData.player_pos[i]);
 
 	addState(states, "fullvision1",  Engine_tick(this));
 	addState(states, "immunity1",  Engine_tick(this));
@@ -79,7 +82,7 @@ void Engine_draw(struct Engine *this) {
 	for(i = 0; i<screen.y; i++) {
 		for(j = 0; j<screen.x; j++) {
 			coord_init(&tmp, j, i);
-			thisTile = &this->map[camera.y + i][camera.x + j];
+			thisTile = &this->levelData.map[camera.y + i][camera.x + j];
 			gotoxy(board.x+j, board.y+i);
 			objPos = posCheck(coord_add(camera, tmp), "", true);
 			if( objPos >= 0 ) {
@@ -142,8 +145,7 @@ void script_death(struct Engine *this) {
 	gotoxy(cx, cy++);	cprintf("%c GAMEOVER %c", border[1], border[1]);
 	gotoxy(cx, cy++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 
-	sound(100);	halt(100);	nosound();
-	halt(15);	sound(100);	halt(100);	nosound();
+	noise(100, 100);	halt(15);	noise(100, 100);
 	getch();
 }
 
@@ -198,17 +200,17 @@ void Engine_input(struct Engine *this) {
 	bool paralyzed = false, hindered = false;
 	for(i = 0; i<totStates; i++) {
 		if(strcmp(states[i].name, "PAR") == 0)	paralyzed = true;
-		else if(strcmp(states[i].name, "HND") == 0) if(random(10)%2 == 0)	hindered = true;
+		else if(strcmp(states[i].name, "HND") == 0) if(random(100)%2 == 0)	hindered = true;
 	}
 	if(kbhit()) {
 		switch(getch()) {
-		case 'w':   if(!paralyzed && !hindered)	Object_move(this->player, +0, -1, this->map);
+		case 'w':   if(!paralyzed && !hindered)	Object_move(this->player, +0, -1, this->levelData.map);
 			break;
-		case 's':   if(!paralyzed && !hindered)	Object_move(this->player, +0, +1, this->map);
+		case 's':   if(!paralyzed && !hindered)	Object_move(this->player, +0, +1, this->levelData.map);
 			break;
-		case 'a':   if(!paralyzed && !hindered)	Object_move(this->player, -1, +0, this->map);
+		case 'a':   if(!paralyzed && !hindered)	Object_move(this->player, -1, +0, this->levelData.map);
 			break;
-		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0, this->map);
+		case 'd':   if(!paralyzed && !hindered)	Object_move(this->player, +1, +0, this->levelData.map);
 			break;
 		case 'h':	help();	Engine_HUD();
 		case 'p':	wait = true;	return;
@@ -254,17 +256,17 @@ void Engine_handle(struct Engine *this) {
 	//gotoxy(1, 25);	cprintf("%5u",this->timer);
 	i = posCheck(this->player->pos, "", true);
 	if(i > 0) {
-		Object_script(this, i, this->map);
+		Object_script(this, i, this->levelData.map);
 		if(this->gameOver == true)	return;
 	}
 	if( Engine_tick(this) < 1 ) {
 		script_death(this);	return;
-	} else if(!Tile_isOpen(&this->map[this->player->pos.y][this->player->pos.x])) {
+	} else if(!Tile_isOpen(&this->levelData.map[this->player->pos.y][this->player->pos.x])) {
 		script_fall(this);	return;
 	} 
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
-			Object_route(&entityObjects[i], this->timer, this->map);
+			Object_route(&entityObjects[i], this->timer, this->levelData.map);
 	}
 	//Update States
 	for(i = 0; i<totStates; i++) {

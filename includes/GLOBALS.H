@@ -25,8 +25,7 @@ int torchRange = 7;
 int totLevels;
 int levelCnt;
 int wished = false;
-bool returnTitle = false;
-bool wait = false;
+bool startAnimation = true, returnTitle = false, wait = false, soundOn = true, animationOn = true;
 enum eDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 int nx[] = { -1, 1, 0, 0 };
 int ny[] = { 0, 0, -1, 1 };
@@ -38,7 +37,8 @@ char currentMode[10];
 char Modes[totModes][10] = { "Normal", "Normal+", "Hard", "Hard+" };
 
 void halt(int x) {   
-    delay(x);
+    if(!animationOn)	return;
+	delay(x);
 	while(1)
 	{	if(kbhit())	getch();
 		else	break;
@@ -55,6 +55,7 @@ int distance(int xdiff, int ydiff) {
 }
 
 void noise(int f, int d) {
+	if(!soundOn)	return;
 	sound(f);	halt(d);	nosound();
 }
 

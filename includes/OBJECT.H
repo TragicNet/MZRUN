@@ -77,6 +77,7 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
     int spdform, rngform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
 	int xi, yi;
 	bool tried = false, viewBlocked = false, invisible = false, ghost = true, reaper = true;
+
 	if(strcmp(this->name, "ghost") == 0)	ghost = true;
 	else if(strcmp(this->name, "reaper") == 0)	reaper = true;
 	if(strcmp(currentMode, "Hard+") == 0) {

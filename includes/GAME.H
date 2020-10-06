@@ -27,7 +27,6 @@ void Game_saveData(struct Game *this) {
 }
 
 void Game_init(struct Game *this) {
-	srand((unsigned)time(0));
 	Object_init(&wall, 0, 0, STOP, '#', "wall", "wall", WHITE, LIGHTGRAY, 0, 0, 1);
 	Object_init(&air, 0, 0, STOP, '.', "air", "air", LIGHTGRAY, BLACK, 0, 0, 0);
 	Object_init(&blackair, 0, 0, STOP, '.', "blackair", "blackair", BLACK, BLACK, 0, 0, 0);
@@ -66,8 +65,8 @@ int Game_generateLevel(struct Game *this) {
 	if(totLevels<=0)	return -1;	//No Levels
 	//Generate Random Level
 	do {
-		gen = rand() % totLevels;
-	} while(this->pathsCleared[gen] == true);
+		gen = random(totLevels);
+	} while((gen != random(totLevels)) && this->pathsCleared[gen] == true);
 	//Reset Map
 	//Game_initMap(this);
 	return gen;
@@ -76,7 +75,6 @@ int Game_generateLevel(struct Game *this) {
 void Game_gameLoop(struct Game *this) {
 	struct Engine run;
 	int gen;
-	wait = true;
 	do {
 		gen = Game_generateLevel(this);
 		if(gen == -1)	return;	//No Levels
@@ -94,53 +92,88 @@ void Game_gameLoop(struct Game *this) {
 	} while(levelCnt != totLevels);
 }
 
-void Game_Options(struct Game *this) {
-	int i, x = 15, y = 11, key, spaces = 0;
+void Game_optionsMode(struct Game *this);
+
+void Game_options(struct Game *this) {
+	int i, x = 0, y = 0, key, spaces = 0;
+	int opt[2][3] = {
+		{ 1, 0 },
+		{ 1, 1 }
+	};
+	int colors[2] = { RED, GREEN };
 	bool pressed = false;
+	
 	clrscr();
 	drawBorder();
-
 	gotoxy(34, 1); textcolor(GREEN);	cprintf("[ "); textcolor(MAGENTA); cprintf("OPTIONS"); textcolor(GREEN); cprintf(" ]");
 
+	while(1) {
+		pressed = false;
+
+		textcolor(YELLOW);	gotoxy(5, 3);		cprintf("Mode");
+		textcolor(WHITE);	gotoxy(5+15, 3);	cprintf("%s", currentMode);
+		textcolor(YELLOW);	gotoxy(5, 5);		cprintf("Sound");
+		textcolor(colors[soundOn]);	gotoxy(5+15, 5);	cprintf("%s", (soundOn) ? " ON" : "OFF");
+		textcolor(YELLOW);	gotoxy(40, 5);	cprintf("Animation");
+		textcolor(colors[animationOn]);	gotoxy(40+15, 5);	cprintf("%s", (animationOn) ? " ON" : "OFF");
+		textcolor(YELLOW);
+		
+		while(1) {
+			gotoxy(3+x*35,3+y*2);	cprintf(">");
+			key = getch();
+			gotoxy(3+x*35,3+y*2);	cprintf(" ");
+			switch(key) {
+			case 'w':	if(y>0 && opt[y-1][x]==1) y--;	break;
+			case 's':	if(y<1 && opt[y+1][x]==1) y++;	break;
+			case 'a':	if(x>0 && opt[y][x-1]==1) x--;	break;
+			case 'd':	if(x<1 && opt[y][x+1]==1) x++;	break;
+			case 13:	pressed = true;	break;
+			case 27:	return;
+			}
+			if(pressed)	break;
+		}
+		if(x == 0 && y == 0)
+			Game_optionsMode(this);
+		else if(x == 0 && y == 1) {
+			soundOn = 1 - soundOn;
+		} else if(x == 1 && y == 1) {
+			animationOn = 1 - animationOn;
+		}
+	}
+}
+
+void Game_optionsMode(struct Game *this) {
+	int i, x = 0, key, spaces = 0;
+	bool pressed = false;
+	
 	textcolor(WHITE);
 	//Print Modes based on unlocked, or current
-	for(i = 0; i<totModes; i++) {
-		if(strcmp(currentMode, Modes[i]) == 0) {
-			textcolor(WHITE);	y+=i;
-		} else ((this->unlockedModes >= i) ? textcolor(LIGHTGRAY) : textcolor(DARKGRAY));
-		spaces = 3 - strlen(Modes[i])/2;
-		gotoxy(17+spaces, 11+i);	cprintf("%s", Modes[i]);
-	}
-	textcolor(GREEN);
-	for(i = 0; i < 4; i++) {	//Vertical
-		gotoxy(13, i + 11);	cprintf("%c", border[1]);	gotoxy(27, i + 11);	cprintf("%c", border[1]);
-	}
-	for(i = 0; i < 15; i++) {	//Horizontal
-		gotoxy(13 + i, 10);	cprintf("%c", border[0]);	gotoxy(13 + i, 15);	cprintf("%c", border[0]);
-	}
-	gotoxy(13, 10);	cprintf("%c", border[2]);	gotoxy(27, 10);	cprintf("%c", border[3]);
-	gotoxy(13, 15);	cprintf("%c", border[4]);	gotoxy(27, 15);	cprintf("%c", border[5]);
+	for(i = 0; i<totModes; i++)
+		if(strcmp(currentMode, Modes[i]) == 0)	x=i;
+
 	while(1) {
-		gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
+		gotoxy(18, 3);	cprintf("<");	gotoxy(28, 3);	cprintf(">");
+		spaces = 3 - strlen(Modes[x])/2;	gotoxy(20, 3);	for(i=0; i<8; i++)	cprintf(" ");
+		gotoxy(20+spaces,3);	cprintf("%s", Modes[x]);
 		key = getch();
-		gotoxy(x,y);	cprintf(" ");	gotoxy(x+10,y);	cprintf(" ");
+		gotoxy(18, 3);	cprintf(" ");	gotoxy(28, 3);	cprintf(" ");
 		switch(key) {
-		case 'w':	if(y!=11) y--;	break;
-		case 's':	if(y!=11+this->unlockedModes) y++;	break;
+		case 'a':	if(x>0) x--;	break;
+		case 'd':	if(x<this->unlockedModes) x++;	break;
 		case 13:	pressed = true;	break;
 		case 27:	return;
 		}
 		if(pressed)	break;
 	}
 	//Set Current Mode
-	strcpy(currentMode, Modes[y-11]);
+	strcpy(currentMode, Modes[x]);
 }
 
-bool Game_Start(struct Game *this) {
-	int i, k = 0, l, x = 35, y = 12, width, key;
+bool Game_start(struct Game *this) {
+	int i, j, k = 0, x = 35, y = 12, width, key;
 	unsigned int t = TIMELIMIT * TICKSPEED;
 	bool selected = false;
-	char banner[][39] = {
+	char banner[][38] = {
 		"       _____ _____ _____ _____       ",
 		"      |     |  _  |__   |   __|      ",
 		"      | | | |     |   __|   __|      ",
@@ -171,6 +204,19 @@ bool Game_Start(struct Game *this) {
 	textcolor(CYAN);	gotoxy(5, 24);
 	cprintf("w: UP       ");	cprintf("a: LEFT     ");	cprintf("s: DOWN     ");	cprintf("d: RIGHT    ");
 	cprintf("h: HELP     ");	cprintf("rtn: ENTER    ");
+	textcolor(YELLOW);	gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
+	if(startAnimation)
+	for(i = 0; i < 8; i++) {
+		textcolor(8 + i);
+		gotoxy(22, i + 2);
+		for(j=0; j<37; j++) {
+			if(animationOn)	delay(10);
+			if(kbhit())	break;
+			cprintf("%c", banner[i][j]);
+		}
+		if(j!=37)	break;
+	}
+	if(startAnimation)	startAnimation = false;
 	textcolor(YELLOW);
 	while(1) {
 		gotoxy(x,y);	cprintf("<");	gotoxy(x+10,y);	cprintf(">");
@@ -199,7 +245,7 @@ bool Game_Start(struct Game *this) {
 	}
 	switch(y-12) {
 	case 0:	Game_gameLoop(this);	break;
-	case 1:	Game_Options(this);		break;
+	case 1:	Game_options(this);		_setcursortype(_NOCURSOR);	break;
 	case 2: return false;
 	}
 	//Unlock New Mode and Finish

@@ -5,5 +5,6 @@ void main() {
 	clrscr();
 	_setcursortype(_NOCURSOR);
 	Game_init(&game);
-	while(Game_Start(&game)) {}
+	while(Game_start(&game)) {}
+	_setcursortype(_NORMALCURSOR);
 }
