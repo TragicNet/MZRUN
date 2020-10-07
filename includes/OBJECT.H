@@ -1,6 +1,8 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+int totalEntities = 1;
+
 struct Object {
 	struct coord pos;
 	enum eDirection dir;
@@ -13,12 +15,12 @@ struct Object {
 	int bgcolor;
 	int weight;
 
-	//Temporary Variables: Change Frequently
+	// Temporary Variables: Change Frequently
 	unsigned int last;
 } entityObjects[50], wall, air, blackair, outVision, pit;
-unsigned int totalEntities = 1;
 
 void Object_reloc(struct Object *this, struct coord pos) {	this->pos = pos;	}
+
 bool Object_isThere(struct Object *this, struct coord t) {	return (this->pos.x==t.x && this->pos.y == t.y) ? true : false;	}
 
 void Object_init(struct Object *this, int x, int y, enum eDirection dir, char symbol, char type[], char name[], int color,  int bgcolor, int speed, int range, int weight) {
@@ -28,6 +30,7 @@ void Object_init(struct Object *this, int x, int y, enum eDirection dir, char sy
 	this->last = 0;	this->weight = weight;
 }
 
+// Remove object from array
 void removeObject(struct Object objects[], int loc, struct Tile map[][90]) {
 	int i;
 	Tile_unblock(&map[objects[loc].pos.y][objects[loc].pos.x]);
@@ -40,10 +43,12 @@ void removeObject(struct Object objects[], int loc, struct Tile map[][90]) {
     }
 }
 
+// Set color of object
 void Object_setColor(struct Object *this, int color,  int bgcolor) {
 	this->color = color;	this->bgcolor = bgcolor;
 }
 
+// Get position of object from array
 int posCheck(struct coord pos, char *search, bool same) {
 	int i;
 	for(i = totalEntities-1; i >= 0; i--) {
@@ -57,6 +62,7 @@ int posCheck(struct coord pos, char *search, bool same) {
 	return i;
 }
 
+// Move object
 bool Object_move(struct Object *this, int posX, int posY, struct Tile map[][90]) {
 	bool ghost = false;
 	if(strcmp(this->name, "ghost") == 0)	ghost = true;
@@ -73,6 +79,7 @@ bool Object_move(struct Object *this, int posX, int posY, struct Tile map[][90])
 	return true;
 }
 
+// Move automated objects
 void Object_route(struct Object *this, unsigned int last, struct Tile map[][90]) {
     int spdform, rngform, spdmod = 0, rngmod = 0, i, j, xdiff = 0, ydiff = 0, ch = 0, r;
 	int xi, yi;
@@ -80,6 +87,8 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 
 	if(strcmp(this->name, "ghost") == 0)	ghost = true;
 	else if(strcmp(this->name, "reaper") == 0)	reaper = true;
+
+	// Apply mode features
 	if(strcmp(currentMode, "Hard+") == 0) {
 		spdmod = 3;	rngmod = 3;
 	} else if(strcmp(currentMode, "Hard") == 0) {
@@ -89,7 +98,7 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 	} else {
 		spdmod = -3;	rngmod = 0;
 	}
-	//CheckStates
+	// CheckStates
 	for(i = 0; i<totStates; i++) {
 		if(strcmp(states[i].name, "SLW") == 0)	spdmod-=states[i].val;
 		else if(strcmp(states[i].name, "FST") == 0)	spdmod+=states[i].val;
@@ -98,6 +107,8 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 		else if(strcmp(states[i].name, "INV") == 0)	invisible = true;
 		else if(strcmp(states[i].name, "STP") == 0)	{ this->last = last; return; }
 	}
+
+	// Change range and speed mods
 	rngform = this->range + rngmod;
 	spdform = MaxSpeed - this->speed - spdmod;
 	if(spdform <= 0)	spdform = 1 + spdmod;
@@ -108,9 +119,9 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 		ch++;
 		xdiff = entityObjects[0].pos.x - this->pos.x;
 		ydiff = entityObjects[0].pos.y - this->pos.y;
-		if(Tile_view(this->pos, entityObjects[0].pos) < (rngform * rngform) && !invisible) {
+		if(coord_view(this->pos, entityObjects[0].pos) < (rngform * rngform) && !invisible) {
 			if(!ghost && !reaper) {
-				//Don't Follow if Vision Blocked
+				// Don't Follow if Vision Blocked
 				xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
     			yi = ydiff;	if(yi > 0)  yi = 1;  else if(yi < 0) yi = -1;
 				for(i = this->pos.y; i != entityObjects[0].pos.y + ((xi != yi) ? yi : 0); ) {
@@ -122,6 +133,7 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 					if(viewBlocked == true)	break;
 				}
 			}
+			// Generate direction
 			if(viewBlocked == true) {
 				r = 1 + random(4);
 			} else if(tried == true) {
@@ -151,6 +163,7 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 	this->last = last;
 }
 
+// Draw object
 void Object_draw(struct Object *this) {
 	textattr(this->color + ( this->bgcolor << 4));
 	cprintf("%c", this->symbol);

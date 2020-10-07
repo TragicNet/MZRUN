@@ -7,6 +7,7 @@ void script_kill();
 void script_eaten(struct Engine *this);
 void script_cleared(struct Engine *this);
 
+// Structure for every level
 struct Engine {
 	struct Level levelData;
 	bool gameOver;
@@ -17,7 +18,9 @@ struct Engine {
 };
 
 int Engine_tick(struct Engine *this)		{	return this->timer/TICKSPEED;	}
+
 bool Engine_getState(struct Engine *this)	{	return this->gameOver;			}
+
 bool Engine_isCleared(struct Engine *this)	{	return this->cleared;			}
 
 void Engine_init(struct Engine *this, char *path) {
@@ -42,17 +45,16 @@ void Engine_init(struct Engine *this, char *path) {
 	//addState(states, "invisible1",  Engine_tick(this));
 	//addState(states, "hinder1",  Engine_tick(this));
 	//addState(states, "paralyze1",  Engine_tick(this));
-	//addState(states, "stop1",  Engine_tick(this));
-	//printState(&states[0]);	
+	//addState(states, "stop1",  Engine_tick(this));	
 }
 
+// Render HUD
 void Engine_HUD() {
 	int i, j;
 	clrscr();
-	//Outer Window
 	drawBorder();
 	textcolor(GREEN);
-	//Map Window
+	// Map Window
 	for(i = board.y; i < board.y + screen.y; i++) {	//Vertical
 		gotoxy(board.x-1, i);	cprintf("%c", border[1]);	gotoxy(board.x+screen.x, i);	cprintf("%c", border[1]);
 	}
@@ -63,7 +65,7 @@ void Engine_HUD() {
 	gotoxy(board.x-1, board.y+screen.y);	cprintf("%c", border[4]);	gotoxy(board.x+screen.x, board.y+screen.y);	cprintf("%c", border[5]);
 	gotoxy(board.x+screen.x-7, board.y-1);	textcolor(GREEN); cprintf("[ "); textcolor(MAGENTA); cprintf("MAP"); textcolor(GREEN); cprintf(" ]");
 	
-	//Bottom
+	// Bottom
 	gotoxy(1, 23);	cprintf("%c", 195);
 	for(i=2; i<80; i++) {
 		gotoxy(i, 23);	cprintf("%c", border[0]);
@@ -71,6 +73,7 @@ void Engine_HUD() {
 	gotoxy(80, 23);	cprintf("%c", 180);
 }
 
+// Render map
 void Engine_draw(struct Engine *this) {
 	int i, j, objPos, colorVal, tempColor, tempBgColor;
 	bool fullvision = false, notVisible;
@@ -94,9 +97,9 @@ void Engine_draw(struct Engine *this) {
 			if( objPos >= 0 ) {
 				entity = &entityObjects[objPos];
 			}
-			notVisible = Tile_view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
+			notVisible = coord_view(this->player->pos, coord_add(camera, tmp)) >= (torchRange * torchRange) && fullvision == false;
 			
-			//Vision
+			// Vision
 			if(notVisible) {
 				Object_draw(&outVision);
 			} else if(objPos>=0 && !Tile_isBlocked(thisTile) && !(objPos == 0 && this->gameOver)) {
@@ -139,6 +142,7 @@ void Engine_draw(struct Engine *this) {
 	textcolor(WHITE);
 }
 
+// Process Input
 void Engine_input(struct Engine *this) {
 	int i;
 	bool paralyzed = false, hindered = false;
@@ -165,12 +169,13 @@ void Engine_input(struct Engine *this) {
 	}
 }
 
+// Run script based on events
 void Engine_script(struct Engine *engine, int loc, struct Tile map[][90]) {
 	int i;
 	bool immortal = false;
 	struct Object *temp = &entityObjects[loc];
 	if(strcmp(temp->type, "monster") == 0) {
-		//turn immortal on for certain monsters
+		// Turn immortal on for certain monsters
 		if(strcmp(temp->name, "vampire") == 0 || strcmp(temp->name, "ghost") == 0 /*|| strcmp(temp->name, "reaper") == 0*/) {
 			immortal = true;
 		}
@@ -195,24 +200,30 @@ void Engine_script(struct Engine *engine, int loc, struct Tile map[][90]) {
 	}
 }
 
+// Update and handle game states
 void Engine_handle(struct Engine *this) {
 	int i;
+	
 	//gotoxy(1, 25);	cprintf("%5u",this->timer);
+	
 	i = posCheck(this->player->pos, "", true);
+	// Check if dead
 	if(i > 0) {
 		Engine_script(this, i, this->levelData.map);
 		if(this->gameOver == true)	return;
-	}
-	if( Engine_tick(this) < 1 ) {
+	} else if( Engine_tick(this) < 1 ) {
 		script_death(this);	return;
 	} else if(!Tile_isOpen(&this->levelData.map[this->player->pos.y][this->player->pos.x])) {
 		script_fall(this);	return;
-	} 
+	}
+
+	// Move all entities if they move
 	for(i = 1; i<totalEntities; i++) {
 		if(entityObjects[i].speed != 0)
 			Object_route(&entityObjects[i], this->timer, this->levelData.map);
 	}
-	//Update States
+
+	// Update States
 	for(i = 0; i<totStates; i++) {
 		if(states[i].duration <= 0) {
 			removeState(states, i);

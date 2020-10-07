@@ -1,6 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+// Structure for level data
 struct Level {
 	struct coord fullmap;
 	int totalEntities;
@@ -9,6 +10,7 @@ struct Level {
 	struct Tile map[MaxY][MaxX];
 };
 
+// Export level data to file
 void Level_Export(struct Level *this, char path[]) {
 	int i, j;
 	FILE *file;
@@ -22,6 +24,7 @@ void Level_Export(struct Level *this, char path[]) {
 	fclose(file);
 }
 
+// Export level data from file
 void Level_Import(struct Level *this, char path[]) {
 	int i, j;
 	FILE *file;

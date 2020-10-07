@@ -49,11 +49,7 @@ void halt(int x) {
 // Distance between difference of points
 int distance(int xdiff, int ydiff) {
 	int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
-	val = (unsigned)((val<0) ? -val : val);
-	if(val < 0) {
-		clrscr();	printf("xdiff: %d\nydiff: %d\nval: ", xdiff, ydiff, val);	getch();	exit(0);
-	}
-	return (val <= 0) ? 0 : val;//sqrt(val);
+	return (val <= 0) ? 0 : val;
 }
 
 // Generate sound
@@ -66,20 +62,20 @@ void noise(int f, int d) {
 void drawBorder() {
 	int i;
 	textcolor(GREEN);
-	for(i=1; i<=24; i++) {	//Vertical
+	for(i=1; i<=24; i++) {	// Vertical
 		gotoxy(1, i);	cprintf("%c", border[1]);	gotoxy(80, i);	cprintf("%c", border[1]);
 	}
 	gotoxy(1, 24);	cprintf("%c", border[4]);	gotoxy(80, 24);	cprintf("%c", border[5]);
 	gotoxy(80, 1);	insline();
 	gotoxy(1, 1);	cprintf("%c", border[2]);	gotoxy(80, 1);	cprintf("%c", border[3]);
-	for(i=2; i<80; i++) {	//Horizontal
+	for(i=2; i<80; i++) {	// Horizontal
 		gotoxy(i, 1);	cprintf("%c", border[0]);	gotoxy(i, 25);	cprintf("%c", border[0]);
 	}
 	textcolor(YELLOW);
 }
 
-#include "MZRUN/INCLUDES/COORD.H"
 #include "MZRUN/INCLUDES/TILE.H"
+#include "MZRUN/INCLUDES/COORD.H"
 //#include "MZRUN/INCLUDES/PATHFIND.H"
 #include "MZRUN/INCLUDES/STATE.H"
 #include "MZRUN/INCLUDES/OBJECT.H"

@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+// Structure for game data,
 struct Game {
 	int unlockedModes;
 	bool wished;
@@ -8,6 +9,7 @@ struct Game {
 	bool pathsCleared[50];
 };
 
+// Load game data from file
 void Game_loadData(struct Game *this) {
 	FILE *file;
 	file = fopen("MZRUN/files/data.sav", "rb" );
@@ -19,6 +21,8 @@ void Game_loadData(struct Game *this) {
 	}
 	fclose(file);
 }
+
+// Save game data to file
 void Game_saveData(struct Game *this) {
 	FILE *file;
 	file = fopen("MZRUN/files/data.sav", "wb" );
@@ -38,6 +42,7 @@ void Game_init(struct Game *this) {
 	strcpy(currentMode, "Normal");
 }
 
+// Get paths from levels folder
 int Game_getpaths(struct Game *this) {
 	struct dirent *de;
 	int i, cnt=0, s;
@@ -59,25 +64,25 @@ int Game_getpaths(struct Game *this) {
 	return cnt;
 }
 
+// Select random level from available ones
 int Game_generateLevel(struct Game *this) {
 	int i, j, gen = 0;
 	totStates = 0;
-	if(totLevels<=0)	return -1;	//No Levels
-	//Generate Random Level
+	if(totLevels<=0)	return -1;	// No Levels
+	// Generate Random Level
 	do {
 		gen = random(totLevels);
 	} while((gen != random(totLevels)) && this->pathsCleared[gen] == true);
-	//Reset Map
-	//Game_initMap(this);
 	return gen;
 }
 
+// Loop to run all levels
 void Game_gameLoop(struct Game *this) {
 	struct Engine run;
 	int gen;
 	do {
 		gen = Game_generateLevel(this);
-		if(gen == -1)	return;	//No Levels
+		if(gen == -1)	return;	// No Levels
 		levelCnt++;
 		Engine_init(&run, this->paths[gen]);
 		Engine_HUD();
@@ -92,83 +97,10 @@ void Game_gameLoop(struct Game *this) {
 	} while(levelCnt != totLevels);
 }
 
+void Game_options(struct Game *this);
 void Game_optionsMode(struct Game *this);
 
-void Game_options(struct Game *this) {
-	int i, x = 0, y = 0, key, spaces = 0;
-	int opt[2][3] = {
-		{ 1, 0 },
-		{ 1, 1 }
-	};
-	int colors[2] = { RED, GREEN };
-	bool pressed = false;
-	
-	clrscr();
-	drawBorder();
-	gotoxy(34, 1); textcolor(GREEN);	cprintf("[ "); textcolor(MAGENTA); cprintf("OPTIONS"); textcolor(GREEN); cprintf(" ]");
-
-	while(1) {
-		pressed = false;
-
-		textcolor(YELLOW);	gotoxy(5, 3);		cprintf("Mode");
-		textcolor(WHITE);	gotoxy(5+15, 3);	cprintf("%s", currentMode);
-		textcolor(YELLOW);	gotoxy(5, 5);		cprintf("Sound");
-		textcolor(colors[soundOn]);	gotoxy(5+15, 5);	cprintf("%s", (soundOn) ? " ON" : "OFF");
-		textcolor(YELLOW);	gotoxy(40, 5);	cprintf("Animation");
-		textcolor(colors[animationOn]);	gotoxy(40+15, 5);	cprintf("%s", (animationOn) ? " ON" : "OFF");
-		textcolor(YELLOW);
-		
-		while(1) {
-			gotoxy(3+x*35,3+y*2);	cprintf(">");
-			key = getch();
-			gotoxy(3+x*35,3+y*2);	cprintf(" ");
-			switch(key) {
-			case 'w':	if(y>0 && opt[y-1][x]==1) y--;	break;
-			case 's':	if(y<1 && opt[y+1][x]==1) y++;	break;
-			case 'a':	if(x>0 && opt[y][x-1]==1) x--;	break;
-			case 'd':	if(x<1 && opt[y][x+1]==1) x++;	break;
-			case 13:	pressed = true;	break;
-			case 27:	return;
-			}
-			if(pressed)	break;
-		}
-		if(x == 0 && y == 0)
-			Game_optionsMode(this);
-		else if(x == 0 && y == 1) {
-			soundOn = 1 - soundOn;
-		} else if(x == 1 && y == 1) {
-			animationOn = 1 - animationOn;
-		}
-	}
-}
-
-void Game_optionsMode(struct Game *this) {
-	int i, x = 0, key, spaces = 0;
-	bool pressed = false;
-	
-	textcolor(WHITE);
-	//Print Modes based on unlocked, or current
-	for(i = 0; i<totModes; i++)
-		if(strcmp(currentMode, Modes[i]) == 0)	x=i;
-
-	while(1) {
-		gotoxy(18, 3);	cprintf("<");	gotoxy(28, 3);	cprintf(">");
-		spaces = 3 - strlen(Modes[x])/2;	gotoxy(20, 3);	for(i=0; i<8; i++)	cprintf(" ");
-		gotoxy(20+spaces,3);	cprintf("%s", Modes[x]);
-		key = getch();
-		gotoxy(18, 3);	cprintf(" ");	gotoxy(28, 3);	cprintf(" ");
-		switch(key) {
-		case 'a':	if(x>0) x--;	break;
-		case 'd':	if(x<this->unlockedModes) x++;	break;
-		case 13:	pressed = true;	break;
-		case 27:	return;
-		}
-		if(pressed)	break;
-	}
-	//Set Current Mode
-	strcpy(currentMode, Modes[x]);
-}
-
+// Start screen
 bool Game_start(struct Game *this) {
 	int i, j, k = 0, x = 35, y = 12, width, key;
 	unsigned int t = TIMELIMIT * TICKSPEED;
@@ -193,10 +125,10 @@ bool Game_start(struct Game *this) {
 	gotoxy(37,13);	cprintf("Options");
 	gotoxy(37,14);	cprintf(" Exit  ");
 	textcolor(GREEN);
-	for(i = 11; i <= 15; i++) {	//Vertical
+	for(i = 11; i <= 15; i++) {	// Vertical
 		gotoxy(33, i);	cprintf("%c", border[1]);	gotoxy(47, i);	cprintf("%c", border[1]);
 	}
-	for(i = 33; i <= 47; i++) {	//Horizontal
+	for(i = 33; i <= 47; i++) {	// Horizontal
 		gotoxy(i, 11);	cprintf("%c", border[0]);	gotoxy(i, 15);	cprintf("%c", border[0]);
 	}
 	gotoxy(33, 11);	cprintf("%c", border[2]);	gotoxy(47, 11);	cprintf("%c", border[3]);
@@ -248,7 +180,7 @@ bool Game_start(struct Game *this) {
 	case 1:	Game_options(this);		_setcursortype(_NOCURSOR);	break;
 	case 2: return false;
 	}
-	//Unlock New Mode and Finish
+	// Unlock New Mode and Finish
 	for(i = 0; i<totLevels; i++) {
 		if(this->pathsCleared[i] == false)	break;
 	}
@@ -256,14 +188,14 @@ bool Game_start(struct Game *this) {
 		if(strcmp(currentMode, Modes[this->unlockedModes]) == 0) {
 			x = 29, y = 12;
 			textcolor(LIGHTGREEN);
-			if(this->unlockedModes < totModes-1) {	//Unlock New Mode
+			if(this->unlockedModes < totModes-1) {	// Unlock New Mode
 				this->unlockedModes++;
 				width = 18 + strlen(Modes[this->unlockedModes]);
 				gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 				gotoxy(x, y++);	cprintf("%c UNLOCKED %s MODE %c", border[1], Modes[this->unlockedModes], border[1]);
 				gotoxy(x, y++);	cprintf("%c", border[4]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[5]);
 				getch();
-			} else if(!this->wished){	//Wish Once for Clearing all levels
+			} else if(!this->wished){	// Wish Once for Clearing all levels
 				width = 19;
 				gotoxy(x, y++);	cprintf("%c", border[2]);	for(i = 0; i<width-2; i++)	cprintf("%c", border[0]);	cprintf("%c", border[3]);
 				gotoxy(x, y++);	cprintf("%c CONGRATULATIONS %c", border[1], border[1]);
@@ -275,6 +207,83 @@ bool Game_start(struct Game *this) {
 		Game_saveData(this);
 	}
 	return true;
+}
+
+// Option screen
+void Game_options(struct Game *this) {
+	int i, x = 0, y = 0, key;
+	int opt[2][3] = {
+		{ 1, 0 },
+		{ 1, 1 }
+	};
+	int colors[2] = { RED, GREEN };
+	bool pressed = false;
+	
+	clrscr();
+	drawBorder();
+	gotoxy(34, 1); textcolor(GREEN);	cprintf("[ "); textcolor(MAGENTA); cprintf("OPTIONS"); textcolor(GREEN); cprintf(" ]");
+
+	while(1) {
+		pressed = false;
+
+		textcolor(YELLOW);	gotoxy(5, 3);		cprintf("Mode");
+		textcolor(WHITE);	gotoxy(5+15, 3);	cprintf("%s", currentMode);
+		textcolor(YELLOW);	gotoxy(5, 5);		cprintf("Sound");
+		textcolor(colors[soundOn]);	gotoxy(5+15, 5);	cprintf("%s", (soundOn) ? " ON" : "OFF");
+		textcolor(YELLOW);	gotoxy(40, 5);	cprintf("Animation");
+		textcolor(colors[animationOn]);	gotoxy(40+15, 5);	cprintf("%s", (animationOn) ? " ON" : "OFF");
+		textcolor(YELLOW);
+		
+		while(1) {
+			gotoxy(3+x*35,3+y*2);	cprintf(">");
+			key = getch();
+			gotoxy(3+x*35,3+y*2);	cprintf(" ");
+			switch(key) {
+			case 'w':	if(y>0 && opt[y-1][x]==1) y--;	break;
+			case 's':	if(y<1 && opt[y+1][x]==1) y++;	break;
+			case 'a':	if(x>0 && opt[y][x-1]==1) x--;	break;
+			case 'd':	if(x<1 && opt[y][x+1]==1) x++;	break;
+			case 13:	pressed = true;	break;
+			case 27:	return;
+			}
+			if(pressed)	break;
+		}
+		if(x == 0 && y == 0)
+			Game_optionsMode(this);
+		else if(x == 0 && y == 1) {
+			soundOn = 1 - soundOn;
+		} else if(x == 1 && y == 1) {
+			animationOn = 1 - animationOn;
+		}
+	}
+}
+
+// Mode selection
+void Game_optionsMode(struct Game *this) {
+	int i, x = 0, key, spaces = 0;
+	bool pressed = false;
+	
+	textcolor(WHITE);
+	// Print current mode
+	for(i = 0; i<totModes; i++)
+		if(strcmp(currentMode, Modes[i]) == 0)	x=i;
+
+	while(1) {
+		gotoxy(18, 3);	cprintf("<");	gotoxy(28, 3);	cprintf(">");
+		spaces = 3 - strlen(Modes[x])/2;	gotoxy(20, 3);	for(i=0; i<8; i++)	cprintf(" ");
+		gotoxy(20+spaces,3);	cprintf("%s", Modes[x]);
+		key = getch();
+		gotoxy(18, 3);	cprintf(" ");	gotoxy(28, 3);	cprintf(" ");
+		switch(key) {
+		case 'a':	if(x>0) x--;	break;
+		case 'd':	if(x<this->unlockedModes) x++;	break;
+		case 13:	pressed = true;	break;
+		case 27:	return;
+		}
+		if(pressed)	break;
+	}
+	// Set Current Mode
+	strcpy(currentMode, Modes[x]);
 }
 
 #endif

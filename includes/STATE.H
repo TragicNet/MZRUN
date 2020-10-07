@@ -1,6 +1,8 @@
 #ifndef STATES_H
 #define STATES_H
 
+int totStates = 0;
+
 struct State {
     char fullName[20];
     char name[20];
@@ -8,13 +10,16 @@ struct State {
     int val;
     int last;
 } states[20];
-int totStates = 0;
+
 void printState(struct State *this) {
     printf("\n%s, %s, %d, %d, %d\n", this->fullName, this->name, this->val, this->duration, this->last);
 }
+
 void State_init(struct State *this, const char fullName[], const char name[], const int val, const int duration, const int last) {
 	strcpy(this->fullName, fullName);	strcpy(this->name, name);   this->val = val;    this->duration = duration;  this->last = last;
 }
+
+// Sort all states
 void sortStates(struct State states[]) {
 	int i, j;
 	struct State temp;
@@ -26,6 +31,8 @@ void sortStates(struct State states[]) {
 				states[j] = temp;
 			}
 }
+
+// Get state data from file
 bool getState(struct State *this, const char name[]) {
 	FILE *file;
 	int i = 0;
@@ -48,6 +55,8 @@ bool getState(struct State *this, const char name[]) {
 	fclose(file);
     return found;
 }
+
+// Add state to array
 bool addState(struct State states[], const char name[], const int time) {
 	int i, loc;
 	bool found = false;
@@ -67,6 +76,8 @@ bool addState(struct State states[], const char name[], const int time) {
 	sortStates(states);
     return true;
 }
+
+// Remove state from array
 void removeState(struct State states[], const int loc) {
     int i;
     if(totStates>0) {

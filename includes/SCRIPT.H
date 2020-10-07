@@ -1,6 +1,7 @@
 #ifndef SCRIPT_H
 #define SCRIPT_H
 
+// Script for when player dies
 void script_death(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 12;
@@ -17,6 +18,7 @@ void script_death(struct Engine *this) {
 	getch();
 }
 
+// Script for when player falls down
 void script_fall(struct Engine *this) {
 	Engine_draw(this);	halt(200);
 	this->gameOver = true;
@@ -27,6 +29,7 @@ void script_fall(struct Engine *this) {
 	script_death(this);
 }
 
+// Script when player kills
 void script_kill() {
 	int i;
 	for(i=100; i<200; i+=50) {
@@ -34,6 +37,7 @@ void script_kill() {
 	}
 }
 
+// Script when player is eaten
 void script_eaten(struct Engine *this) {
 	int i;
 	Engine_draw(this);
@@ -44,6 +48,7 @@ void script_eaten(struct Engine *this) {
 	script_death(this);
 }
 
+// Script when clear level
 void script_cleared(struct Engine *this) {
 	int i, j, cx = 40, cy = 13;
 	int height = 3, width = 11;
