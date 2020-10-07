@@ -36,6 +36,7 @@ unsigned int TIMELIMIT = oTIMELIMIT;
 char currentMode[10];
 char Modes[totModes][10] = { "Normal", "Normal+", "Hard", "Hard+" };
 
+// Custom Delay function for animation
 void halt(int x) {   
     if(!animationOn)	return;
 	delay(x);
@@ -45,6 +46,7 @@ void halt(int x) {
 	}
 }
 
+// Distance between difference of points
 int distance(int xdiff, int ydiff) {
 	int val = abs(xdiff * xdiff) + abs(ydiff * ydiff);
 	val = (unsigned)((val<0) ? -val : val);
@@ -54,11 +56,13 @@ int distance(int xdiff, int ydiff) {
 	return (val <= 0) ? 0 : val;//sqrt(val);
 }
 
+// Generate sound
 void noise(int f, int d) {
 	if(!soundOn)	return;
 	sound(f);	halt(d);	nosound();
 }
 
+// Draw border around whole screen
 void drawBorder() {
 	int i;
 	textcolor(GREEN);
@@ -76,7 +80,7 @@ void drawBorder() {
 
 #include "MZRUN/INCLUDES/COORD.H"
 #include "MZRUN/INCLUDES/TILE.H"
-#include "MZRUN/INCLUDES/PATHFIND.H"
+//#include "MZRUN/INCLUDES/PATHFIND.H"
 #include "MZRUN/INCLUDES/STATE.H"
 #include "MZRUN/INCLUDES/OBJECT.H"
 #include "MZRUN/INCLUDES/HELP.H"

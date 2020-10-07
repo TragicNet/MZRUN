@@ -1,5 +1,5 @@
-#ifndef PATHFINDER_H
-#define PATHFINDER_H
+#ifndef PATHFIND_H
+#define PATHFIND_H
 
 int heuristic(const struct coord a, const struct coord b) {
 	return abs(a.x-b.x) +  abs(a.y-b.y);
