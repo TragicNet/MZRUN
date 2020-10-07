@@ -55,10 +55,10 @@ int coord_view(struct coord this, struct coord t) {
 	return distance( (this.x - t.x), (this.y - t.y) * 2 );
 }
 
-/*bool coord_visible(struct coord start, struct coord end, int range, struct Tile map[][90]) {
+bool coord_visible(struct coord start, struct coord end, int range, struct Tile map[][90]) {
     int xi, yi, error;
 	struct coord current, errorCorrect, delta;
-	//if(coord_view(start, end) >= (range*range))	return false;
+	if(coord_view(start, end) >= (range*range))	return false;
 	xi = (end.x > start.x) ? 1 : -1;
 	yi = (end.y > start.y) ? 1 : -1;
 	current.x = start.x;	current.y = start.y;
@@ -76,6 +76,6 @@ int coord_view(struct coord this, struct coord t) {
 		else {	current.x+=xi;	current.y+=yi;	}
 	}
 	return true;
-}*/
+}
 
 #endif

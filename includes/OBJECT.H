@@ -122,7 +122,7 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 		if(coord_view(this->pos, entityObjects[0].pos) < (rngform * rngform) && !invisible) {
 			if(!ghost && !reaper) {
 				// Don't Follow if Vision Blocked
-				xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
+				/*xi = xdiff;	if(xi > 0)  xi = 1;  else if(xi < 0) xi = -1;
     			yi = ydiff;	if(yi > 0)  yi = 1;  else if(yi < 0) yi = -1;
 				for(i = this->pos.y; i != entityObjects[0].pos.y + ((xi != yi) ? yi : 0); ) {
 					if(i>0 && i<fullmap.y)	i+=yi;
@@ -131,7 +131,8 @@ void Object_route(struct Object *this, unsigned int last, struct Tile map[][90])
 						if(Tile_isOpaque(&map[i][j])) {	viewBlocked = true;	break;	}
 					}
 					if(viewBlocked == true)	break;
-				}
+				}*/
+				viewBlocked = coord_visible(this->pos, entityObjects[0].pos, this->range, map);
 			}
 			// Generate direction
 			if(viewBlocked == true) {
