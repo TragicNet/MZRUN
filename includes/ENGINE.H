@@ -143,7 +143,6 @@ void Engine_draw(struct Engine *this) {
 		if(states[i].duration <= 3)	textcolor(RED + BLINK);
 		cprintf("%3d", states[i].duration);
 	}
-	textcolor(WHITE);
 }
 
 // Process Input
