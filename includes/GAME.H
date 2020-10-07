@@ -227,7 +227,10 @@ void Game_options(struct Game *this) {
 		pressed = false;
 
 		textcolor(YELLOW);	gotoxy(5, 3);		cprintf("Mode");
-		textcolor(WHITE);	gotoxy(5+15, 3);	cprintf("%s", currentMode);
+		textcolor(WHITE);	gotoxy(20, 3);	for(i=0; i<8; i++)	cprintf(" ");
+		for(i = 0; i<totModes; i++)
+			if(strcmp(currentMode, Modes[i]) == 0)	break;
+			gotoxy(5+15 + 3 - strlen(Modes[i])/2, 3);	cprintf("%s", currentMode);	gotoxy(20, 3);
 		textcolor(YELLOW);	gotoxy(5, 5);		cprintf("Sound");
 		textcolor(colors[soundOn]);	gotoxy(5+15, 5);	cprintf("%s", (soundOn) ? " ON" : "OFF");
 		textcolor(YELLOW);	gotoxy(40, 5);	cprintf("Animation");
@@ -271,7 +274,7 @@ void Game_optionsMode(struct Game *this) {
 	while(1) {
 		gotoxy(18, 3);	cprintf("<");	gotoxy(28, 3);	cprintf(">");
 		spaces = 3 - strlen(Modes[x])/2;	gotoxy(20, 3);	for(i=0; i<8; i++)	cprintf(" ");
-		gotoxy(20+spaces,3);	cprintf("%s", Modes[x]);
+		gotoxy(20+spaces, 3);	cprintf("%s", Modes[x]);
 		key = getch();
 		gotoxy(18, 3);	cprintf(" ");	gotoxy(28, 3);	cprintf(" ");
 		switch(key) {
