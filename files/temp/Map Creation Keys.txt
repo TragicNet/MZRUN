@@ -17,6 +17,6 @@ n: Stop
 2: Monster - Ranger
 3: Monster - Sprinter
 4: Monster - Reaper
-5: Monster - Immortal
+5: Monster - Vampire
 6: Monster - Elite
 7: Monster - Ghost
