@@ -71,6 +71,15 @@ void Engine_HUD() {
 		gotoxy(i, 23);	cprintf("%c", border[0]);
 	}
 	gotoxy(80, 23);	cprintf("%c", 180);
+
+	gotoxy(3, 2);	textcolor(YELLOW);	cprintf("Level:");	textcolor(WHITE);	cprintf("%2d", levelCnt);
+	gotoxy(13, 2);	textcolor(YELLOW);	cprintf("Mode:");	textcolor(WHITE);	cprintf("%s", currentMode);
+
+	textcolor(CYAN);
+	gotoxy(9, 19);	cprintf("  w: UP       ");	gotoxy(9, 20);	cprintf("  a: LEFT     ");
+	gotoxy(9, 21);	cprintf("  s: DOWN     ");	gotoxy(9, 22);	cprintf("  d: RIGHT    ");
+	gotoxy(23, 19);	cprintf("  h: HELP     ");	gotoxy(23, 20);	cprintf("  p: PAUSE    ");
+	gotoxy(23, 21);	cprintf("esc: EXIT     ");	gotoxy(23, 22);	cprintf("rtn: ENTER    ");
 }
 
 // Render map
@@ -112,7 +121,7 @@ void Engine_draw(struct Engine *this) {
 					}
 				}
 				Object_draw(entity);
-				Object_setColor(this->player, tempColor, tempBgColor);
+				//Object_setColor(this->player, tempColor, tempBgColor);
 			} else if(!Tile_isOpen(thisTile)) {
 				Object_draw(&pit);
 			} else if(Tile_isBlocked(thisTile)) {
@@ -122,17 +131,12 @@ void Engine_draw(struct Engine *this) {
 			}
 		}
 	}
-	gotoxy(3, 2);	textcolor(YELLOW);	cprintf("Level:");	textcolor(WHITE);	cprintf("%2d", levelCnt);
-	gotoxy(13, 2);	textcolor(YELLOW);	cprintf("Mode:");	textcolor(WHITE);	cprintf("%s", currentMode);
+	
 	gotoxy(3, 24);	textcolor(YELLOW);	
 	if(wait == false) {
 		cprintf("Timer:");	textcolor(WHITE);	cprintf("%3d ", Engine_tick(this));
 	} else cprintf("<<PAUSED>>");
-	textcolor(CYAN);
-	gotoxy(9, 19);	cprintf("  w: UP       ");	gotoxy(9, 20);	cprintf("  a: LEFT     ");
-	gotoxy(9, 21);	cprintf("  s: DOWN     ");	gotoxy(9, 22);	cprintf("  d: RIGHT    ");
-	gotoxy(23, 19);	cprintf("  h: HELP     ");	gotoxy(23, 20);	cprintf("  p: PAUSE    ");
-	gotoxy(23, 21);	cprintf("esc: EXIT     ");	gotoxy(23, 22);	cprintf("rtn: ENTER    ");
+
 	for(i = 0; i<totStates; i++) {
 		textcolor(GREEN);
 		gotoxy(2, 4 + i);	cprintf("%s", states[i].name);
