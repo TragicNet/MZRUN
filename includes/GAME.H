@@ -177,7 +177,7 @@ bool Game_start(struct Game *this) {
 	}
 	switch(y-12) {
 	case 0:	Game_gameLoop(this);	break;
-	case 1:	Game_options(this);		_setcursortype(_NOCURSOR);	break;
+	case 1:	Game_options(this);		break;
 	case 2: return false;
 	}
 	// Unlock New Mode and Finish
