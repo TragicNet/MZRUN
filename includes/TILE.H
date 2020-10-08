@@ -1,7 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-// Structure each tile
+// Structure for each tile
 struct Tile {
     bool blocked;
     bool sightBlocked;
