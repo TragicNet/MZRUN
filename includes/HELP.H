@@ -110,7 +110,7 @@ void help_page3() {
 	textcolor(YELLOW);
 	gotoxy(20, 24);	cprintf("  a: LEFT     ");	cprintf("  d: RIGHT    ");	cprintf("esc: EXIT    ");
 	gotoxy(5, 24);	cprintf("<");
-	gotoxy(75, 24);	cprintf(">");
+	//gotoxy(75, 24);	cprintf(">");
 }
 
 #endif
