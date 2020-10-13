@@ -25,10 +25,8 @@ html[theme="dark"] {
 
 body {
 	width: 100vw;
-	//background-image: url('../images/roguelike-generic.jpg');
 	background-image: url('../images/ascii-bg.png');
 	background-repeat: repeat;
-	/*background-attachment: fixed;*/
 	background-size: 75vw;
 	background-position: center;
 	margin: auto;
@@ -37,7 +35,7 @@ body {
 	font-family: 'Comic Sans MS', cursive, sans-serif;
 }
 
-a { text-decoration: none; color:blue; }
+a { text-decoration: none; color: forestgreen; }
 
 .container { width: 100vw; min-height: 100vh; }
 
@@ -94,11 +92,11 @@ a { text-decoration: none; color:blue; }
 	display: inline-flex;
 	flex: 20%;
 	flex-direction: column;
-	align-items: center;
 	margin-left: 10px;
 	padding: 10px;
 	color: var(--side-fontcolor);
 	background-color: var(--side-bgcolor);
+	
 }
 
 .main {
