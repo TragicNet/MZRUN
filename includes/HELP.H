@@ -62,7 +62,8 @@ void help_page2() {
 	gotoxy(41, 6);	Object_draw(&blackair);	cprintf(" Air/Floor");
 	gotoxy(59, 6);	Object_draw(&item);		cprintf(" Item");
 	gotoxy(5, 8);	Object_draw(&goal);		cprintf(" Goal");
-	gotoxy(23, 8);	Object_draw(&outVision);cprintf(" No Vision/Pit");
+	gotoxy(23, 8);	Object_draw(&outVision);cprintf(" No Vision");
+	gotoxy(41, 8);	Object_draw(&pit);cprintf(" Pit");
 	textcolor(YELLOW);	gotoxy(36, 12);	cprintf("MONSTERS");	textcolor(WHITE);
 	gotoxy(5, 14);	Object_draw(&normal);	cprintf(" Normal/ Ranger/");
 	gotoxy(5, 15);	cprintf("  Sprinter");
