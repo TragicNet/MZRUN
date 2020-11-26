@@ -13,7 +13,6 @@ struct Engine {
 	bool gameOver;
 	bool cleared;
 	unsigned int timer;
-	//struct Tile map[MaxY][MaxX];
 	struct Object *player;
 };
 
